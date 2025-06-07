@@ -1102,9 +1102,6 @@ textarea {
         <label for="pitlinkin-date">Date Reported</label>
         <input type="date" id="pitlinkin-date" name="pitlinkin-date" required />
 
-        <label for="pitlinkin-location">Pit Location</label>
-        <input type="text" id="pitlinkin-location" name="pitlinkin-location" class="address-autocomplete" required />
-
         <label for="pitlinkin-SAM">SAM ID</label>
         <select id="pitlinkin-SAM" name="pitlinkin-SAM" required>
           <option value="">Select one</option>
@@ -1186,87 +1183,47 @@ textarea {
           <option value="31">31</option>
         </select>
 
-        <label for="pitlinkin-duct-fir">Duct FIR number</label>
-        <input type="text" id="pitlinkin-duct-fir" name="pitlinkin-duct-fir" required />
+        <label for="pitlinkin-Duct-Note-ID">Duct Note ID:</label>
+        <input type="text" id="pitlinkin-Duct-Note-ID" name="pitlinkin-Duct-Note-ID" required />
+                
+        <label for="pitlinkin-PitA-linkin-required">Pit A Link-in Required?</label>
+        <input type="checkbox" id="pitlinkin-PitA-linkin-required" name="pitlinkin-PitA-linkin-required">
 
-        <label for="pitlinkin-pit-fir">Pit FIR number</label>
-        <input type="text" id="pitlinkin-pit-fir" name="pitlinkin-pit-fir" required />
+        <label for="pitlinkin-PitA-Note-ID">Pit A Note ID:</label>
+        <input type="text" id="pitlinkin-PitA-Note-ID" name="pitlinkin-PitA-Note-ID" required />
+                
+        <label for="pitlinkin-PitB-linkin-required">Pit B Link-in Required?</label>
+        <input type="checkbox" id="pitlinkin-PitB-linkin-required" name="pitlinkin-PitB-linkin-required">
 
-        <label for="pitlinkin-pit-material">Pit Material</label>
-        <select id="pitlinkin-pit-material" name="pitlinkin-pit-material" required>
-          <option value="">Select one</option>
-          <option value="ACM">ACM</option>
-          <option value="Concrete / Brick">Concrete / Brick</option>
-          <option value="Plastic">Plastic</option>
-        </select>
+        <label for="pitlinkin-PitB-Note-ID">Pit B Note ID:</label>
+        <input type="text" id="pitlinkin-PitB-Note-ID" name="pitlinkin-PitB-Note-ID" required />
 
-<label for="pitlinkin-pit-type">Pit Type</label>
-        <select id="pitlinkin-pit-type" name="pitlinkin-pit-type" onchange="togglePitTypeField()" required>
-          <option value="">Select one</option>
-          <option value="B Pit">B Pit</option>
-          <option value="C Pit">C Pit</option>
-          <option value="D Pit">D Pit</option>
-          <option value="P2">P2</option>
-          <option value="P3">P3</option>
-          <option value="P5">P5</option>
-          <option value="P6">P6</option>
-          <option value="P8">P8</option>
-          <option value="P9">P9</option>
-          <option value="Manhole">Manhole</option>
-          <option value="Other">Other</option>
-        </select>
-
-        <!-- Conditional Field -->
-<div id="pitlinkin-pit-type-notification-field" style="display: none; margin-top: 10px;">
-  <label for="pitlinkin-pit-type-other">Pit Type - Other</label>
-<input type="text" id="pitlinkin-pit-type-other" name="pitlinkin-pit-type-other" />
-</div>
-
-        <label for="pitlinkin-ffp">Pit Fit for Purpose</label>
-        <select id="pitlinkin-ffp" name="pitlinkin-ffp" required>
+        <label for="pitlinkin-PitA-ffp">Is Pit A Fit for Purpose</label>
+        <select id="pitlinkin-PitA-ffp" name="pitlinkin-PitA-ffp" required>
           <option value="">Select one</option>
           <option value="Yes">Yes</option>
           <option value="No - Contact FCM">No - Contact FCM</option>
         </select>
 
-        <label for="pitlinkin-duct-state">Current Duct State</label>
-        <select id="pitlinkin-duct-state" name="pitlinkin-duct-state" required>
+        <label for="pitlinkin-PitB-ffp">Is Pit B Fit for Purpose</label>
+        <select id="pitlinkin-PitB-ffp" name="pitlinkin-PitB-ffp" required>
           <option value="">Select one</option>
-          <option value="Buried">Buried</option>
-          <option value="Exposed">Exposed</option>
+          <option value="Yes">Yes</option>
+          <option value="No - Contact FCM">No - Contact FCM</option>
         </select>
 
         <label for="pitlinkin-rrp">RRP Completed?</label>
-        <select id="pitlinkin-rrp" name="pitlinkin-rrp" required>
+        <select id="pitlinkin-rrp" name="pitlinkin-rrp" onchange="toggleRRPCompleteField()" required>
           <option value="">Select one</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
 
-        <label for="pitlinkin-reinstatement-req">Reinstatement Required?</label>
-        <select id="pitlinkin-reinstatement-req" name="pitlinkin-reinstatement-req" required>
-          <option value="">Select one</option>
-          <option value="Yes - Added to Reinstatement Register">Yes - Added to Reinstatement Register</option>
-          <option value="No">No</option>
-        </select>
-
-        <label for="pitlinkin-company-name">Reported By</label>
-        <select id="pitlinkin-company-name" name="pitlinkin-company-name" required>
-          <option value="">Select one</option>
-          <option value="Boretech Contracting">Boretech Contracting</option>
-          <option value="Connectit Communications">Connectit Communications</option>
-          <option value="Dawn Techcomms">Dawn Techcomms</option>
-          <option value="DDS Underground">DDS Underground</option>
-          <option value="Dizza Communications">Dizza Communications</option>
-          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
-          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
-          <option value="Genus Services">Genus Services</option>
-          <option value="JNJTech Services">JNJTech Services</option>
-          <option value="Lightsource">Lightsource</option>
-          <option value="MNC Drilling">MNC Drilling</option>
-          <option value="Netline Services">Netline Services</option>
-          <option value="Versatile Services">Versatile Services</option>
-        </select>
+        <!-- Conditional Field -->
+<div id="pitlinkin-rrp-notification-field" style="display: none; margin-top: 10px;">
+  <label for="pitlinkin-rrp-no">What is the reason RRP has not been completed?</label>
+<select id="pitlinkin-rrp-no" name="pitlinkin-rrp-no" required/>
+</div>
 
         <div class="form-footer">
           <button type="button" class="btn-back" onclick="confirmReset('pitlinkin')">Back</button>
@@ -1369,18 +1326,17 @@ function confirmReset(formType) {
       }
     }
 
-    function togglePitTypeField() {
-      const pittypeSelect = document.getElementById("pitlinkin-pit-type");
-      const pittypeField = document.getElementById("pitlinkin-pit-type-notification-field");
-      const pittypeInput = document.getElementById("pitlinkin-pit-type-other");
+    function toggleRRPCompleteField() {
+      const RRPCompleteSelect = document.getElementById("pitlinkin-rrp");
+      const RRPCompleteField = document.getElementById("pitlinkin-rrp-notification-field");
+      const RRPCompleteInput = document.getElementById("pitlinkin-rrp-type-other");
 
-      if (pittypeSelect.value === "Other") {
-        pittypeField.style.display = "block";
-        pittypeInput.required = true;
+      if (RRPCompleteSelect.value === "No") {
+        RRPCompleteField.style.display = "block";
+        RRPCompleteInput.setAttribute("required", "required");
       } else {
-       pittypeField.style.display = "none";
-        pittypeInput.required = false;
-        pittypeInput.value = ""; // clear the input if hidden
+        RRPCompleteField.style.display = "none";
+        RRPCompleteInput.removeAttribute("required");
       }
     }
 
@@ -1908,19 +1864,17 @@ showSuccessMessage();
                 'Type of work': document.getElementById('pitlinkin-type').value,
                 'Your Name': document.getElementById('pitlinkin-site-contact').value,
                 'Pit Link-in Date': document.getElementById('pitlinkin-date').value,
-                'Address': document.getElementById('pitlinkin-location').value,
                 'SAM': document.getElementById('pitlinkin-SAM').value,
                 'ADA': document.getElementById('pitlinkin-ADA').value,
-                'Duct FIR number': document.getElementById('pitlinkin-duct-fir').value,
-                'Pit FIR number': document.getElementById('pitlinkin-pit-fir').value,
-                'Pit Material': document.getElementById('pitlinkin-pit-material').value,
-                'Pit Type': document.getElementById('pitlinkin-pit-type').value,
-                'Pit Type - Other': document.getElementById('pitlinkin-pit-type-other').value,
-                'Pit Fit for Purpose': document.getElementById('pitlinkin-ffp').value,
-                'Current Duct State': document.getElementById('pitlinkin-duct-state').value,
+                'Duct Note ID': document.getElementById('pitlinkin-Duct-Note-ID').value,
+                'Pit A Note ID': document.getElementById('pitlinkin-Pit-A-Note-ID').value,
+                'Pit B Note ID': document.getElementById('pitlinkin-Pit-B-Note-ID').value,
+                'Pit A Required': document.getElementById('pitlinkin-PitA-linkin-required').Checked,
+                'Pit B Required': document.getElementById('pitlinkin-PitB-linkin-required').Checked,
+                'Pit A Fit for Purpose': document.getElementById('pitlinkin-PitA-ffp').value,
+                'Pit B Fit for Purpose': document.getElementById('pitlinkin-PitB-ffp').value,
                 'RRP Completed?': document.getElementById('pitlinkin-rrp').value,
-                'Reinstatement Required?': document.getElementById('pitlinkin-reinstatement-req').value,
-                'Reported By': document.getElementById('pitlinkin-company-name').value,
+                'RRP Completed - No': document.getElementById('pitlinkin-rrp-no').value,
             };
             
             try {
