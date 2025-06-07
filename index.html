@@ -1223,6 +1223,15 @@ textarea {
 <div id="pitlinkin-rrp-notification-field" style="display: none; margin-top: 10px;">
   <label for="pitlinkin-rrp-no">What is the reason RRP has not been completed?</label>
 <select id="pitlinkin-rrp-no" name="pitlinkin-rrp-no" required/>
+          <option value="">Select one</option>
+          <option value="Weather">Weather</option>
+          <option value="Material">Material Shortage</option>
+          <option value="Other">Other Reasons (add in "Additional Comments" section of this form)</option>
+        </select>
+        
+        <label for="pitlinkin-comments">Any additional comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
+        <textarea id="bog-comments" name="pitlinkin-comments"></textarea>
+
 </div>
 
         <div class="form-footer">
@@ -1875,6 +1884,7 @@ showSuccessMessage();
                 'Pit B Fit for Purpose': document.getElementById('pitlinkin-PitB-ffp').value,
                 'RRP Completed?': document.getElementById('pitlinkin-rrp').value,
                 'RRP Completed - No': document.getElementById('pitlinkin-rrp-no').value,
+                'Additional Comments': document.getElementById('pitlinkin-comments').value,
             };
             
             try {
