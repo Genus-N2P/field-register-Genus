@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-dark: #112b4e;
+      --primary-mid: #8895a6;
+      --primary-accent: #ec7723;
+
+      --dark-80: rgba(17, 43, 78, 0.8);
+      --dark-60: rgba(17, 43, 78, 0.6);
+      --dark-40: rgba(17, 43, 78, 0.4);
+      --dark-20: rgba(17, 43, 78, 0.2);
+      --dark-10: rgba(17, 43, 78, 0.1);
+      --dark-05: rgba(17, 43, 78, 0.05);
+
+      --accent-80: rgba(236, 119, 35, 0.8);
+      --accent-60: rgba(236, 119, 35, 0.6);
+      --accent-40: rgba(236, 119, 35, 0.4);
+      --accent-20: rgba(236, 119, 35, 0.2);
+      --accent-10: rgba(236, 119, 35, 0.1);
+      --accent-05: rgba(236, 119, 35, 0.05);
+    }
+
+    body {
+      font-family: 'Exo', sans-serif;
+      background-color: #f9f9f9;
+      color: var(--primary-dark);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: var(--primary-dark);
+      height: 350px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      padding: 0 2rem;
+    }
+
+    .header-logo {
+      height: 300px;
+      width: auto;
+      object-fit: contain;
+      max-width: 600px;
+    }
+
+    .header-title {
+      flex: 1;
+      text-align: center;
+    }
+
+    .header-title h1 {
+      font-weight: 600;
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    .header-spacer {
+      width: 300px; /* Same as logo width to center the title */
+    }
+
+    /* Responsive media queries for header logo */
+    @media screen and (max-width: 1200px) {
+      .header-logo {
+        height: 250px;
+        max-width: 500px;
+      }
+      .header-spacer {
+        width: 250px;
+      }
+      .header-title h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      header {
+        height: 250px;
+        padding: 0 1rem;
+      }
+      .header-logo {
+        height: 200px;
+        max-width: 350px;
+      }
+      .header-spacer {
+        width: 200px;
+      }
+      .header-title h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      header {
+        height: 200px;
+        padding: 0 0.5rem;
+      }
+      .header-logo {
+        height: 160px;
+        max-width: 200px;
+      }
+      .header-spacer {
+        width: 160px;
+      }
+      .header-title h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media screen and (max-width: 320px) {
+      header {
+        height: 180px;
+      }
+      .header-logo {
+        height: 130px;
+        max-width: 150px;
+      }
+      .header-spacer {
+        width: 130px;
+      }
+      .header-title h1 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: -50px auto 0 auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px var(--dark-10);
+    }
+
+    .form-switcher {
+      margin-bottom: 2rem;
+    }
+
+    .form-switcher h2 {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .form-switcher button {
+      background-color: var(--accent-60);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      margin: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-switcher button:hover {
+      background-color: var(--primary-accent);
+    }
+
+    .form-switcher button.active {
+      background-color: var(--primary-accent);
+    }
+
+    .btn-back {
+      background-color: #6c757d !important;
+    } 
+      
+    .btn-back:hover {
+      background-color: #5a6268 !important;
+    }       
+
+    .thank-you-message {
+      background-color: var(--accent-10);
+      border: 2px solid var(--primary-accent);
+      color: var(--primary-dark);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      display: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .form-section h3 {
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: 600;
+    }
+
+    legend {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--dark-20);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-family: 'Exo', sans-serif;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
+
+    .form-footer {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .form-footer button {
+      background-color: var(--primary-accent);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+.field-error input {
+  border: 2px solid #dc3545;
+  background-color: #fff5f5;
+}
+
+.field-error label {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.form-wrapper {
+  border: 1px solid var(--dark-20); /* Subtle border */
+  padding: 1.5rem;
+  border-radius: 1rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto; /* Ensure horizontal scrolling if content overflows */
+}
+
+body {
+  overflow-x: hidden;
+}
+
+input,
+select,
+textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Specific styling for discipline checkboxes and their error messages */
+.discipline-checkbox-group.field-error {
+  border: 2px solid #dc3545;
+  padding: 10px;
+  border-radius: 0.5rem;
+  background-color: #fff5f5;
+}
+
+.discipline-checkbox-group.field-error label {
+  color: #dc3545;
+}
+
+    .week-ending-display {
+      background-color: var(--accent-10);
+      border: 2px solid var(--primary-accent);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Style for the conditional discipline fields */
+    .discipline-conditional-fields {
+        border-left: 3px solid var(--primary-accent);
+        padding-left: 15px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+        background-color: var(--accent-05);
+        border-radius: 0.5rem;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+/* Styles for the main discipline checkboxes' labels */
+.discipline-checkbox-group > div label {
+    font-weight: bold; /* Make these labels bold */
+    color: var(--primary-dark); /* Use a darker color */
+    display: inline; /* Keep them inline with their checkboxes */
+    margin-left: 5px; /* Add some space if the input is first */
+    /* Add any other styles specific to these main labels */
+}
+
+/* Styles for labels within the conditional discipline fields */
+.discipline-conditional-fields label {
+    font-size: 0.95rem; /* Slightly smaller font for these */
+    color: var(--primary-mid); /* Use a lighter color */
+    display: inline; /* Keep them inline with their checkboxes */
+    margin-bottom: 0.5rem; /* Add space below them */    }
+
+    .discipline-conditional-fields input[type="number"] {
+        width: calc(100% - 20px); /* Adjust width to fit padding */
+        margin-bottom: 10px;
+    }
+/* More specifically, styles for the day checkboxes' labels */
+.discipline-conditional-fields .days-checkbox-group label {
+    font-weight: normal; /* Ensure they are not bold */
+    color: var(--primary-dark); /* Can revert to primary-dark for contrast */
+    display: inline; /* Keep them inline with their checkboxes */
+    margin-left: 5px; /* Space next to the checkbox */
+    margin-bottom: 0; /* Remove block margin */
+}
+    .discipline-conditional-fields .days-checkbox-group div {
+        flex: 1 1 auto; /* Allow items to grow and shrink */
+        min-width: 100px; /* Minimum width for each day checkbox */
+    }
+    .discipline-conditional-fields .days-checkbox-group input[type="checkbox"] {
+        margin-right: 5px;
+    }
+    .error-field {
+        border: 2px solid red !important;
+        background-color: #ffe0e0 !important;
+    }
+    /* Optional: Style for the error messages */
+    .error-message {
+        margin-top: 5px;
+        margin-bottom: 10px;
+    }
+
+  </style>
+
+</head>
+<body>
+  <header>
+    <img src="Field Register Header.png" alt="Field Register Logo" class="header-logo" />
+    <div class="header-title">
+      <h1>Field Register</h1>
+    </div>
+    <div class="header-spacer"></div>
+  </header>
+
+  <main class="container">
+  <div class="form-wrapper">
+  <div id="thank-you-message" class="thank-you-message" style="display: none;">
+    <h3 id="message-title">Thank you!</h3>
+    <p id="message-body">Your form has been submitted successfully.</p>
+  </div>
+    
+    <section class="form-switcher">
+      <h2>Please select which form you require:</h2>
+      <button id="btn-forecast" onclick="showForm('forecast')">Subcontractor Weekly Forecast</button>
+      <button id="btn-bog" onclick="showForm('bog')">Boots on Ground</button>
+      <button id="btn-reinstatement" onclick="showForm('reinstatement')">Reinstatement Register</button>
+      <button id="btn-pitlinkin" onclick="showForm('pitlinkin')">Pit Link-in Register</button>
+    </section>
+
+    <div id="form-forecast" class="form-section hidden">
+        <h3>Subcontractor Weekly Forecast: Genus N2P project</h3>
+        <p>Please complete weekly by 5pm Thursday.<br>This is a new reporting requirement implemented by nbn.</p>
+        <p>Week Commencing: <strong id="weekCommencingDate">Calculating...</strong> | Week Ending: <strong id="weekEndingDate">Calculating...</strong></p>
+        <form id="forecast-form" onsubmit="">
+
+            <label for="forecast-company-name">Your Company Name</label>
+            <select id="forecast-company-name" name="forecast-company-name" required>
+          <option value="">Select one</option>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
+        </select>
+
+
+            <label for="forecast-sam-id">SAM ID - Please submit 1 form per SAM.</label>
+            <select id="forecast-sam-id" name="forecast-sam-id" required>
+          <option value="">Select one</option>
+          <option value="K-6ALN-05">K-6ALN-05</option>
+          <option value="K-6ALN-20">K-6ALN-20</option>
+          <option value="K-6ALN-21">K-6ALN-21</option>
+          <option value="K-6ALN-22">K-6ALN-22</option>
+          <option value="K-6ALN-23">K-6ALN-23</option>
+          <option value="K-6AUU-20">K-6AUU-20</option>
+          <option value="K-6BGT-20">K-6BGT-20</option>
+          <option value="K-6CGD-20">K-6CGD-20</option>
+          <option value="K-6CND-20">K-6CND-20</option>
+          <option value="K-6CVN-20">K-6CVN-20</option>
+          <option value="K-6DNH-20">K-6DNH-20</option>
+          <option value="K-6DNK-20">K-6DNK-20</option>
+          <option value="K-6ESP-20">K-6ESP-20</option>
+          <option value="K-6ESP-21">K-6ESP-21</option>
+          <option value="K-6ESP-40">K-6ESP-40</option>
+          <option value="K-6EXM-01">K-6EXM-01</option>
+          <option value="K-6HOP-01">K-6HOP-01</option>
+          <option value="K-6KAM-20">K-6KAM-20</option>
+          <option value="K-6KAT-20">K-6KAT-20</option>
+          <option value="K-6KLB-01">K-6KLB-01</option>
+          <option value="K-6KOJ-20">K-6KOJ-20</option>
+          <option value="K-6LEA-20">K-6LEA-20</option>
+          <option value="K-6MBA-20">K-6MBA-20</option>
+          <option value="K-6MJM-01">K-6MJM-01</option>
+          <option value="K-6NRG-20">K-6NRG-20</option>
+          <option value="K-6NWM-01">K-6NWM-01</option>
+          <option value="K-6NWM-20">K-6NWM-20</option>
+          <option value="K-6PDO-20">K-6PDO-20</option>
+          <option value="K-6SCR-20">K-6SCR-20</option>
+          <option value="K-6TPC-20">K-6TPC-20</option>
+          <option value="L-6ALN-05">L-6ALN-05</option>
+          <option value="L-6ALN-20">L-6ALN-20</option>
+          <option value="L-6ALN-21">L-6ALN-21</option>
+          <option value="L-6ALN-23">L-6ALN-23</option>
+          <option value="M-6ALN-21">M-6ALN-21</option>
+          <option value="X-6ALN-20">X-6ALN-20</option>
+          <option value="X-6BGT-20">X-6BGT-20</option>
+          <option value="X-6COI-01">X-6COI-01</option>
+          <option value="X-6DNK-20">X-6DNK-20</option>
+          <option value="Z-6ALN-22">Z-6ALN-22</option>
+          <option value="Z-6KAT-20">Z-6KAT-20</option>
+          <option value="Z-6NRG-20">Z-6NRG-20</option>
+        </select>
+
+
+<fieldset>
+                <legend>Select the discipline(s) your company will be working on:</legend>
+                <div class="discipline-checkbox-group">
+                    <div>
+                        <input type="checkbox" id="discipline-scoping" name="discipline[]" value="Scoping" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-scoping">Scoping</label>
+                    </div>
+                    <div id="discipline-scoping-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="scoping-crews">Number of Scoping crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="scoping-crews" name="scoping-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Scoping crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="scoping-monday" name="scoping-days[]" value="Monday" /><label for="scoping-monday">Monday</label></div>
+                                <div><input type="checkbox" id="scoping-tuesday" name="scoping-days[]" value="Tuesday" /><label for="scoping-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="scoping-wednesday" name="scoping-days[]" value="Wednesday" /><label for="scoping-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="scoping-thursday" name="scoping-days[]" value="Thursday" /><label for="scoping-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="scoping-friday" name="scoping-days[]" value="Friday" /><label for="scoping-friday">Friday</label></div>
+                                <div><input type="checkbox" id="scoping-saturday" name="scoping-days[]" value="Saturday" /><label for="scoping-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="scoping-sunday" name="scoping-days[]" value="Sunday" /><label for="scoping-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="scoping-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-blockages" name="discipline[]" value="Blockages" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-blockages">Blockages</label>
+                    </div>
+                    <div id="discipline-blockages-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="blockages-crews">Number of Blockages crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="blockages-crews" name="blockages-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Blockages crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="blockages-monday" name="blockages-days[]" value="Monday" /><label for="blockages-monday">Monday</label></div>
+                                <div><input type="checkbox" id="blockages-tuesday" name="blockages-days[]" value="Tuesday" /><label for="blockages-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="blockages-wednesday" name="blockages-days[]" value="Wednesday" /><label for="blockages-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="blockages-thursday" name="blockages-days[]" value="Thursday" /><label for="blockages-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="blockages-friday" name="blockages-days[]" value="Friday" /><label for="blockages-friday">Friday</label></div>
+                                <div><input type="checkbox" id="blockages-saturday" name="blockages-days[]" value="Saturday" /><label for="blockages-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="blockages-sunday" name="blockages-days[]" value="Sunday" /><label for="blockages-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="blockages-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-pit-remediation" name="discipline[]" value="Pit Remediation" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-pit-remediation">Pit Remediation</label>
+                    </div>
+                    <div id="discipline-pit-remediation-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="pit-remediation-crews">Number of Pit Remediation crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="pit-remediation-crews" name="pit-remediation-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Pit Remediation crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="pit-remediation-monday" name="pit-remediation-days[]" value="Monday" /><label for="pit-remediation-monday">Monday</label></div>
+                                <div><input type="checkbox" id="pit-remediation-tuesday" name="pit-remediation-days[]" value="Tuesday" /><label for="pit-remediation-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="pit-remediation-wednesday" name="pit-remediation-days[]" value="Wednesday" /><label for="pit-remediation-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="pit-remediation-thursday" name="pit-remediation-days[]" value="Thursday" /><label for="pit-remediation-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="pit-remediation-friday" name="pit-remediation-days[]" value="Friday" /><label for="pit-remediation-friday">Friday</label></div>
+                                <div><input type="checkbox" id="pit-remediation-saturday" name="pit-remediation-days[]" value="Saturday" /><label for="pit-remediation-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="pit-remediation-sunday" name="pit-remediation-days[]" value="Sunday" /><label for="pit-remediation-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="pit-remediation-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-new-build" name="discipline[]" value="New Build" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-new-build">New Build</label>
+                    </div>
+                    <div id="discipline-new-build-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="new-build-crews">Number of New Build crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="new-build-crews" name="new-build-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your New Build crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="new-build-monday" name="new-build-days[]" value="Monday" /><label for="new-build-monday">Monday</label></div>
+                                <div><input type="checkbox" id="new-build-tuesday" name="new-build-days[]" value="Tuesday" /><label for="new-build-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="new-build-wednesday" name="new-build-days[]" value="Wednesday" /><label for="new-build-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="new-build-thursday" name="new-build-days[]" value="Thursday" /><label for="new-build-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="new-build-friday" name="new-build-days[]" value="Friday" /><label for="new-build-friday">Friday</label></div>
+                                <div><input type="checkbox" id="new-build-saturday" name="new-build-days[]" value="Saturday" /><label for="new-build-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="new-build-sunday" name="new-build-days[]" value="Sunday" /><label for="new-build-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="new-build-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-hauling" name="discipline[]" value="Hauling" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-hauling">Hauling</label>
+                    </div>
+                    <div id="discipline-hauling-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="hauling-crews">Number of Hauling crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="hauling-crews" name="hauling-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Hauling crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="hauling-monday" name="hauling-days[]" value="Monday" /><label for="hauling-monday">Monday</label></div>
+                                <div><input type="checkbox" id="hauling-tuesday" name="hauling-days[]" value="Tuesday" /><label for="hauling-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="hauling-wednesday" name="hauling-days[]" value="Wednesday" /><label for="hauling-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="hauling-thursday" name="hauling-days[]" value="Thursday" /><label for="hauling-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="hauling-friday" name="hauling-days[]" value="Friday" /><label for="hauling-friday">Friday</label></div>
+                                <div><input type="checkbox" id="hauling-saturday" name="hauling-days[]" value="Saturday" /><label for="hauling-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="hauling-sunday" name="hauling-days[]" value="Sunday" /><label for="hauling-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="hauling-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-splicing" name="discipline[]" value="Splicing" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-splicing">Splicing</label>
+                    </div>
+                    <div id="discipline-splicing-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="splicing-crews">Number of Splicing crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="splicing-crews" name="splicing-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Splicing crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="splicing-monday" name="splicing-days[]" value="Monday" /><label for="splicing-monday">Monday</label></div>
+                                <div><input type="checkbox" id="splicing-tuesday" name="splicing-days[]" value="Tuesday" /><label for="splicing-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="splicing-wednesday" name="splicing-days[]" value="Wednesday" /><label for="splicing-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="splicing-thursday" name="splicing-days[]" value="Thursday" /><label for="splicing-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="splicing-friday" name="splicing-days[]" value="Friday" /><label for="splicing-friday">Friday</label></div>
+                                <div><input type="checkbox" id="splicing-saturday" name="splicing-days[]" value="Saturday" /><label for="splicing-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="splicing-sunday" name="splicing-days[]" value="Sunday" /><label for="splicing-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="splicing-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-service-locating" name="discipline[]" value="Service Locating" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-service-locating">Service Locating</label>
+                    </div>
+                    <div id="discipline-service-locating-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="service-locating-crews">Number of Service Locating crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="service-locating-crews" name="service-locating-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Service Locating crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="service-locating-monday" name="service-locating-days[]" value="Monday" /><label for="service-locating-monday">Monday</label></div>
+                                <div><input type="checkbox" id="service-locating-tuesday" name="service-locating-days[]" value="Tuesday" /><label for="service-locating-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="service-locating-wednesday" name="service-locating-days[]" value="Wednesday" /><label for="service-locating-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="service-locating-thursday" name="service-locating-days[]" value="Thursday" /><label for="service-locating-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="service-locating-friday" name="service-locating-days[]" value="Friday" /><label for="service-locating-friday">Friday</label></div>
+                                <div><input type="checkbox" id="service-locating-saturday" name="service-locating-days[]" value="Saturday" /><label for="service-locating-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="service-locating-sunday" name="service-locating-days[]" value="Sunday" /><label for="service-locating-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="service-locating-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-reinstatement" name="discipline[]" value="Reinstatement" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-reinstatement">Reinstatement</label>
+                    </div>
+                    <div id="discipline-reinstatement-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="reinstatement-crews">Number of Reinstatement crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="reinstatement-crews" name="reinstatement-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Reinstatement crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="reinstatement-monday" name="reinstatement-days[]" value="Monday" /><label for="reinstatement-monday">Monday</label></div>
+                                <div><input type="checkbox" id="reinstatement-tuesday" name="reinstatement-days[]" value="Tuesday" /><label for="reinstatement-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="reinstatement-wednesday" name="reinstatement-days[]" value="Wednesday" /><label for="reinstatement-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="reinstatement-thursday" name="reinstatement-days[]" value="Thursday" /><label for="reinstatement-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="reinstatement-friday" name="reinstatement-days[]" value="Friday" /><label for="reinstatement-friday">Friday</label></div>
+                                <div><input type="checkbox" id="reinstatement-saturday" name="reinstatement-days[]" value="Saturday" /><label for="reinstatement-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="reinstatement-sunday" name="reinstatement-days[]" value="Sunday" /><label for="reinstatement-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="reinstatement-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="discipline-other-civils" name="discipline[]" value="Other Civils" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-other-civils">Other Civils (eg. Pit Link-in)</label>
+                    </div>
+                    <div id="discipline-other-civils-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="other-civils-crews">Number of Other Civils crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="other-civils-crews" name="other-civils-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your Other Civils crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="other-civils-monday" name="other-civils-days[]" value="Monday" /><label for="other-civils-monday">Monday</label></div>
+                                <div><input type="checkbox" id="other-civils-tuesday" name="other-civils-days[]" value="Tuesday" /><label for="other-civils-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="other-civils-wednesday" name="other-civils-days[]" value="Wednesday" /><label for="other-civils-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="other-civils-thursday" name="other-civils-days[]" value="Thursday" /><label for="other-civils-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="other-civils-friday" name="other-civils-days[]" value="Friday" /><label for="other-civils-friday">Friday</label></div>
+                                <div><input type="checkbox" id="other-civils-saturday" name="other-civils-days[]" value="Saturday" /><label for="other-civils-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="other-civils-sunday" name="other-civils-days[]" value="Sunday" /><label for="other-civils-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="other-civils-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+                </div>
+            </fieldset>
+            <p id="discipline-error" style="color: red; display: none;">Please select at least one discipline.</p>
+
+
+            <div class="form-footer">
+                <button type="button" class="btn-back" onclick="confirmReset('forecast')">Back</button>
+                <button type="submit">Submit Forecast</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div id="form-bog" class="form-section hidden">
+      <h3>Daily Pre-Start: Boots on Ground: Genus N2P project</h3>
+      <p>Please complete prior to starting work.<br>This does not replace the JHA (JHA to be uploaded to IBISS - one required per site).</p>
+      <form id="bog-form" onsubmit="validateBogForm()">
+
+        <label for="bog-date">Date</label>
+        <input type="date" id="bog-date" name="bog-date" required />
+
+        <label for="bog-site-location">First Site Location</label>
+        <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
+
+        <label for="bog-site-contact">Onsite Crew Lead</label>
+        <input type="text" id="bog-site-contact" name="bog-site-contact" required />
+
+        <label for="bog-onsite-crew-lead-mobile">Onsite Crew Lead Mobile</label>
+        <input type="tel" id="bog-onsite-crew-lead-mobile" name="bog-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
+
+        <label for="bog-company-name">Your Company Name</label>
+        <select id="bog-company-name" name="bog-company-name" required>
+          <option value="">Select one</option>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
+        </select>
+        
+        <label for="bog-discipline">Discipline</label>
+        <select id="bog-discipline" name="bog-discipline" required>
+          <option value="">Select one</option>
+          <option value="Scoping">Scoping</option>
+          <option value="Blockages">Blockages</option>
+          <option value="Pit Remediation">Pit Remediation</option>
+          <option value="New Build (Drilling)">New Build (Drilling)</option>
+          <option value="New Build (Trenching)">New Build (Trenching)</option>
+          <option value="Civils (Reinstatement)">Civils (Reinstatement)</option>
+          <option value="Civils (Pit Link-in)">Civils (Pit Link-in)</option>
+          <option value="Service Locating">Service Locating</option>
+          <option value="Hauling">Hauling</option>
+          <option value="Splicing">Splicing</option>
+        </select>
+        
+        <label for="bog-Number-of-People-at-Location">Number of People in Crew at Location</label>
+        <input type="number" id="bog-Number-of-People-at-Location" name="bog-Number-of-People-at-Location" step="1" required>
+        
+        <label for="bog-crews-names">List Names of Workers in Crew</label>
+        <textarea id="bog-crews-names" name="bog-crews-names" placeholder="Separate Names with a comma (First Name Last Name required)" required></textarea>
+
+        <label for="bog-SAM">SAM ID</label>
+        <select id="bog-SAM" name="bog-SAM" required>
+          <option value="">Select one</option>
+          <option value="K-6ALN-05">K-6ALN-05</option>
+          <option value="K-6ALN-20">K-6ALN-20</option>
+          <option value="K-6ALN-21">K-6ALN-21</option>
+          <option value="K-6ALN-22">K-6ALN-22</option>
+          <option value="K-6ALN-23">K-6ALN-23</option>
+          <option value="K-6AUU-20">K-6AUU-20</option>
+          <option value="K-6BGT-20">K-6BGT-20</option>
+          <option value="K-6CGD-20">K-6CGD-20</option>
+          <option value="K-6CND-20">K-6CND-20</option>
+          <option value="K-6CVN-20">K-6CVN-20</option>
+          <option value="K-6DNH-20">K-6DNH-20</option>
+          <option value="K-6DNK-20">K-6DNK-20</option>
+          <option value="K-6ESP-20">K-6ESP-20</option>
+          <option value="K-6ESP-21">K-6ESP-21</option>
+          <option value="K-6ESP-40">K-6ESP-40</option>
+          <option value="K-6EXM-01">K-6EXM-01</option>
+          <option value="K-6HOP-01">K-6HOP-01</option>
+          <option value="K-6KAM-20">K-6KAM-20</option>
+          <option value="K-6KAT-20">K-6KAT-20</option>
+          <option value="K-6KLB-01">K-6KLB-01</option>
+          <option value="K-6KOJ-20">K-6KOJ-20</option>
+          <option value="K-6LEA-20">K-6LEA-20</option>
+          <option value="K-6MBA-20">K-6MBA-20</option>
+          <option value="K-6MJM-01">K-6MJM-01</option>
+          <option value="K-6NRG-20">K-6NRG-20</option>
+          <option value="K-6NWM-01">K-6NWM-01</option>
+          <option value="K-6NWM-20">K-6NWM-20</option>
+          <option value="K-6PDO-20">K-6PDO-20</option>
+          <option value="K-6SCR-20">K-6SCR-20</option>
+          <option value="K-6TPC-20">K-6TPC-20</option>
+          <option value="L-6ALN-05">L-6ALN-05</option>
+          <option value="L-6ALN-20">L-6ALN-20</option>
+          <option value="L-6ALN-21">L-6ALN-21</option>
+          <option value="L-6ALN-23">L-6ALN-23</option>
+          <option value="M-6ALN-21">M-6ALN-21</option>
+          <option value="X-6ALN-20">X-6ALN-20</option>
+          <option value="X-6BGT-20">X-6BGT-20</option>
+          <option value="X-6COI-01">X-6COI-01</option>
+          <option value="X-6DNK-20">X-6DNK-20</option>
+          <option value="Z-6ALN-22">Z-6ALN-22</option>
+          <option value="Z-6KAT-20">Z-6KAT-20</option>
+          <option value="Z-6NRG-20">Z-6NRG-20</option>
+        </select>
+
+        <label for="bog-ADA">ADA ID</label>
+        <select id="bog-ADA" name="bog-ADA" required>
+          <option value="">Select one</option>
+          <option value="01">01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option>
+          <option value="05">05</option>
+          <option value="06">06</option>
+          <option value="07">07</option>
+          <option value="08">08</option>
+          <option value="09">09</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+        </select>
+        
+        <label for="bog-Genus-FCM">Your Genus FCM</label>
+        <select id="bog-Genus-FCM" name="bog-Genus-FCM" required>
+          <option value="">Select one</option>
+          <option value="Alex McConville">Alex McConville</option>
+          <option value="Sean Muldoon">Sean Muldoon</option>
+        </select>
+                
+        <label for="bog-jha-uploaded">I confirm all workers have been inducted and have signed onto the JHA.</label>
+          <input type="checkbox" id="bog-jha-uploaded" name="bog-jha-uploaded" required> Please induct all visitors to JHA and complete prior to starting at each site.
+
+   <fieldset>
+    <legend><strong>Discipline with task Specific SWMS</strong></legend>
+    <p>(SWMS-SHEQ-CMS-0011 Site Establishment, SWMS-SHEQ-CMS-0001 Access to Pits & Manholes - required on all sites, SWMS-SHEQ-CMS-0006 Asbestos (ACM) required for all ACM sites)</p>
+    <p>All workers to have signed into Task SWMS being utilised with copy available - latest version.</p>
+
+  <input type="checkbox" name="bog-SWMS[]" value="Scoping" /> Scoping (0017 Surveying & Scoping)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Trenching" /> Trenching (0012 Excavation & Trenching)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Drilling" /> Drilling (0016 Directional Boring, 0012 Excavation & Trenching)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Pit Installation" /> Pit Installation (0002 Installing Replacing Repairing Pits Manholes)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Hauling" /> Hauling (0008 Rod Roping & Cable Hauling)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Splicing" /> Splicing (0007 Cable Jointing)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Clear Blockage" /> Clear Blockage (0008 Rod Roping & Cable Hauling)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Service Locator" /> Service Locator (0012 Excavation & Trenching)<br />
+  <input type="checkbox" name="bog-SWMS[]" value="Reinstatement" /> Reinstatement (0012 Excavation & Trenching)<br />
+
+  <p id="swms-error" style="color: red; display: none;">Please select at least one SWMS discipline.</p>
+
+        <label for="bog-ACM">Will you be disturbing/modifying any possible ACM while onsite?</label>
+        <select id="bog-ACM" name="bog-ACM" onchange="toggleACMField()" required>
+          <option value="">Select one</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+<!-- Conditional Field -->
+<div id="bog-acm-notification-field" style="display: none; margin-top: 10px;">
+  <label for="bog-acm-yes">If yes, have you received your Genus ACM Removal Notification Code and placed on your Construction</label>
+  Required for all ACM Pit replacement work, with Company Class B, worker to have remove Non-Friable accreditation with ACM supervisor in the vicinity.<br />
+  <select id="bog-acm-yes" name="bog-acm-yes">
+          <option value="">Select one</option>
+          <option value="Yes">Yes, continue</option>
+          <option value="No">No, stop work and contact your Genus FCM</option>
+        </select>
+</div>
+                
+        <label for="bog-guards">Ensure Telstra guards are fully locked around all open manholes. Calibrated gas detector required for spot sampling manhole access and ongoing monitoring.</label>
+          <input type="checkbox" id="bog-guards" name="bog-guards" required> Refer to HSE Guidance Note - Spot Sampling (Manhole) Gas Action Chart.
+                
+        <label for="bog-excavation">Excavation work- have you follow the 5Ps  with a competent locator onsite?</label>
+          <input type="checkbox" id="bog-excavation" name="bog-excavation" required> Refer to HSE Guidance Note – Construction JHA and Excavation permit process
+        
+        <label for="bog-comments">Additional Comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
+        <textarea id="bog-comments" name="bog-comments" placeholder="Track required actions in MyOsh with SHEQ support"></textarea>
+
+        <div class="form-footer">
+          <button type="button" class="btn-back" onclick="confirmReset('bog')">Back</button>
+          <button type="submit">Submit BOG</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="form-reinstatement" class="form-section hidden">
+      <h3>Reinstatement Register: Genus N2P project</h3>
+      <p>Please complete for any temporary reinstatement works.</p>
+      <form id="reinstatement-form" onsubmit="return validateGenericForm('reinstatement-form')">
+
+	<!-- Hidden input hardcoded to 'Reinstatement' -->
+	<input type="hidden" id="reinstatement-type" name="reinstatement-type" value="Reinstatement">
+
+        <label for="reinstatement-site-contact">Your Name</label>
+        <input type="text" id="reinstatement-site-contact" name="reinstatement-site-contact" required />
+
+        <label for="reinstatement-date">Temp Reinstatement Date</label>
+        <input type="date" id="reinstatement-date" name="reinstatement-date" required />
+
+        <label for="reinstatement-address">Address of Reinstatement</label>
+        <input type="text" id="reinstatement-address" name="reinstatement-address" class="address-autocomplete" required />
+
+        <label for="reinstatement-SAM">SAM ID</label>
+        <select id="reinstatement-SAM" name="reinstatement-SAM" required>
+          <option value="">Select one</option>
+          <option value="K-6ALN-05">K-6ALN-05</option>
+          <option value="K-6ALN-20">K-6ALN-20</option>
+          <option value="K-6ALN-21">K-6ALN-21</option>
+          <option value="K-6ALN-22">K-6ALN-22</option>
+          <option value="K-6ALN-23">K-6ALN-23</option>
+          <option value="K-6AUU-20">K-6AUU-20</option>
+          <option value="K-6BGT-20">K-6BGT-20</option>
+          <option value="K-6CGD-20">K-6CGD-20</option>
+          <option value="K-6CND-20">K-6CND-20</option>
+          <option value="K-6CVN-20">K-6CVN-20</option>
+          <option value="K-6DNH-20">K-6DNH-20</option>
+          <option value="K-6DNK-20">K-6DNK-20</option>
+          <option value="K-6ESP-20">K-6ESP-20</option>
+          <option value="K-6ESP-21">K-6ESP-21</option>
+          <option value="K-6ESP-40">K-6ESP-40</option>
+          <option value="K-6EXM-01">K-6EXM-01</option>
+          <option value="K-6HOP-01">K-6HOP-01</option>
+          <option value="K-6KAM-20">K-6KAM-20</option>
+          <option value="K-6KAT-20">K-6KAT-20</option>
+          <option value="K-6KLB-01">K-6KLB-01</option>
+          <option value="K-6KOJ-20">K-6KOJ-20</option>
+          <option value="K-6LEA-20">K-6LEA-20</option>
+          <option value="K-6MBA-20">K-6MBA-20</option>
+          <option value="K-6MJM-01">K-6MJM-01</option>
+          <option value="K-6NRG-20">K-6NRG-20</option>
+          <option value="K-6NWM-01">K-6NWM-01</option>
+          <option value="K-6NWM-20">K-6NWM-20</option>
+          <option value="K-6PDO-20">K-6PDO-20</option>
+          <option value="K-6SCR-20">K-6SCR-20</option>
+          <option value="K-6TPC-20">K-6TPC-20</option>
+          <option value="L-6ALN-05">L-6ALN-05</option>
+          <option value="L-6ALN-20">L-6ALN-20</option>
+          <option value="L-6ALN-21">L-6ALN-21</option>
+          <option value="L-6ALN-23">L-6ALN-23</option>
+          <option value="M-6ALN-21">M-6ALN-21</option>
+          <option value="X-6ALN-20">X-6ALN-20</option>
+          <option value="X-6BGT-20">X-6BGT-20</option>
+          <option value="X-6COI-01">X-6COI-01</option>
+          <option value="X-6DNK-20">X-6DNK-20</option>
+          <option value="Z-6ALN-22">Z-6ALN-22</option>
+          <option value="Z-6KAT-20">Z-6KAT-20</option>
+          <option value="Z-6NRG-20">Z-6NRG-20</option>
+        </select>
+
+        <label for="reinstatement-ADA">ADA ID</label>
+        <select id="reinstatement-ADA" name="reinstatement-ADA" required>
+          <option value="">Select one</option>
+          <option value="01">01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option>
+          <option value="05">05</option>
+          <option value="06">06</option>
+          <option value="07">07</option>
+          <option value="08">08</option>
+          <option value="09">09</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+        </select>
+
+        <label for="reinstatement-note-id">Note ID</label>
+<input
+  type="text"
+  id="reinstatement-note-id"
+  name="reinstatement-note-id"
+  placeholder="Enter Note ID number only, e.g. 12345"
+  pattern="^\d{5}$"
+  oninvalid="this.setCustomValidity('Enter a 5-digit number like 12345')"
+  oninput="this.setCustomValidity('')"
+  required
+/>
+
+        <label for="reinstatement-asset-type">Asset Type</label>
+        <select id="reinstatement-asset-type" name="reinstatement-asset-type" required>
+          <option value="">Select one</option>
+          <option value="Duct - P50">Duct - P50</option>
+          <option value="Pits - P5">Pits - P5</option>
+          <option value="Pits - P6">Pits - P6</option>
+          <option value="Pits - P8">Pits - P8</option>
+        </select>
+
+        <label for="reinstatement-surface-type">Surface Type</label>
+        <select id="reinstatement-surface-type" name="reinstatement-surface-type" onchange="toggleSurfaceTypeField()" required>
+          <option value="">Select one</option>
+          <option value="Aggregate">Aggregate</option>
+          <option value="Bitument">Bitument</option>
+          <option value="Concrete">Concrete</option>
+          <option value="Cracker Dust">Cracker Dust</option>
+          <option value="Gravel">Gravel</option>
+          <option value="Limestone">Limestone</option>
+          <option value="Paved">Paved</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <!-- Conditional Field -->
+<div id="reinstatement-surface-type-notification-field" style="display: none; margin-top: 10px;">
+  <label for="reinstatement-surface-type-other">Surface Type - Other</label>
+<input type="text" id="reinstatement-surface-type-other" name="reinstatement-surface-type-other" />
+</div>
+
+        <label for="reinstatement-location-type">Location Type</label>
+        <select id="reinstatement-location-type" name="reinstatement-location-type" onchange="toggleLocationTypeField()" required>
+          <option value="">Select one</option>
+          <option value="Driveway">Driveway</option>
+          <option value="Footpath">Footpath</option>
+          <option value="Roadway">Roadway</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <!-- Conditional Field -->
+<div id="reinstatement-location-type-notification-field" style="display: none; margin-top: 10px;">
+  <label for="reinstatement-location-type-other">Location Type - Other</label>
+<input type="text" id="reinstatement-location-type-other" name="reinstatement-location-type-other" />
+</div>
+
+        <label for="reinstatement-material-type">Temp Material Used</label>
+        <select id="reinstatement-material-type" name="reinstatement-material-type" onchange="toggleMaterialTypeField()" required>
+          <option value="">Select one</option>
+          <option value="Cold Mix">Cold Mix</option>
+          <option value="Cracker Dust">Cracker Dust</option>
+          <option value="Gravel / Sand">Gravel / Sand</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <!-- Conditional Field -->
+<div id="reinstatement-material-type-notification-field" style="display: none; margin-top: 10px;">
+  <label for="reinstatement-material-type-other">Temp Material Used - Other</label>
+<input type="text" id="reinstatement-material-type-other" name="reinstatement-material-type-other" />
+</div>
+
+        <label for="reinstatement-company-name">Temp Contractor Company Name</label>
+        <select id="reinstatement-company-name" name="reinstatement-company-name" required>
+          <option value="">Select one</option>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
+        </select>
+
+        <label for="reinstatement-perm-date">Proposed Permanent Reinstatement Date</label>
+        <input type="date" id="reinstatement-perm-date" name="reinstatement-perm-date" required />
+
+        <label for="reinstatement-area">Permanent Reinstatement Area (m2)</label>
+        <select id="reinstatement-area" name="reinstatement-area" required>
+          <option value="">Select one</option>
+          <option value="Less than or equal to 3m2">Less than or equal to 3m2</option>
+          <option value="Greater than 3m2">Greater than 3m2</option>
+        </select>
+
+        <label for="reinstatement-panel">Full Panel Required?</label>
+        <select id="reinstatement-panel" name="reinstatement-panel" required>
+          <option value="">Select one</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <div class="form-footer">
+          <button type="button" class="btn-back" onclick="confirmReset('reinstatement')">Back</button>
+          <button type="submit">Submit Reinstatement</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="form-pitlinkin" class="form-section hidden">
+      <h3>Pit Link-in Register: Genus N2P project</h3>
+      <p>Please complete for any pit link-in's required to be done by another contractor.</p>
+      <form id="pitlinkin-form" onsubmit="return validateGenericForm('pitlinkin-form')">
+
+	<!-- Hidden input hardcoded to 'Pit Link-in' -->
+	<input type="hidden" id="pitlinkin-type" name="pitlinkin-type" value="Pit Link-in">
+
+        <label for="pitlinkin-site-contact">Your Name</label>
+        <input type="text" id="pitlinkin-site-contact" name="pitlinkin-site-contact" required />
+
+        <label for="pitlinkin-date">Date Reported</label>
+        <input type="date" id="pitlinkin-date" name="pitlinkin-date" required />
+
+        <label for="pitlinkin-location">Pit Location</label>
+        <input type="text" id="pitlinkin-location" name="pitlinkin-location" class="address-autocomplete" required />
+
+        <label for="pitlinkin-SAM">SAM ID</label>
+        <select id="pitlinkin-SAM" name="pitlinkin-SAM" required>
+          <option value="">Select one</option>
+          <option value="K-6ALN-05">K-6ALN-05</option>
+          <option value="K-6ALN-20">K-6ALN-20</option>
+          <option value="K-6ALN-21">K-6ALN-21</option>
+          <option value="K-6ALN-22">K-6ALN-22</option>
+          <option value="K-6ALN-23">K-6ALN-23</option>
+          <option value="K-6AUU-20">K-6AUU-20</option>
+          <option value="K-6BGT-20">K-6BGT-20</option>
+          <option value="K-6CGD-20">K-6CGD-20</option>
+          <option value="K-6CND-20">K-6CND-20</option>
+          <option value="K-6CVN-20">K-6CVN-20</option>
+          <option value="K-6DNH-20">K-6DNH-20</option>
+          <option value="K-6DNK-20">K-6DNK-20</option>
+          <option value="K-6ESP-20">K-6ESP-20</option>
+          <option value="K-6ESP-21">K-6ESP-21</option>
+          <option value="K-6ESP-40">K-6ESP-40</option>
+          <option value="K-6EXM-01">K-6EXM-01</option>
+          <option value="K-6HOP-01">K-6HOP-01</option>
+          <option value="K-6KAM-20">K-6KAM-20</option>
+          <option value="K-6KAT-20">K-6KAT-20</option>
+          <option value="K-6KLB-01">K-6KLB-01</option>
+          <option value="K-6KOJ-20">K-6KOJ-20</option>
+          <option value="K-6LEA-20">K-6LEA-20</option>
+          <option value="K-6MBA-20">K-6MBA-20</option>
+          <option value="K-6MJM-01">K-6MJM-01</option>
+          <option value="K-6NRG-20">K-6NRG-20</option>
+          <option value="K-6NWM-01">K-6NWM-01</option>
+          <option value="K-6NWM-20">K-6NWM-20</option>
+          <option value="K-6PDO-20">K-6PDO-20</option>
+          <option value="K-6SCR-20">K-6SCR-20</option>
+          <option value="K-6TPC-20">K-6TPC-20</option>
+          <option value="L-6ALN-05">L-6ALN-05</option>
+          <option value="L-6ALN-20">L-6ALN-20</option>
+          <option value="L-6ALN-21">L-6ALN-21</option>
+          <option value="L-6ALN-23">L-6ALN-23</option>
+          <option value="M-6ALN-21">M-6ALN-21</option>
+          <option value="X-6ALN-20">X-6ALN-20</option>
+          <option value="X-6BGT-20">X-6BGT-20</option>
+          <option value="X-6COI-01">X-6COI-01</option>
+          <option value="X-6DNK-20">X-6DNK-20</option>
+          <option value="Z-6ALN-22">Z-6ALN-22</option>
+          <option value="Z-6KAT-20">Z-6KAT-20</option>
+          <option value="Z-6NRG-20">Z-6NRG-20</option>
+        </select>
+
+        <label for="pitlinkin-ADA">ADA ID</label>
+        <select id="pitlinkin-ADA" name="pitlinkin-ADA" required>
+          <option value="">Select one</option>
+          <option value="01">01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option>
+          <option value="05">05</option>
+          <option value="06">06</option>
+          <option value="07">07</option>
+          <option value="08">08</option>
+          <option value="09">09</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+        </select>
+
+        <label for="pitlinkin-duct-fir">Duct FIR number</label>
+        <input type="text" id="pitlinkin-duct-fir" name="pitlinkin-duct-fir" required />
+
+        <label for="pitlinkin-pit-fir">Pit FIR number</label>
+        <input type="text" id="pitlinkin-pit-fir" name="pitlinkin-pit-fir" required />
+
+        <label for="pitlinkin-pit-material">Pit Material</label>
+        <select id="pitlinkin-pit-material" name="pitlinkin-pit-material" required>
+          <option value="">Select one</option>
+          <option value="ACM">ACM</option>
+          <option value="Concrete / Brick">Concrete / Brick</option>
+          <option value="Plastic">Plastic</option>
+        </select>
+
+<label for="pitlinkin-pit-type">Pit Type</label>
+        <select id="pitlinkin-pit-type" name="pitlinkin-pit-type" onchange="togglePitTypeField()" required>
+          <option value="">Select one</option>
+          <option value="B Pit">B Pit</option>
+          <option value="C Pit">C Pit</option>
+          <option value="D Pit">D Pit</option>
+          <option value="P2">P2</option>
+          <option value="P3">P3</option>
+          <option value="P5">P5</option>
+          <option value="P6">P6</option>
+          <option value="P8">P8</option>
+          <option value="P9">P9</option>
+          <option value="Manhole">Manhole</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <!-- Conditional Field -->
+<div id="pitlinkin-pit-type-notification-field" style="display: none; margin-top: 10px;">
+  <label for="pitlinkin-pit-type-other">Pit Type - Other</label>
+<input type="text" id="pitlinkin-pit-type-other" name="pitlinkin-pit-type-other" />
+</div>
+
+        <label for="pitlinkin-ffp">Pit Fit for Purpose</label>
+        <select id="pitlinkin-ffp" name="pitlinkin-ffp" required>
+          <option value="">Select one</option>
+          <option value="Yes">Yes</option>
+          <option value="No - Contact FCM">No - Contact FCM</option>
+        </select>
+
+        <label for="pitlinkin-duct-state">Current Duct State</label>
+        <select id="pitlinkin-duct-state" name="pitlinkin-duct-state" required>
+          <option value="">Select one</option>
+          <option value="Buried">Buried</option>
+          <option value="Exposed">Exposed</option>
+        </select>
+
+        <label for="pitlinkin-rrp">RRP Completed?</label>
+        <select id="pitlinkin-rrp" name="pitlinkin-rrp" required>
+          <option value="">Select one</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="pitlinkin-reinstatement-req">Reinstatement Required?</label>
+        <select id="pitlinkin-reinstatement-req" name="pitlinkin-reinstatement-req" required>
+          <option value="">Select one</option>
+          <option value="Yes - Added to Reinstatement Register">Yes - Added to Reinstatement Register</option>
+          <option value="No">No</option>
+        </select>
+
+        <label for="pitlinkin-company-name">Reported By</label>
+        <select id="pitlinkin-company-name" name="pitlinkin-company-name" required>
+          <option value="">Select one</option>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
+        </select>
+
+        <div class="form-footer">
+          <button type="button" class="btn-back" onclick="confirmReset('pitlinkin')">Back</button>
+          <button type="submit">Submit Pit Link-in</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+function confirmReset(formType) {
+            const isConfirmed = confirm("Are you sure you want to reset this form and return to the form selection screen?");
+            
+            if (isConfirmed) {
+                // Reset the specific form
+                location.reload();
+            }
+        }
+
+    function toggleDisciplineFields(checkbox) {
+        const discipline = checkbox.value.toLowerCase().replace(/\s/g, '-');
+        const fieldsDiv = document.getElementById(`discipline-${discipline}-fields`);
+        if (checkbox.checked) {
+            fieldsDiv.style.display = 'block';
+            // Set crews to 1 by default, if empty
+            const crewsInput = document.getElementById(`${discipline}-crews`);
+            if (crewsInput && crewsInput.value === '') {
+                crewsInput.value = '1';
+            }
+        } else {
+            fieldsDiv.style.display = 'none';
+            // Clear values when unchecked
+            const crewsInput = document.getElementById(`${discipline}-crews`);
+            if (crewsInput) {
+                crewsInput.value = '';
+            }
+            const daysCheckboxes = fieldsDiv.querySelectorAll(`input[name="${discipline}-days[]"]`);
+            daysCheckboxes.forEach(dayCheckbox => (dayCheckbox.checked = false));
+            document.getElementById(`${discipline}-days-error`).style.display = 'none'; // Hide error
+        }
+    }
+
+
+    function toggleACMField() {
+  const select = document.getElementById("bog-ACM");
+  const acmField = document.getElementById("bog-acm-notification-field");
+  const acmYes = document.getElementById("bog-acm-yes");
+
+  if (select.value === "Yes") {
+    acmField.style.display = "block";
+    acmYes.setAttribute("required", "required");
+  } else {
+    acmField.style.display = "none";
+    acmYes.removeAttribute("required");
+  }
+}
+
+    function toggleSurfaceTypeField() {
+      const surfacetypeSelect = document.getElementById("reinstatement-surface-type");
+      const surfacetypeField = document.getElementById("reinstatement-surface-type-notification-field");
+      const surfacetypeInput = document.getElementById("reinstatement-surface-type-other");
+
+      if (surfacetypeSelect.value === "Other") {
+        surfacetypeField.style.display = "block";
+        surfacetypeInput.required = true;
+      } else {
+        surfacetypeField.style.display = "none";
+        surfacetypeInput.required = false;
+        surfacetypeInput.value = ""; // clear the input if hidden
+      }
+    }
+
+    function toggleLocationTypeField() {
+      const locationtypeSelect = document.getElementById("reinstatement-location-type");
+      const locationtypeField = document.getElementById("reinstatement-location-type-notification-field");
+      const locationtypeInput = document.getElementById("reinstatement-location-type-other");
+
+      if (locationtypeSelect.value === "Other") {
+        locationtypeField.style.display = "block";
+        locationtypeInput.required = true;
+      } else {
+       locationtypeField.style.display = "none";
+        locationtypeInput.required = false;
+        locationtypeInput.value = ""; // clear the input if hidden
+      }
+    }
+
+    function toggleMaterialTypeField() {
+      const materialtypeSelect = document.getElementById("reinstatement-material-type");
+      const materialtypeField = document.getElementById("reinstatement-material-type-notification-field");
+      const materialtypeInput = document.getElementById("reinstatement-material-type-other");
+
+      if (materialtypeSelect.value === "Other") {
+        materialtypeField.style.display = "block";
+        materialtypeInput.required = true;
+      } else {
+       materialtypeField.style.display = "none";
+        materialtypeInput.required = false;
+        materialtypeInput.value = ""; // clear the input if hidden
+      }
+    }
+
+    function togglePitTypeField() {
+      const pittypeSelect = document.getElementById("pitlinkin-pit-type");
+      const pittypeField = document.getElementById("pitlinkin-pit-type-notification-field");
+      const pittypeInput = document.getElementById("pitlinkin-pit-type-other");
+
+      if (pittypeSelect.value === "Other") {
+        pittypeField.style.display = "block";
+        pittypeInput.required = true;
+      } else {
+       pittypeField.style.display = "none";
+        pittypeInput.required = false;
+        pittypeInput.value = ""; // clear the input if hidden
+      }
+    }
+
+// Airtable configuration - Replace with your actual values
+        const AIRTABLE_CONFIG = {
+            forecast: {
+                baseId: 'appegmSLEvbJSkRvd',
+                tableId: 'Forecast',
+                apiKey: 'patHwUeS1KtSAEshe.6c903369a5dfb1bd994c2c3efb3d9cf037198cec7b4daec52f388fa57429ab6c'
+            },
+            bog: {
+                baseId: 'appegmSLEvbJSkRvd',
+                tableId: 'Table 1',
+                apiKey: 'patHwUeS1KtSAEshe.6c903369a5dfb1bd994c2c3efb3d9cf037198cec7b4daec52f388fa57429ab6c'
+            },
+            reinstatement: {
+                baseId: 'appI6d8aW2GqotwlL',
+                tableId: 'Table 1',
+                apiKey: 'patHwUeS1KtSAEshe.6c903369a5dfb1bd994c2c3efb3d9cf037198cec7b4daec52f388fa57429ab6c'
+            },
+            pitlinkin: {
+                baseId: 'appI6d8aW2GqotwlL',
+                tableId: 'Table 1',
+                apiKey: 'patHwUeS1KtSAEshe.6c903369a5dfb1bd994c2c3efb3d9cf037198cec7b4daec52f388fa57429ab6c'
+            }
+        };
+
+	   // Global submitToAirtable function
+           function submitToAirtable(formType, formData) {
+            const config = AIRTABLE_CONFIG[formType];
+            const url = `https://api.airtable.com/v0/${config.baseId}/${config.tableId}`;
+            
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${config.apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    records: [{
+                        fields: formData
+  		}],
+ 		typecast: true
+	       })
+            });
+        }
+
+
+    // Set default date to today in Western Standard Time (Australia/Perth)
+    function setDefaultDate() {
+      const now = new Date();
+      const perthTime = new Date(now.toLocaleString("en-US", {timeZone: "Australia/Perth"}));
+      const year = perthTime.getFullYear();
+      const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+      const day = String(perthTime.getDate()).padStart(2, '0');
+      const todayString = `${year}-${month}-${day}`;
+      
+      // Set default date for all forms
+      const bogDateField = document.getElementById('bog-date');
+      const pitlinkinDateField = document.getElementById('pitlinkin-date');
+      const reinstatementDateField = document.getElementById('reinstatement-date');
+
+      if (bogDateField) bogDateField.value = todayString;
+      if (pitlinkinDateField) pitlinkinDateField.value = todayString;
+      if (reinstatementDateField) reinstatementDateField.value = todayString;
+    }
+
+    // Function to calculate and update week commencing/ending dates
+  function updateForecastWeekDates() {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // Sunday - 0, Monday - 1, ..., Saturday - 6
+    const currentHour = today.getHours(); // 0-23
+
+    let daysToAddForCommencing = 0;
+
+    switch (dayOfWeek) {
+      case 1: // Monday
+        daysToAddForCommencing = 7;
+        break;
+      case 2: // Tuesday
+        daysToAddForCommencing = 6;
+        break;
+      case 3: // Wednesday
+        daysToAddForCommencing = 5;
+        break;
+      case 4: // Thursday
+        if (currentHour < 17) { // Prior to 5 PM
+          daysToAddForCommencing = 4;
+        } else { // After 5 PM
+          daysToAddForCommencing = 11;
+        }
+        break;
+      case 5: // Friday
+        daysToAddForCommencing = 10;
+        break;
+      case 6: // Saturday
+        daysToAddForCommencing = 9;
+        break;
+      case 0: // Sunday
+        daysToAddForCommencing = 8;
+        break;
+    }
+
+    let weekCommencing = new Date(today);
+    weekCommencing.setDate(today.getDate() + daysToAddForCommencing);
+    weekCommencing.setHours(0, 0, 0, 0); // Reset time to start of the day
+
+    let weekEnding = new Date(weekCommencing);
+    weekEnding.setDate(weekCommencing.getDate() + 6); // Set to 6 days after weekCommencing
+
+    const formatter = new Intl.DateTimeFormat('en-AU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+
+    document.getElementById('weekCommencingDate').innerText = formatter.format(weekCommencing);
+    document.getElementById('weekEndingDate').innerText = formatter.format(weekEnding);
+  }
+</script>
+<script>
+  // Call updateForecastWeekDates on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    updateForecastWeekDates();
+  });
+  </script>
+
+<script>
+// Add this function to handle forecast form validation
+function validateForecastForm() {
+    const form = document.getElementById('forecast-form');
+    let isValid = true;
+    
+    // Clear previous error styling
+    clearFieldErrors(form);
+    
+    // Check basic form validity
+    if (!form.checkValidity()) {
+        isValid = false;
+    }
+    
+    // Check if at least one discipline is selected
+    const disciplineCheckboxes = form.querySelectorAll('input[name="discipline[]"]:checked');
+    const disciplineError = document.getElementById('discipline-error');
+    
+    if (disciplineCheckboxes.length === 0) {
+        disciplineError.style.display = 'block';
+        document.querySelector('.discipline-checkbox-group').classList.add('field-error');
+        isValid = false;
+    } else {
+        disciplineError.style.display = 'none';
+        document.querySelector('.discipline-checkbox-group').classList.remove('field-error');
+    }
+    
+    // Validate each selected discipline's conditional fields
+    disciplineCheckboxes.forEach(checkbox => {
+        const discipline = checkbox.value.toLowerCase().replace(/\s/g, '-');
+        
+        // Check crews field
+        const crewsInput = document.getElementById(`${discipline}-crews`);
+        if (crewsInput && (!crewsInput.value || crewsInput.value < 1)) {
+            crewsInput.classList.add('error-field');
+            isValid = false;
+        }
+        
+        // Check days selection
+        const daysCheckboxes = form.querySelectorAll(`input[name="${discipline}-days[]"]:checked`);
+        const daysError = document.getElementById(`${discipline}-days-error`);
+        
+        if (daysCheckboxes.length === 0) {
+            daysError.style.display = 'block';
+            isValid = false;
+        } else {
+            daysError.style.display = 'none';
+        }
+    });
+    
+    if (!isValid) {
+        showErrorMessage();
+        addFieldErrorStyling(form);
+        form.reportValidity();
+        return false;
+    }
+    
+    return true;
+}
+
+// Add this function to clear field errors
+function clearFieldErrors(form) {
+    // Remove error classes
+    const errorFields = form.querySelectorAll('.field-error, .error-field');
+    errorFields.forEach(field => {
+        field.classList.remove('field-error', 'error-field');
+    });
+    
+    // Hide error messages
+    const errorMessages = form.querySelectorAll('.discipline-days-error');
+    errorMessages.forEach(msg => {
+        msg.style.display = 'none';
+    });
+}
+
+function showForm(formType) {
+    console.log('showForm called with:', formType);
+
+    // Hide thank you message
+    document.getElementById('thank-you-message').style.display = 'none';
+        
+    // Hide all forms using both methods
+    const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin'];
+    forms.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.classList.add('hidden');
+            element.style.display = 'none';
+        }
+    });
+
+    // Show selected form using both methods
+    const targetForm = document.getElementById(`form-${formType}`);
+    if (targetForm) {
+        targetForm.classList.remove('hidden');
+        targetForm.style.display = 'block';
+        console.log(`Showing form: form-${formType}`);
+    } else {
+        console.error(`Form not found: form-${formType}`);
+    }
+
+      // Set default date for the current form
+      setDefaultDate();
+
+       // Hide all buttons except the selected one
+            const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    if (btnId === `btn-${formType}`) {
+                        btn.classList.add('active');
+                        btn.style.display = 'inline-block';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+function validateSWMS() {
+    const checkedSWMS = document.querySelectorAll('input[name="bog-SWMS[]"]:checked');
+    const errorElement = document.getElementById('swms-error');
+    
+    if (checkedSWMS.length === 0) {
+        // Show error message if it exists
+        if (errorElement) {
+            errorElement.style.display = 'block';
+        }
+        return false; // Prevent form submission
+    } else {
+        // Hide error message if it exists
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+        return true; // Allow form submission
+    }
+}
+
+function validateBogForm() {
+    const form = document.querySelector('#bog-form'); // Updated selector
+    const isValid = form.checkValidity();
+    const swmsValid = validateSWMS();
+    
+    if (!isValid || !swmsValid) {
+        showErrorMessage();
+        // Add red styling to invalid fields
+	addFieldErrorStyling(form);
+        form.reportValidity(); 
+        return false;
+    }
+    
+    return true;
+}
+
+function validateGenericForm(formId) {
+    const form = document.getElementById(formId); // Updated selector
+    const isValid = form.checkValidity();
+    
+    if (!isValid) {
+        showErrorMessage();
+        // Add red styling to invalid fields
+	addFieldErrorStyling(form);
+        form.reportValidity(); 
+        return false;
+    }
+    
+    return true;
+}
+
+  function addFieldErrorStyling(form) {
+    // Remove existing error classes
+    const existingErrors = form.querySelectorAll('.field-error');
+    existingErrors.forEach(el => el.classList.remove('field-error'));
+    
+    // Add error class to invalid fields
+    const invalidFields = form.querySelectorAll(':invalid');
+    invalidFields.forEach(field => {
+        field.classList.add('field-error');
+        // Also add to parent if it's a field container
+        if (field.parentElement) {
+            field.parentElement.classList.add('field-error');
+        }
+    });
+}
+
+function showErrorMessage() {
+    const messageBox = document.getElementById('thank-you-message');
+    const messageTitle = document.getElementById('message-title');
+    const messageBody = document.getElementById('message-body');
+    
+    // Show error message
+    messageTitle.textContent = '';
+    messageBody.textContent = 'Please review your submission and ensure all fields are completed.';
+    messageBody.style.color = 'red';
+    messageBox.style.display = 'block';
+}
+
+function showSuccessMessage() {
+    const messageBox = document.getElementById('thank-you-message');
+    const messageTitle = document.getElementById('message-title');
+    const messageBody = document.getElementById('message-body');
+    
+    // Show success message
+    messageTitle.textContent = 'Thank you!';
+    // Added button and auto-redirect message
+    messageBody.innerHTML = 'Your form has been submitted successfully.<br><br><button type="button" class="btn-back" onclick="returnToFormSwitcher()">Submit Another Form</button><br><small>You will be redirected to form selection in 5 seconds...</small>';
+    messageBody.style.color = ''; // Reset color to default
+    messageBox.style.display = 'block';
+    
+    // Auto-redirect after 5 seconds
+    setTimeout(() => {
+        returnToFormSwitcher();
+        document.getElementById('thank-you-message').style.display = 'none';
+    }, 5000);
+}
+
+// Optional: Function to reset/hide the message
+function hideMessage() {
+    const messageBox = document.getElementById('thank-you-message');
+    messageBox.style.display = 'none';
+  // Hide message if validation passes (you may replace this with success logic)
+  messageBox.style.display = 'none';
+  return true;
+}
+
+    // Initialize default dates when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      setDefaultDate();
+
+document.getElementById('forecast-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Validate the form (assuming validateForecastForm() works correctly)
+    if (!validateForecastForm()) {
+        return;
+    }
+
+    // Collect selected disciplines (e.g., ["Scoping", "Blockages"])
+    const selectedDisciplines = Array.from(document.querySelectorAll('input[name="discipline[]"]:checked'))
+                                     .map(checkbox => checkbox.value);
+
+    // Collect main form data (general fields)
+    const formData = {
+        'Week Commencing': document.getElementById('weekCommencingDate').textContent,
+        'Week Ending': document.getElementById('weekEndingDate').textContent,
+        'Your Company Name': document.getElementById('forecast-company-name').value,
+        'SAM': document.getElementById('forecast-sam-id').value,
+        'Discipline': selectedDisciplines,
+        // These fields are computed in Airtable and should not be sent directly.
+    };
+
+    // Collect and merge discipline-specific data (crews and days)
+    // This loop ensures that crew numbers and selected days are added ONLY for
+    // the disciplines that have been selected by the user.
+    selectedDisciplines.forEach(discipline => {
+        const disciplineKey = discipline.toLowerCase().replace(/\s/g, '-'); // e.g., "scoping", "blockages"
+
+        // Get crew number value
+        const crewsInput = document.getElementById(`${disciplineKey}-crews`);
+        if (crewsInput) {
+            formData[`${discipline}-Crews`] = crewsInput.value;
+        } else {
+            formData[`${discipline}-Crews`] = '';
+        }
+
+        // Get selected days for this discipline
+        const daysCheckboxes = document.querySelectorAll(`input[name="${disciplineKey}-days[]"]:checked`);
+        const days = Array.from(daysCheckboxes).map(checkbox => checkbox.value);
+        formData[`${discipline}-Workdays`] = days.join(', '); // Format as comma-separated string
+    });
+
+    try {
+        const response = await submitToAirtable('forecast', formData);
+        const result = await response.json();
+
+        if (!response.ok) {
+            console.error('Airtable error:', result);
+            alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
+            return;
+        }
+
+        showSuccessMessage();
+    } catch (error) {
+        console.error('Error submitting Forecast form:', error);
+        alert('Error submitting form. Please try again.');
+    }
+});
+      
+       // Add event listeners for each form
+        document.getElementById('bog-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Collect checkbox values for SWMS
+            const checkedSWMS = Array.from(document.querySelectorAll('input[name="bog-SWMS[]"]:checked'))
+                                     .map(checkbox => checkbox.value);
+            
+            // Collect form data - modify this based on your actual form fields
+            const formData = {
+                'Date': document.getElementById('bog-date').value,
+                'First Site Location2': document.getElementById('bog-site-location').value,
+                'Onsite Crew Lead': document.getElementById('bog-site-contact').value,
+                'Onsite Crew Lead Mobile_original': document.getElementById('bog-onsite-crew-lead-mobile').value,
+                'Your Company Name': document.getElementById('bog-company-name').value,
+                'Discipline': document.getElementById('bog-discipline').value,
+                'Number of People at Location?': document.getElementById('bog-Number-of-People-at-Location').value,
+                'List Names of Workers in field.': document.getElementById('bog-crews-names').value,
+                'SAM ID (WA)': document.getElementById('bog-SAM').value,
+                'ADA ID': document.getElementById('bog-ADA').value,
+                'Your Genus FCM': document.getElementById('bog-Genus-FCM').value,
+                'I confirm all workers have been inducted and have signed onto the JHA.': document.getElementById('bog-jha-uploaded').checked,
+                'Discipline with task Specific SWMS (SWMS-SHEQ-CMS-0011 Site Establishment, SWMS-SHEQ-CMS-0001 Access to Pits & Manholes - required on all sites, SWMS-SHEQ-CMS-0006 Asbestos (ACM) required for all ACM sites)': checkedSWMS,
+                'Will you be disturbing/modifying any possible ACM while onsite?': document.getElementById('bog-ACM').value,
+                'Genus ACM Removal Notification Code and placed on your Construction JHA.': document.getElementById('bog-acm-yes').value,
+                'Ensure Telstra guards are fully locked around all open manholes.  Calibrated gas detector required for spot sampling manhole access and ongoing monitoring.': document.getElementById('bog-guards').checked,
+                'Excavation work- have you follow the 5Ps  with a competent locator onsite?': document.getElementById('bog-excavation').checked,
+                'Additional Comments': document.getElementById('bog-comments').value,
+            };
+            
+            try {
+                const response = await submitToAirtable('bog', formData);
+const result = await response.json();
+
+if (!response.ok) {
+  console.error('Airtable error:', result);
+  alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
+  return;
+}
+
+showSuccessMessage();
+            } catch (error) {
+                console.error('Error submitting BOG form:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
+
+        document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+       // Validate the form
+        if (!validateGenericForm('reinstatement-form')) {
+            return;
+        }
+            
+            // Collect form data - modify this based on your actual form fields
+            const formData = {
+                'Type of work': document.getElementById('reinstatement-type').value,
+                'Your Name': document.getElementById('reinstatement-site-contact').value,
+                'Temp Reinstatement Date': document.getElementById('reinstatement-date').value,
+                'Address': document.getElementById('reinstatement-address').value,
+                'SAM': document.getElementById('reinstatement-SAM').value,
+                'ADA': document.getElementById('reinstatement-ADA').value,
+                'Note ID': document.getElementById('reinstatement-note-id').value,
+                'Asset Type': document.getElementById('reinstatement-asset-type').value,
+                'Surface Type': document.getElementById('reinstatement-surface-type').value,
+                'Surface Type - Other': document.getElementById('reinstatement-surface-type-other').value,
+                'Location Type': document.getElementById('reinstatement-location-type').value,
+                'Location Type - Other': document.getElementById('reinstatement-location-type-other').value,
+                'Temp Material Used': document.getElementById('reinstatement-material-type').value,
+                'Temp Material Used - Other': document.getElementById('reinstatement-material-type-other').value,
+                'Temp Contractor Company Name': document.getElementById('reinstatement-company-name').value,
+                'Proposed Permanent Reinstatement Date': document.getElementById('reinstatement-perm-date').value,
+                'Permanent Reinstatement Area (m2)': document.getElementById('reinstatement-area').value,
+                'Full Panel Required?': document.getElementById('reinstatement-panel').value,
+            };
+            
+            try {
+                // await submitToAirtable('reinstatement', formData);
+                // showSuccessMessage();
+const response = await submitToAirtable('reinstatement', formData);
+const result = await response.json();
+
+if (!response.ok) {
+  console.error('Airtable error:', result);
+  alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
+  return;
+}
+
+showSuccessMessage();
+            } catch (error) {
+                console.error('Error submitting Reinstatement form:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
+
+
+
+        document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+       // Validate the form
+        if (!validateGenericForm('pitlinkin-form')) {
+            return;
+        }
+            
+            // Collect form data - modify this based on your actual form fields
+            const formData = {
+                'Type of work': document.getElementById('pitlinkin-type').value,
+                'Your Name': document.getElementById('pitlinkin-site-contact').value,
+                'Pit Link-in Date': document.getElementById('pitlinkin-date').value,
+                'Address': document.getElementById('pitlinkin-location').value,
+                'SAM': document.getElementById('pitlinkin-SAM').value,
+                'ADA': document.getElementById('pitlinkin-ADA').value,
+                'Duct FIR number': document.getElementById('pitlinkin-duct-fir').value,
+                'Pit FIR number': document.getElementById('pitlinkin-pit-fir').value,
+                'Pit Material': document.getElementById('pitlinkin-pit-material').value,
+                'Pit Type': document.getElementById('pitlinkin-pit-type').value,
+                'Pit Type - Other': document.getElementById('pitlinkin-pit-type-other').value,
+                'Pit Fit for Purpose': document.getElementById('pitlinkin-ffp').value,
+                'Current Duct State': document.getElementById('pitlinkin-duct-state').value,
+                'RRP Completed?': document.getElementById('pitlinkin-rrp').value,
+                'Reinstatement Required?': document.getElementById('pitlinkin-reinstatement-req').value,
+                'Reported By': document.getElementById('pitlinkin-company-name').value,
+            };
+            
+            try {
+                // await submitToAirtable('pitlinkin', formData);
+                // showSuccessMessage();
+const response = await submitToAirtable('pitlinkin', formData);
+const result = await response.json();
+
+if (!response.ok) {
+  console.error('Airtable error:', result);
+  alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
+  return;
+}
+
+showSuccessMessage();
+            } catch (error) {
+                console.error('Error submitting Pit Link-in form:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
+
+function returnToFormSwitcher() {
+    // Hide thank you message
+    location.reload();
+    
+    // Hide all forms using both methods
+    const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin'];
+    forms.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.classList.add('hidden');
+            element.style.display = 'none';
+            // Reset the form
+            element.reset();
+            // Remove any error styling
+            const errorFields = element.querySelectorAll('.field-error');
+            errorFields.forEach(field => field.classList.remove('field-error'));
+        }
+    });
+
+    // Show all buttons and remove active state
+    const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin'];
+    buttons.forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            btn.style.display = 'inline-block';
+            btn.classList.remove('active');
+        }
+    });
+}
+});
+  </script>
+
+<script>
+  function returnToFormSwitcher() {
+    location.reload();
+  }
+</script>
+
+  <script>
+    function initAutocomplete() {
+      const inputs = document.querySelectorAll(".address-autocomplete");
+      inputs.forEach(input => {
+        new google.maps.places.Autocomplete(input, {
+          types: ['geocode'],
+          componentRestrictions: { country: 'au' }
+        });
+      });
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-EKPtC5W7fRHgiONVPIyGsVU7Ti_xjBc&libraries=places&callback=initAutocomplete" async defer></script>
+</body>
+</html>
