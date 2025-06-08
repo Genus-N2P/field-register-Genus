@@ -362,7 +362,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 150px; /* This sets a max gap between left and right */
+  gap: 150px;
   width: 100%;
 }
 
@@ -370,23 +370,26 @@ textarea {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-shrink: 0; /* Prevent it from shrinking */
+  flex-shrink: 0;
 }
 
 .right-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex: 1; /* This allows it to grow to fill space */
+  flex: 1;
 }
 
 .right-group label {
-  white-space: nowrap;
+  white-space: nowrap; /* prevents label from wrapping */
 }
 
 #pitlinkin-PitA-Note-ID {
   width: 100%;
 }
+
+  </style>
+
 </head>
 <body>
   <header>
