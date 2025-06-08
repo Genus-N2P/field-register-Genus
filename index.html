@@ -362,7 +362,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 150px;
+  gap: 150px; /* This sets a max gap between left and right */
   width: 100%;
 }
 
@@ -370,14 +370,18 @@ textarea {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Prevent it from shrinking */
 }
 
 .right-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex: 1;
+  flex: 1; /* This allows it to grow to fill space */
+}
+
+.right-group label {
+  white-space: nowrap;
 }
 
 #pitlinkin-PitA-Note-ID {
