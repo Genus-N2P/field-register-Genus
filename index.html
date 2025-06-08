@@ -358,11 +358,11 @@ textarea {
         margin-bottom: 10px;
     }
 
-pitlinkin-row {
+.pitlinkin-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: nowrap; /* Prevent wrapping */
   width: 100%;
 }
 
@@ -371,9 +371,12 @@ pitlinkin-row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  width: 40%; /* Optional */
 }
 
+.right-group input[type="text"] {
+  width: 40%;
+  min-width: 100px; /* Optional: prevent input from shrinking too small on narrow screens */
+}
   </style>
 
 </head>
