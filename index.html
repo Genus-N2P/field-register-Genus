@@ -360,24 +360,28 @@ textarea {
 
 .pitlinkin-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: nowrap; /* Prevent wrapping */
+  justify-content: space-between;
+  gap: 150px; /* This sets a max gap between left and right */
   width: 100%;
 }
 
-.left-group,
+.left-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0; /* Prevent it from shrinking */
+}
+
 .right-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex: 1; /* This allows it to grow to fill space */
 }
 
-.right-group input[type="text"] {
-  width: 40%;
-  min-width: 100px; /* Optional: prevent input from shrinking too small on narrow screens */
-}
-  </style>
+#pitlinkin-PitA-Note-ID {
+  width: 100%;  </style>
 
 </head>
 <body>
