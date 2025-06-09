@@ -2060,7 +2060,17 @@ async function searchDuctNoteID() {
       console.log("Found existing Airtable record:", existingRecordId);
       populateAndLockForm(data.record.fields);
     }
-  } catch (err) {
+  }
+const submitBtn = document.getElementById('pitlinkin-submit-btn'); // Change to your submit button's ID
+
+if (existingRecordId) {
+  submitBtn.textContent = 'Update';
+  document.getElementById('pitlinkin-note-id-search').disabled = true;
+} else {
+  submitBtn.textContent = 'Submit';
+  document.getElementById('pitlinkin-note-id-search').disabled = false;
+}
+ catch (err) {
     console.error(err);
     summary.textContent = 'Error looking up Note ID.';
   }
@@ -2087,7 +2097,7 @@ function unlockForm() {
     el.disabled = false;
   });
 }
-
+document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
 document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
   e.preventDefault();
 
