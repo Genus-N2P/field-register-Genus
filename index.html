@@ -398,6 +398,29 @@ textarea {
   width: 100%;
 }
 
+.or-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 2rem 0;
+  font-family: 'Exo', sans-serif;
+}
+
+.or-divider .line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: var(--dark-20);
+  border: none;
+}
+
+.or-divider .or-text {
+  padding: 0 1rem;
+  font-weight: 600;
+  color: var(--primary-mid);
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
   </style>
 
 </head>
@@ -1141,6 +1164,13 @@ textarea {
 
 <!-- Optional read-only summary or error display -->
 <div id="pitlinkin-note-summary" style="margin-top: 1rem; font-weight: bold;"></div>
+
+<!-- OR Divider -->
+<div class="or-divider">
+  <hr class="line" />
+  <span class="or-text">OR</span>
+  <hr class="line" />
+</div>
 
 	<!-- Hidden input hardcoded to 'Pit Link-in' -->
 	<input type="hidden" id="pitlinkin-type" name="pitlinkin-type" value="Pit Link-in">
