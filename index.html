@@ -409,14 +409,14 @@ textarea {
 .or-divider .line {
   flex-grow: 1;
   height: 1px;
-  background-color: var(--dark-20);
+  background-color: --accent-60;
   border: none;
 }
 
 .or-divider .or-text {
   padding: 0 1rem;
   font-weight: 600;
-  color: var(--primary-mid);
+  color: var(--primary-accent);
   font-size: 1rem;
   white-space: nowrap;
 }
@@ -2082,6 +2082,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const summary = document.getElementById('pitlinkin-note-summary');
     summary.textContent = '';
 
+document.getElementById('pitlinkin-completed').disabled = true;
+
     if (!noteId) {
       alert('Please enter a Note ID to search.');
       return;
@@ -2097,13 +2099,13 @@ document.addEventListener('DOMContentLoaded', () => {
         existingRecordId = null;
         unlockForm();
         submitBtn.textContent = 'Submit';
-        document.getElementById('pitlinkin-note-id-search').disabled = false;
+        // document.getElementById('pitlinkin-note-id-search').disabled = false;
       } else {
         summary.textContent = 'Record found. All fields locked except completion checkbox.';
         existingRecordId = data.record.id;
         populateAndLockForm(data.record.fields);
         submitBtn.textContent = 'Update';
-        document.getElementById('pitlinkin-note-id-search').disabled = true;
+        // document.getElementById('pitlinkin-note-id-search').disabled = true;
       }
     } catch (err) {
       console.error(err);
