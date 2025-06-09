@@ -2013,138 +2013,124 @@ function returnToFormSwitcher() {
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-EKPtC5W7fRHgiONVPIyGsVU7Ti_xjBc&libraries=places&callback=initAutocomplete" async defer></script>
 
 <script>
-let existingRecordId = null;
+document.addEventListener('DOMContentLoaded', () => {
+  let existingRecordId = null;
 
-const apiBase = 'https://airtable-backend-whnq.onrender.com';
+  const apiBase = 'https://airtable-backend-whnq.onrender.com';
 
-const fieldMap = {
-  "Type of work": "type",
-  "Your Name": "site-contact",
-  "Pit Link-in Date": "date",
-  "SAM": "SAM",
-  "ADA": "ADA",
-  "Duct Note ID": "Duct-Note-ID",
-  "Pit A Note ID": "PitA-Note-ID",
-  "Pit B Note ID": "PitB-Note-ID",
-  "Pit A Required": "PitA-linkin-required",
-  "Pit B Required": "PitB-linkin-required",
-  "Pit A Fit for Purpose": "PitA-ffp",
-  "Pit B Fit for Purpose": "PitB-ffp",
-  "RRP Completed?": "rrp",
-  "RRP Completed - No": "rrp-no",
-  "Additional Comments": "comments",
-  "Pit Link-in's Completed": "completed"
-};
+  const fieldMap = {
+    "Type of work": "type",
+    "Your Name": "site-contact",
+    "Pit Link-in Date": "date",
+    "SAM": "SAM",
+    "ADA": "ADA",
+    "Duct Note ID": "Duct-Note-ID",
+    "Pit A Note ID": "PitA-Note-ID",
+    "Pit B Note ID": "PitB-Note-ID",
+    "Pit A Required": "PitA-linkin-required",
+    "Pit B Required": "PitB-linkin-required",
+    "Pit A Fit for Purpose": "PitA-ffp",
+    "Pit B Fit for Purpose": "PitB-ffp",
+    "RRP Completed?": "rrp",
+    "RRP Completed - No": "rrp-no",
+    "Additional Comments": "comments",
+    "Pit Link-in's Completed": "completed"
+  };
 
-async function searchDuctNoteID() {
-  const noteId = document.getElementById('pitlinkin-note-id-search').value.trim();
-  const summary = document.getElementById('pitlinkin-note-summary');
-  summary.textContent = '';
+  async function searchDuctNoteID() {
+    const noteId = document.getElementById('pitlinkin-note-id-search').value.trim();
+    const summary = document.getElementById('pitlinkin-note-summary');
+    summary.textContent = '';
 
-  if (!noteId) {
-    alert('Please enter a Note ID to search.');
-    return;
-  }
-
-  try {
-    const response = await fetch(`https://airtable-backend-whnq.onrender.com/lookup?noteId=${noteId}`);
-    const data = await response.json();
-
-const submitBtn = document.getElementById('pitlinkin-submit-btn'); // Change to your submit button's ID
-
-    if (!data.record) {
-      summary.textContent = 'No record found. A new entry will be created.';
-      existingRecordId = null;
-      unlockForm(); // allow full form entry
-
-      submitBtn.textContent = 'Submit';
-      document.getElementById('pitlinkin-note-id-search').disabled = false;
-    } else {
-      summary.textContent = 'Record found. All fields locked except completion checkbox.';
-      existingRecordId = data.record.id;
-      console.log("Found existing Airtable record:", existingRecordId);
-      populateAndLockForm(data.record.fields);
-
-      submitBtn.textContent = 'Update';
-      document.getElementById('pitlinkin-note-id-search').disabled = true;
+    if (!noteId) {
+      alert('Please enter a Note ID to search.');
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    summary.textContent = 'Error looking up Note ID.';
-  }
-}
 
-function populateAndLockForm(fields) {
-  for (const [key, value] of Object.entries(fields)) {
-    const mappedId = fieldMap[key] || key;
-    const el = document.getElementById(`pitlinkin-${mappedId}`);
+    try {
+      const response = await fetch(`${apiBase}/lookup?noteId=${noteId}`);
+      const data = await response.json();
+      const submitBtn = document.getElementById('pitlinkin-submit-btn');
 
-    if (el) {
-      if (el.type === 'checkbox') {
-        el.checked = value === true;
+      if (!data.record) {
+        summary.textContent = 'No record found. A new entry will be created.';
+        existingRecordId = null;
+        unlockForm();
+        submitBtn.textContent = 'Submit';
+        document.getElementById('pitlinkin-note-id-search').disabled = false;
       } else {
-        el.value = value;
+        summary.textContent = 'Record found. All fields locked except completion checkbox.';
+        existingRecordId = data.record.id;
+        populateAndLockForm(data.record.fields);
+        submitBtn.textContent = 'Update';
+        document.getElementById('pitlinkin-note-id-search').disabled = true;
       }
-      el.disabled = key !== "Pit Link-ins Completed"; // only allow this checkbox
+    } catch (err) {
+      console.error(err);
+      const summary = document.getElementById('pitlinkin-note-summary');
+      if (summary) summary.textContent = 'Error looking up Note ID.';
     }
   }
-}
 
-function unlockForm() {
-  document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea').forEach(el => {
-    el.disabled = false;
+  function populateAndLockForm(fields) {
+    for (const [key, value] of Object.entries(fields)) {
+      const mappedId = fieldMap[key] || key;
+      const el = document.getElementById(`pitlinkin-${mappedId}`);
+      if (el) {
+        if (el.type === 'checkbox') {
+          el.checked = value === true;
+        } else {
+          el.value = value;
+        }
+        el.disabled = key !== "Pit Link-in's Completed";
+      }
+    }
+  }
+
+  function unlockForm() {
+    document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea')
+      .forEach(el => el.disabled = false);
+  }
+
+  // FIXED: Attach to the correct "Search" button
+  document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
+
+  document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
+    if (noteIdEntered && !existingRecordId) {
+      alert("Please click 'Search' after entering a Duct Note ID before submitting.");
+      return;
+    }
+
+    const data = {};
+    for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+      const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+      if (!el) continue;
+      data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+    }
+
+    const url = existingRecordId
+      ? `${apiBase}/update/${existingRecordId}`
+      : `${apiBase}/create`;
+    const method = existingRecordId ? 'PATCH' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: data })
+      });
+
+      const result = await response.json();
+      alert('Submission successful!');
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert('Submission failed.');
+    }
   });
-}
-document.getElementById('pitlinkin-note-id-search').addEventListener('click', searchDuctNoteID);
-document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
-
-  // Prevent submission if note ID was entered but not looked up
-  if (noteIdEntered && !existingRecordId) {
-    alert("Please click 'Search' after entering a Duct Note ID before submitting.");
-    return;
-  }
-
-  const data = {};
-
-  // Build payload using Airtable field names
-  for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
-    const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
-    if (!el) continue;
-
-    if (el.type === 'checkbox') {
-      data[airtableField] = el.checked;
-    } else {
-      data[airtableField] = el.value;
-    }
-  }
-
-  const url = existingRecordId
-    ? `https://airtable-backend-whnq.onrender.com/update/${existingRecordId}`
-    : 'https://airtable-backend-whnq.onrender.com/create';
-
-  const method = existingRecordId ? 'PATCH' : 'POST';
-
-  console.log("Submitting to:", url);
-  console.log("Method:", method);
-  console.log("Payload:", data);
-
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: data })
-    });
-
-    const result = await response.json();
-    alert('Submission successful!');
-    location.reload(); // optional reset
-  } catch (err) {
-    console.error(err);
-    alert('Submission failed.');
-  }
 });
 </script>
 </body>
