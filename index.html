@@ -409,7 +409,7 @@ textarea {
 .or-divider .line {
   flex-grow: 1;
   height: 1px;
-  background-color: --accent-60;
+  background-color: var(--accent-60);
   border: none;
 }
 
@@ -2077,12 +2077,12 @@ document.addEventListener('DOMContentLoaded', () => {
     "Pit Link-in's Completed": "completed"
   };
 
+document.getElementById('pitlinkin-completed').disabled = true;
+
   async function searchDuctNoteID() {
     const noteId = document.getElementById('pitlinkin-note-id-search').value.trim();
     const summary = document.getElementById('pitlinkin-note-summary');
     summary.textContent = '';
-
-document.getElementById('pitlinkin-completed').disabled = true;
 
     if (!noteId) {
       alert('Please enter a Note ID to search.');
