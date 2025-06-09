@@ -2144,11 +2144,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const data = {};
-    for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
-      const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
-      if (!el) continue;
-      data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+    let data = {};
+
+    if (existingRecordId) {
+      // Only update the "Pit Link-in's Completed" field
+      const completedCheckbox = document.getElementById('pitlinkin-completed');
+      data["Pit Link-in's Completed"] = completedCheckbox.checked;
+    } else {
+      // Collect all fields for a new record
+      for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+        const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+        if (!el) continue;
+        data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+      }
     }
 
     const url = existingRecordId
@@ -2170,8 +2178,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(err);
       alert('Submission failed.');
     }
-  });
-});
+  });});
 </script>
 </body>
 </html>
