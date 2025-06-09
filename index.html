@@ -2015,6 +2015,8 @@ function returnToFormSwitcher() {
 <script>
 let existingRecordId = null;
 
+const apiBase = 'https://airtable-backend-whnq.onrender.com';
+
 const fieldMap = {
   "Type of work": "type",
   "Your Name": "site-contact",
@@ -2075,7 +2077,7 @@ function populateAndLockForm(fields) {
       } else {
         el.value = value;
       }
-      el.disabled = key !== "Pit Link-in's Completed"; // only allow this checkbox
+      el.disabled = key !== "Pit Link-ins Completed"; // only allow this checkbox
     }
   }
 }
@@ -2088,6 +2090,14 @@ function unlockForm() {
 
 document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
   e.preventDefault();
+
+  const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
+
+  // Prevent submission if note ID was entered but not looked up
+  if (noteIdEntered && !existingRecordId) {
+    alert("Please click 'Search' after entering a Duct Note ID before submitting.");
+    return;
+  }
 
   const data = {};
 
