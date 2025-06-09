@@ -174,8 +174,12 @@
       
     .btn-back:hover {
       background-color: #5a6268 !important;
-    }       
-
+    }   
+    
+    .search-btn {
+      background-color: var(--primary-accent);
+    } 
+      
     .thank-you-message {
       background-color: var(--accent-10);
       border: 2px solid var(--primary-accent);
@@ -1126,7 +1130,7 @@ textarea {
 <label for="pitlinkin-note-id-search">Search Duct Note ID</label>
 <div style="display: flex; gap: 0.5rem; align-items: center;">
   <input type="text" id="pitlinkin-note-id-search" placeholder="Enter Note ID" />
-  <button type="button" id="search-btn" class="form-footer button">Search</button>
+  <button type="button" id="search-btn" class="search-btn">Search</button>
 </div>
 
 <!-- Optional read-only summary or error display -->
