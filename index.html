@@ -1123,10 +1123,14 @@ textarea {
       <p>Please complete for any pit link-in's required to be done by another contractor.</p>
       <form id="pitlinkin-form" onsubmit="return validateGenericForm('pitlinkin-form')">
 
-        <label for="pitlinkin-Duct-Note-ID-lookup">Duct Note ID (for lookup):</label>
-        <input type="text" id="pitlinkin-Duct-Note-ID-lookup" name="Duct Note ID Lookup" onchange="lookupDuctNoteID(this.value)">
-        <p>Enter a Duct Note ID above to load existing information. If left blank, a new entry will be created on submission.</p>
-        <hr>
+<label for="pitlinkin-note-id-search">Search Duct Note ID</label>
+<div style="display: flex; gap: 0.5rem; align-items: center;">
+  <input type="text" id="pitlinkin-note-id-search" placeholder="Enter Note ID" />
+  <button type="button" onclick="searchDuctNoteID()">Search</button>
+</div>
+
+<!-- Optional read-only summary or error display -->
+<div id="pitlinkin-note-summary" style="margin-top: 1rem; font-weight: bold;"></div>
 
 	<!-- Hidden input hardcoded to 'Pit Link-in' -->
 	<input type="hidden" id="pitlinkin-type" name="pitlinkin-type" value="Pit Link-in">
@@ -1250,7 +1254,6 @@ textarea {
   </div>
 </div>
 
-
         <label for="pitlinkin-PitB-ffp">Is Pit B Fit for Purpose</label>
         <select id="pitlinkin-PitB-ffp" name="pitlinkin-PitB-ffp" required>
           <option value="">Select one</option>
@@ -1280,10 +1283,10 @@ textarea {
         <label for="pitlinkin-comments">Any additional comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
         <textarea id="pitlinkin-comments" name="pitlinkin-comments" placeholder="If there are no additional comments, there is no need to enter anything here"></textarea>
 
-        <label style="margin-top: 1rem; display: flex; align-items: center;">
-            <input type="checkbox" id="pitlinkin-Linkins-Completed" name="Link-in's completed" style="margin-right: 0.5rem;">
-            Link-in's completed
-        </label>
+<label>
+  <input type="checkbox" id="pitlinkin-completed" name="pitlinkin-completed" />
+  Link-in's completed
+</label>
 
         <div class="form-footer">
           <button type="button" class="btn-back" onclick="confirmReset('pitlinkin')">Back</button>
@@ -2007,5 +2010,140 @@ function returnToFormSwitcher() {
     }
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-EKPtC5W7fRHgiONVPIyGsVU7Ti_xjBc&libraries=places&callback=initAutocomplete" async defer></script>
+
+<script>
+
+app.get('/lookup', async (req, res) => {
+  const { noteId } = req.query;
+
+  try {
+    const response = await axios.get(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`, {
+      headers: { Authorization: `Bearer ${API_KEY}` },
+      params: {
+        filterByFormula: `{Note ID}="${noteId}"`,
+        maxRecords: 1
+      }
+    });
+
+    if (response.data.records.length === 0) {
+      return res.json({ record: null });
+    }
+
+    return res.json({ record: response.data.records[0] });
+  } catch (err) {
+    res.status(500).json({ error: 'Airtable lookup failed' });
+  }
+});
+
+// POST /create
+app.post('/create', async (req, res) => {
+  try {
+    const result = await axios.post(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`, {
+      fields: req.body.fields
+    }, { headers: { Authorization: `Bearer ${API_KEY}` } });
+
+    res.json(result.data);
+  } catch (err) {
+    res.status(500).json({ error: 'Create failed' });
+  }
+});
+
+// PATCH /update/:recordId
+app.patch('/update/:recordId', async (req, res) => {
+  try {
+    const result = await axios.patch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}/${req.params.recordId}`, {
+      fields: req.body.fields
+    }, { headers: { Authorization: `Bearer ${API_KEY}` } });
+
+    res.json(result.data);
+  } catch (err) {
+    res.status(500).json({ error: 'Update failed' });
+  }
+});
+
+let existingRecordId = null;
+
+async function searchDuctNoteID() {
+  const noteId = document.getElementById('pitlinkin-note-id-search').value.trim();
+  const summary = document.getElementById('pitlinkin-note-summary');
+  summary.textContent = '';
+
+  if (!noteId) {
+    alert('Please enter a Note ID to search.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://your-backend.com/lookup?noteId=${noteId}`);
+    const data = await response.json();
+
+    if (!data.record) {
+      summary.textContent = 'No record found. A new entry will be created.';
+      existingRecordId = null;
+      unlockForm(); // allow full form entry
+    } else {
+      summary.textContent = 'Record found. All fields locked except completion checkbox.';
+      existingRecordId = data.record.id;
+      populateAndLockForm(data.record.fields);
+    }
+  } catch (err) {
+    console.error(err);
+    summary.textContent = 'Error looking up Note ID.';
+  }
+}
+
+function populateAndLockForm(fields) {
+  for (const [key, value] of Object.entries(fields)) {
+    const el = document.getElementById(`pitlinkin-${key}`);
+    if (el) {
+      if (el.type === 'checkbox') {
+        el.checked = value === true;
+      } else {
+        el.value = value;
+      }
+      el.disabled = true;
+    }
+  }
+  document.getElementById('pitlinkin-completed').disabled = false; // Allow checkbox
+}
+
+function unlockForm() {
+  document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea').forEach(el => {
+    el.disabled = false;
+  });
+}
+
+document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+
+  try {
+    const url = existingRecordId
+      ? `https://your-backend.com/update/${existingRecordId}`
+      : 'https://your-backend.com/create';
+
+    const method = existingRecordId ? 'PATCH' : 'POST';
+
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: data })
+    });
+
+    const result = await response.json();
+    alert('Submission successful!');
+    location.reload(); // optional reset
+  } catch (err) {
+    console.error(err);
+    alert('Submission failed.');
+  }
+});
+
+</script>
 </body>
 </html>
