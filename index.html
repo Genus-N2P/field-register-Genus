@@ -1939,6 +1939,7 @@ showSuccessMessage();
                 'RRP Completed?': document.getElementById('pitlinkin-rrp').value,
                 'RRP Completed - No': document.getElementById('pitlinkin-rrp-no').value,
                 'Additional Comments': document.getElementById('pitlinkin-comments').value,
+		'Pit Link-in's Completed': document.getElementById('pitlinkin-completed').checked
             };
             
             try {
@@ -2044,19 +2045,39 @@ async function searchDuctNoteID() {
   }
 }
 
+const fieldMap = {
+  "Type of work": "type",
+  "Your Name": "site-contact",
+  "Pit Link-in Date": "date",
+  "SAM": "SAM",
+  "ADA": "ADA",
+  "Duct Note ID": "Duct-Note-ID",
+  "Pit A Note ID": "PitA-Note-ID",
+  "Pit B Note ID": "PitB-Note-ID",
+  "Pit A Required": "PitA-linkin-required",
+  "Pit B Required": "PitB-linkin-required",
+  "Pit A Fit for Purpose": "PitA-ffp",
+  "Pit B Fit for Purpose": "PitB-ffp",
+  "RRP Completed?": "rrp",
+  "RRP Completed - No": "rrp-no",
+  "Additional Comments": "comments",
+  "Pit Link-in's Completed": "completed"
+};
+
 function populateAndLockForm(fields) {
   for (const [key, value] of Object.entries(fields)) {
-    const el = document.getElementById(`pitlinkin-${key}`);
+    const mappedId = fieldMap[key] || key;
+    const el = document.getElementById(`pitlinkin-${mappedId}`);
+
     if (el) {
       if (el.type === 'checkbox') {
         el.checked = value === true;
       } else {
         el.value = value;
       }
-      el.disabled = true;
+      el.disabled = key !== "Pit Link-in's Completed"; // only allow this checkbox
     }
   }
-  document.getElementById('pitlinkin-completed').disabled = false; // Allow checkbox
 }
 
 function unlockForm() {
