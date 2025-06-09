@@ -1126,7 +1126,7 @@ textarea {
 <label for="pitlinkin-note-id-search">Search Duct Note ID</label>
 <div style="display: flex; gap: 0.5rem; align-items: center;">
   <input type="text" id="pitlinkin-note-id-search" placeholder="Enter Note ID" />
-  <button type="search-btn" onclick="searchDuctNoteID()">Search</button>
+  <button type="button" id="search-btn">Search</button>
 </div>
 
 <!-- Optional read-only summary or error display -->
@@ -1271,7 +1271,7 @@ textarea {
         <!-- Conditional Field -->
 <div id="pitlinkin-rrp-notification-field" style="display: none; margin-top: 10px;">
   <label for="pitlinkin-rrp-no">What is the reason RRP has not been completed?</label>
-<select id="pitlinkin-rrp-no" name="pitlinkin-rrp-no" required/>
+<select id="pitlinkin-rrp-no" name="pitlinkin-rrp-no" required>
           <option value="">Select one</option>
           <option value="Weather">Weather</option>
           <option value="Material">Material Shortage</option>
@@ -1290,7 +1290,7 @@ textarea {
 
         <div class="form-footer">
           <button type="button" class="btn-back" onclick="confirmReset('pitlinkin')">Back</button>
-          <button type="submit">Submit Pit Link-in</button>
+          <button type="submit" id="pitlinkin-submit-btn">Submit Pit Link-in</button>
         </div>
       </form>
     </div>
