@@ -2013,8 +2013,26 @@ function returnToFormSwitcher() {
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-EKPtC5W7fRHgiONVPIyGsVU7Ti_xjBc&libraries=places&callback=initAutocomplete" async defer></script>
 
 <script>
-
 let existingRecordId = null;
+
+const fieldMap = {
+  "Type of work": "type",
+  "Your Name": "site-contact",
+  "Pit Link-in Date": "date",
+  "SAM": "SAM",
+  "ADA": "ADA",
+  "Duct Note ID": "Duct-Note-ID",
+  "Pit A Note ID": "PitA-Note-ID",
+  "Pit B Note ID": "PitB-Note-ID",
+  "Pit A Required": "PitA-linkin-required",
+  "Pit B Required": "PitB-linkin-required",
+  "Pit A Fit for Purpose": "PitA-ffp",
+  "Pit B Fit for Purpose": "PitB-ffp",
+  "RRP Completed?": "rrp",
+  "RRP Completed - No": "rrp-no",
+  "Additional Comments": "comments",
+  "Pit Link-in's Completed": "completed"
+};
 
 async function searchDuctNoteID() {
   const noteId = document.getElementById('pitlinkin-note-id-search').value.trim();
@@ -2037,6 +2055,7 @@ async function searchDuctNoteID() {
     } else {
       summary.textContent = 'Record found. All fields locked except completion checkbox.';
       existingRecordId = data.record.id;
+      console.log("Found existing Airtable record:", existingRecordId);
       populateAndLockForm(data.record.fields);
     }
   } catch (err) {
@@ -2044,25 +2063,6 @@ async function searchDuctNoteID() {
     summary.textContent = 'Error looking up Note ID.';
   }
 }
-
-const fieldMap = {
-  "Type of work": "type",
-  "Your Name": "site-contact",
-  "Pit Link-in Date": "date",
-  "SAM": "SAM",
-  "ADA": "ADA",
-  "Duct Note ID": "Duct-Note-ID",
-  "Pit A Note ID": "PitA-Note-ID",
-  "Pit B Note ID": "PitB-Note-ID",
-  "Pit A Required": "PitA-linkin-required",
-  "Pit B Required": "PitB-linkin-required",
-  "Pit A Fit for Purpose": "PitA-ffp",
-  "Pit B Fit for Purpose": "PitB-ffp",
-  "RRP Completed?": "rrp",
-  "RRP Completed - No": "rrp-no",
-  "Additional Comments": "comments",
-  "Pit Link-ins Completed": "completed"
-};
 
 function populateAndLockForm(fields) {
   for (const [key, value] of Object.entries(fields)) {
@@ -2075,7 +2075,7 @@ function populateAndLockForm(fields) {
       } else {
         el.value = value;
       }
-      el.disabled = key !== "Pit Link-ins Completed"; // only allow this checkbox
+      el.disabled = key !== "Pit Link-in's Completed"; // only allow this checkbox
     }
   }
 }
@@ -2089,19 +2089,31 @@ function unlockForm() {
 document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  const formData = new FormData(this);
   const data = {};
-  formData.forEach((value, key) => {
-    data[key] = value;
-  });
+
+  // Build payload using Airtable field names
+  for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+    const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+    if (!el) continue;
+
+    if (el.type === 'checkbox') {
+      data[airtableField] = el.checked;
+    } else {
+      data[airtableField] = el.value;
+    }
+  }
+
+  const url = existingRecordId
+    ? `https://airtable-backend-whnq.onrender.com/update/${existingRecordId}`
+    : 'https://airtable-backend-whnq.onrender.com/create';
+
+  const method = existingRecordId ? 'PATCH' : 'POST';
+
+  console.log("Submitting to:", url);
+  console.log("Method:", method);
+  console.log("Payload:", data);
 
   try {
-    const url = existingRecordId
-      ? `https://airtable-backend-whnq.onrender.com/update/${existingRecordId}`
-      : 'https://airtable-backend-whnq.onrender.com/create';
-
-    const method = existingRecordId ? 'PATCH' : 'POST';
-
     const response = await fetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
@@ -2116,7 +2128,6 @@ document.getElementById('pitlinkin-form').addEventListener('submit', async funct
     alert('Submission failed.');
   }
 });
-
 </script>
 </body>
 </html>
