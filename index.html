@@ -2052,6 +2052,11 @@ async function searchDuctNoteID() {
 
 const submitBtn = document.getElementById('pitlinkin-submit-btn'); // Change to your submit button's ID
 
+    if (!data.record) {
+      summary.textContent = 'No record found. A new entry will be created.';
+      existingRecordId = null;
+      unlockForm(); // allow full form entry
+
       submitBtn.textContent = 'Submit';
       document.getElementById('pitlinkin-note-id-search').disabled = false;
     } else {
