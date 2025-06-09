@@ -2020,7 +2020,7 @@ app.get('/lookup', async (req, res) => {
     const response = await axios.get(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`, {
       headers: { Authorization: `Bearer ${API_KEY}` },
       params: {
-        filterByFormula: `{Note ID}="${noteId}"`,
+        filterByFormula: `{Duct Note ID}="${noteId}"`,
         maxRecords: 1
       }
     });
@@ -2074,7 +2074,7 @@ async function searchDuctNoteID() {
   }
 
   try {
-    const response = await fetch(`https://your-backend.com/lookup?noteId=${noteId}`);
+    const response = await fetch(`https://https://airtable-backend-whnq.onrender.com/lookup?noteId=${noteId}`);
     const data = await response.json();
 
     if (!data.record) {
@@ -2124,8 +2124,8 @@ document.getElementById('pitlinkin-form').addEventListener('submit', async funct
 
   try {
     const url = existingRecordId
-      ? `https://your-backend.com/update/${existingRecordId}`
-      : 'https://your-backend.com/create';
+      ? `https://https://airtable-backend-whnq.onrender.com/update/${existingRecordId}`
+      : 'https://https://airtable-backend-whnq.onrender.com/create';
 
     const method = existingRecordId ? 'PATCH' : 'POST';
 
