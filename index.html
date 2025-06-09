@@ -1273,7 +1273,7 @@ textarea {
 </div>
 
         <label for="pitlinkin-comments">Any additional comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
-        <textarea id="bog-comments" name="pitlinkin-comments" placeholder="If there are no additional comments, there is no need to enter anything here"></textarea>
+        <textarea id="pitlinkin-comments" name="pitlinkin-comments" placeholder="If there are no additional comments, there is no need to enter anything here"></textarea>
 
         <div class="form-footer">
           <button type="button" class="btn-back" onclick="confirmReset('pitlinkin')">Back</button>
@@ -1919,8 +1919,8 @@ showSuccessMessage();
                 'Duct Note ID': document.getElementById('pitlinkin-Duct-Note-ID').value,
                 'Pit A Note ID': document.getElementById('pitlinkin-PitA-Note-ID').value,
                 'Pit B Note ID': document.getElementById('pitlinkin-PitB-Note-ID').value,
-                'Pit A Required': document.getElementById('pitlinkin-PitA-linkin-required').Checked,
-                'Pit B Required': document.getElementById('pitlinkin-PitB-linkin-required').Checked,
+                'Pit A Required': document.getElementById('pitlinkin-PitA-linkin-required').checked,
+                'Pit B Required': document.getElementById('pitlinkin-PitB-linkin-required').checked,
                 'Pit A Fit for Purpose': document.getElementById('pitlinkin-PitA-ffp').value,
                 'Pit B Fit for Purpose': document.getElementById('pitlinkin-PitB-ffp').value,
                 'RRP Completed?': document.getElementById('pitlinkin-rrp').value,
