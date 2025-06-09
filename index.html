@@ -1123,6 +1123,11 @@ textarea {
       <p>Please complete for any pit link-in's required to be done by another contractor.</p>
       <form id="pitlinkin-form" onsubmit="return validateGenericForm('pitlinkin-form')">
 
+        <label for="pitlinkin-Duct-Note-ID-lookup">Duct Note ID (for lookup):</label>
+        <input type="text" id="pitlinkin-Duct-Note-ID-lookup" name="Duct Note ID Lookup" onchange="lookupDuctNoteID(this.value)">
+        <p>Enter a Duct Note ID above to load existing information. If left blank, a new entry will be created on submission.</p>
+        <hr> <div class="pitlinkin-row">
+
 	<!-- Hidden input hardcoded to 'Pit Link-in' -->
 	<input type="hidden" id="pitlinkin-type" name="pitlinkin-type" value="Pit Link-in">
 
@@ -1274,6 +1279,11 @@ textarea {
 
         <label for="pitlinkin-comments">Any additional comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
         <textarea id="pitlinkin-comments" name="pitlinkin-comments" placeholder="If there are no additional comments, there is no need to enter anything here"></textarea>
+
+        <label style="margin-top: 1rem; display: flex; align-items: center;">
+            <input type="checkbox" id="pitlinkin-Linkins-Completed" name="Link-in's completed" style="margin-right: 0.5rem;">
+            Link-in's completed
+        </label>
 
         <div class="form-footer">
           <button type="button" class="btn-back" onclick="confirmReset('pitlinkin')">Back</button>
