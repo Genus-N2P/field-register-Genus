@@ -2077,8 +2077,6 @@ document.addEventListener('DOMContentLoaded', () => {
     "Pit Link-in's Completed": "completed"
   };
 
-document.getElementById('pitlinkin-completed').disabled = true;
-
   async function searchDuctNoteID() {
     const noteId = document.getElementById('pitlinkin-note-id-search').value.trim();
     const summary = document.getElementById('pitlinkin-note-summary');
@@ -2093,6 +2091,8 @@ document.getElementById('pitlinkin-completed').disabled = true;
       const response = await fetch(`${apiBase}/lookup?noteId=${noteId}`);
       const data = await response.json();
       const submitBtn = document.getElementById('pitlinkin-submit-btn');
+      // Unlock completed checkbox after search (record found or not)
+      document.getElementById('pitlinkin-completed').disabled = false;
 
       if (!data.record) {
         summary.textContent = 'No record found. A new entry will be created.';
@@ -2107,6 +2107,7 @@ document.getElementById('pitlinkin-completed').disabled = true;
         submitBtn.textContent = 'Update';
         // document.getElementById('pitlinkin-note-id-search').disabled = true;
       }
+        document.getElementById('pitlinkin-completed').disabled = false;
     } catch (err) {
       console.error(err);
       const summary = document.getElementById('pitlinkin-note-summary');
@@ -2134,9 +2135,11 @@ document.getElementById('pitlinkin-completed').disabled = true;
       .forEach(el => el.disabled = false);
   }
 
-  // FIXED: Attach to the correct "Search" button
-  document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
+// Lock the completed checkbox on page load
+document.getElementById('pitlinkin-completed').disabled = true;
 
+// Attach search button listener
+document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
   document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
