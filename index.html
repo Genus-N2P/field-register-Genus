@@ -2152,9 +2152,14 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
     let data = {};
 
     if (existingRecordId) {
-      // Only update the "Pit Link-in's Completed" field
+      // ONLY UPDATE COMPLETED FIELD + TIMESTAMP
       const completedCheckbox = document.getElementById('pitlinkin-completed');
-      data["Pit Link-in's Completed"] = completedCheckbox.checked;
+      data["Pit Link-ins Completed"] = completedCheckbox.checked;
+
+      if (completedCheckbox.checked) {
+        const perthDate = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Perth" });
+        data["Pit Link-in Completed Timestamp"] = perthDate; // YYYY-MM-DD
+      }
     } else {
       // Collect all fields for a new record
       for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
