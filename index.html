@@ -1957,6 +1957,43 @@ showSuccessMessage();
         document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+    // --- New 5-digit ID Validation (Updated) ---
+    let isValid = true;
+    const idFieldsToValidate = [
+        { id: 'pitlinkin-Duct-Note-ID', name: 'Duct Note ID' },
+        { id: 'pitlinkin-PitA-Note-ID', name: 'Pit A Note ID' }, // Now always required
+        { id: 'pitlinkin-PitB-Note-ID', name: 'Pit B Note ID' }  // Now always required
+    ];
+    let errorMessage = '';
+
+    idFieldsToValidate.forEach(fieldInfo => {
+        const inputElement = document.getElementById(fieldInfo.id);
+        const value = inputElement ? inputElement.value.trim() : '';
+
+        // Validate if the input element exists and is not disabled.
+        // PitA-Note-ID and PitB-Note-ID are now always validated regardless of checkboxes.
+        if (inputElement && !inputElement.disabled) {
+            // Check for exactly 5 digits
+            if (!/^\d{5}$/.test(value)) {
+                errorMessage += `- '${fieldInfo.name}' must contain exactly 5 digits.\n`;
+                inputElement.classList.add('field-error'); // Add error styling
+                isValid = false;
+            } else {
+                inputElement.classList.remove('field-error'); // Remove error styling if valid
+            }
+        } else if (inputElement) {
+            // Ensure no error styling if the field is disabled
+            inputElement.classList.remove('field-error');
+        }
+    });
+
+    // If a value is empty, it won't match /^\d{5}$/ and will be flagged.
+
+    if (!isValid) {
+        alert('Please correct the following errors before submitting:\n' + errorMessage);
+        return; // Prevent submission if validation fails
+    }
+
        // Validate the form
         if (!validateGenericForm('pitlinkin-form')) {
             return;
