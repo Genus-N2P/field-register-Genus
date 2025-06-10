@@ -2227,10 +2227,13 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
       alert('Submission successful!');
       location.reload();
 
-    } catch (err) {
-      console.error(err);
-      alert('Error submitting form. Please try again.');
+  } catch (err) {
+    console.error(err);
+    if (existingRecordId) {
+      alert('Submission failed. Please fix any issues and try again.');
+      // ❌ Do NOT reload, allow user to make edits
     }
+  }
   });
 });
 </script>
