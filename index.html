@@ -2203,14 +2203,16 @@ if (existingRecordId) {
     const isoDate = new Date(perthTime).toISOString().split('T')[0]; // YYYY-MM-DD
     data["Pit Link-in Completed Timestamp"] = isoDate;
   } else {
-    data["Pit Link-in Completed Timestamp"] = null; // Optional: clear timestamp if unchecked
-    // Collect all fields for a new record
-    for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
-      const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
-      if (!el) continue;
-      data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
-    }
+    data["Pit Link-in Completed Timestamp"] = null; // Clear timestamp if unchecked
   }
+} else {
+  // Collect all fields for a new record
+  for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+    const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+    if (!el) continue;
+    data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+  }
+}
 
     const url = existingRecordId
       ? `${apiBase}/update/${existingRecordId}`
