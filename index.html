@@ -2143,14 +2143,24 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
   document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
-    if (noteIdEntered && !existingRecordId) {
-      alert("Please click 'Search' after entering a Duct Note ID before submitting.");
-      return;
-    }
+  const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
+  if (noteIdEntered && !existingRecordId) {
+    alert("Please click 'Search' after entering a Duct Note ID before submitting.");
+    return;
+  }
 
-    let data = {};
+  // Validate 5-digit requirement
+  const ductNote = document.getElementById('pitlinkin-Duct-Note-ID').value.trim();
+  const pitA = document.getElementById('pitlinkin-PitA-Note-ID').value.trim();
+  const pitB = document.getElementById('pitlinkin-PitB-Note-ID').value.trim();
+  const isValid5Digit = (val) => /^\d{5}$/.test(val);
 
+  if (!isValid5Digit(ductNote) || !isValid5Digit(pitA) || !isValid5Digit(pitB)) {
+    alert("Duct Note ID, Pit A Note ID, and Pit B Note ID must each be exactly 5 digits.");
+    return;
+  }
+
+  let data = {};
     if (existingRecordId) {
       // ONLY UPDATE COMPLETED FIELD + TIMESTAMP
       const completedCheckbox = document.getElementById('pitlinkin-completed');
