@@ -2193,14 +2193,19 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
 
   if (existingRecordId) {
     // ONLY UPDATE COMPLETED FIELD + TIMESTAMP
-    const completedCheckbox = document.getElementById('pitlinkin-completed');
-    data["Pit Link-ins Completed"] = completedCheckbox.checked;
+if (existingRecordId) {
+  const completedCheckbox = document.getElementById('pitlinkin-completed');
+  const isChecked = completedCheckbox.checked;
+  data["Pit Link-ins Completed"] = isChecked;
 
-    if (completedCheckbox.checked) {
-      const perthDate = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Perth" });
-      data["Pit Link-in Completed Timestamp"] = perthDate; // YYYY-MM-DD
-    }
+  if (isChecked) {
+    const perthTime = new Date().toLocaleString("en-US", { timeZone: "Australia/Perth" });
+    const isoDate = new Date(perthTime).toISOString().split('T')[0]; // YYYY-MM-DD
+    data["Pit Link-in Completed Timestamp"] = isoDate;
   } else {
+    data["Pit Link-in Completed Timestamp"] = null; // Optional: clear timestamp if unchecked
+  }
+} else {
     // Collect all fields for a new record
     for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
       const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
