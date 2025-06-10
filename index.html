@@ -1957,12 +1957,12 @@ showSuccessMessage();
 document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  // ✅ Validate all required fields first
+  // ✅ First validate the form structure
   if (!validateGenericForm('pitlinkin-form')) {
     return;
   }
 
-  // ✅ Validate 5-digit Note ID fields
+  // ✅ Then validate 5-digit requirement
   const ductNote = document.getElementById('pitlinkin-Duct-Note-ID').value.trim();
   const pitA = document.getElementById('pitlinkin-PitA-Note-ID').value.trim();
   const pitB = document.getElementById('pitlinkin-PitB-Note-ID').value.trim();
@@ -1973,7 +1973,7 @@ document.getElementById('pitlinkin-form').addEventListener('submit', async funct
     return;
   }
 
-  // ✅ Collect form data
+  // ✅ Now collect the form data
   const formData = {
     'Type of work': document.getElementById('pitlinkin-type').value,
     'Your Name': document.getElementById('pitlinkin-site-contact').value,
@@ -2000,23 +2000,15 @@ document.getElementById('pitlinkin-form').addEventListener('submit', async funct
     if (!response.ok) {
       console.error('Airtable error:', result);
       alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
-      return; // ❌ Don't reload, allow user to fix and resubmit
+      return; // ❌ Don’t reload if failed
     }
 
-    alert('Submission successful!');
-    location.reload(); // ✅ Only reload if successful
-  } catch (err) {
-    console.error('Submission error:', err);
-    alert('Submission failed. Please check console for details.');
-    // ❌ Don't reload on error
+    showSuccessMessage(); // ✅ Proceed only on success
+  } catch (error) {
+    console.error('Error submitting Pit Link-in form:', error);
+    alert('Error submitting form. Please try again.');
   }
 });
-showSuccessMessage();
-            } catch (error) {
-                console.error('Error submitting Pit Link-in form:', error);
-                alert('Error submitting form. Please try again.');
-            }
-        });
 
 function returnToFormSwitcher() {
     // Hide thank you message
