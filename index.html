@@ -2074,7 +2074,7 @@ document.addEventListener('DOMContentLoaded', () => {
     "RRP Completed?": "rrp",
     "RRP Completed - No": "rrp-no",
     "Additional Comments": "comments",
-    "Pit Link-in's Completed": "completed"
+    "Pit Link-ins Completed": "completed"
   };
 
   async function searchDuctNoteID() {
@@ -2125,7 +2125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           el.value = value;
         }
-        el.disabled = key !== "Pit Link-in's Completed";
+        el.disabled = key !== "Pit Link-ins Completed";
       }
     }
   }
@@ -2152,9 +2152,9 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
     let data = {};
 
     if (existingRecordId) {
-      // Only update the "Pit Link-in's Completed" field
+      // Only update the "Pit Link-ins Completed" field
       const completedCheckbox = document.getElementById('pitlinkin-completed');
-      data["Pit Link-in's Completed"] = completedCheckbox.checked;
+      data["Pit Link-ins Completed"] = completedCheckbox.checked;
     } else {
       // Collect all fields for a new record
       for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
