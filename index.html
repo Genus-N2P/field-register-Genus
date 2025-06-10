@@ -2205,14 +2205,14 @@ if (existingRecordId) {
   } else {
     data["Pit Link-in Completed Timestamp"] = null; // Clear timestamp if unchecked
   }
-} else {
-  // Collect all fields for a new record
-  for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
-    const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
-    if (!el) continue;
-    data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
-  }
-}
+    } else {
+      // Collect all fields for a new record
+      for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+        const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+        if (!el) continue;
+        data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+      }
+    }
 
     const url = existingRecordId
       ? `${apiBase}/update/${existingRecordId}`
@@ -2236,13 +2236,10 @@ if (existingRecordId) {
       alert('Submission successful!');
       location.reload();
 
-  } catch (err) {
-    console.error(err);
-    if (existingRecordId) {
+    } catch (err) {
+      console.error(err);
       alert('Submission failed. Please fix any issues and try again.');
-      // ❌ Do NOT reload, allow user to make edits
     }
-  }
   });
 });
 </script>
