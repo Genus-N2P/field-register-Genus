@@ -2145,23 +2145,30 @@ const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
   }
 
   function populateAndLockForm(fields) {
-    for (const [key, value] of Object.entries(fields)) {
-      const mappedId = fieldMap[key] || key;
-      const el = document.getElementById(`pitlinkin-${mappedId}`);
-      if (el) {
-        if (el.type === 'checkbox') {
-          el.checked = value === true;
-        } else {
-          el.value = value;
-        }
-        if (key === "Pit Link-ins Completed") {
-  el.disabled = value === true; // Disable if checked
-} else {
-  el.disabled = true;
-}
+  for (const [key, value] of Object.entries(fields)) {
+    const mappedId = fieldMap[key] || key;
+    const el = document.getElementById(`pitlinkin-${mappedId}`);
+    if (!el) continue;
+
+    if (el.type === 'checkbox') {
+      el.checked = value === true;
+    } else {
+      el.value = value;
+    }
+
+    if (key === "Pit Link-ins Completed") {
+      if (value === true) {
+        el.checked = true;
+        el.disabled = true;
+      } else {
+        el.checked = false;
+        el.disabled = false;
       }
+    } else {
+      el.disabled = true;
     }
   }
+}
 
   function unlockForm() {
     document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea')
