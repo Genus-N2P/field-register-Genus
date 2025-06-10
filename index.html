@@ -2095,7 +2095,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('pitlinkin-completed').disabled = false;
 
       if (!data.record) {
-        summary.textContent = 'No record found. A new entry will be created.';
+        summary.textContent = 'No record found. A new entry will need to be created.';
         existingRecordId = null;
         unlockForm();
         submitBtn.textContent = 'Submit';
@@ -2107,7 +2107,6 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Update';
         // document.getElementById('pitlinkin-note-id-search').disabled = true;
       }
-        document.getElementById('pitlinkin-completed').disabled = false;
     } catch (err) {
       console.error(err);
       const summary = document.getElementById('pitlinkin-note-summary');
@@ -2140,55 +2139,57 @@ document.getElementById('pitlinkin-completed').disabled = true;
 
 // Attach search button listener
 document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
-document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+  document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-  const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
-  if (noteIdEntered && !existingRecordId) {
-    alert("Please click 'Search' after entering a Duct Note ID before submitting.");
-    return;
-  }
-
-  let data = {};
-
-  if (existingRecordId) {
-    const completedCheckbox = document.getElementById('pitlinkin-completed');
-    data["Pit Link-ins Completed"] = completedCheckbox.checked;
-  } else {
-    for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
-      const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
-      if (!el) continue;
-      data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
-    }
-  }
-
-  const url = existingRecordId
-    ? `${apiBase}/update/${existingRecordId}`
-    : `${apiBase}/create`;
-  const method = existingRecordId ? 'PATCH' : 'POST';
-
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: data })
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      alert('Submission failed.');
-      console.error(result);
+    const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
+    if (noteIdEntered && !existingRecordId) {
+      alert("Please click 'Search' after entering a Duct Note ID before submitting.");
       return;
     }
 
-    alert('Submission successful!');
-    location.reload();
+    let data = {};
 
-  } catch (err) {
-    console.error(err);
-    alert('Error submitting form. Please try again.');
-  }
+    if (existingRecordId) {
+      // Only update the "Pit Link-ins Completed" field
+      const completedCheckbox = document.getElementById('pitlinkin-completed');
+      data["Pit Link-ins Completed"] = completedCheckbox.checked;
+    } else {
+      // Collect all fields for a new record
+      for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+        const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+        if (!el) continue;
+        data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+      }
+    }
+
+    const url = existingRecordId
+      ? `${apiBase}/update/${existingRecordId}`
+      : `${apiBase}/create`;
+    const method = existingRecordId ? 'PATCH' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: data })
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        alert('Submission failed.');
+        console.error(result);
+        return;
+      }
+
+      alert('Submission successful!');
+      location.reload();
+
+    } catch (err) {
+      console.error(err);
+      alert('Error submitting form. Please try again.');
+    }
+  });
 });
 </script>
 </body>
