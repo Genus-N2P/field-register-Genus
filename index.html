@@ -2204,8 +2204,6 @@ if (existingRecordId) {
     data["Pit Link-in Completed Timestamp"] = isoDate;
   } else {
     data["Pit Link-in Completed Timestamp"] = null; // Optional: clear timestamp if unchecked
-  }
-} else {
     // Collect all fields for a new record
     for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
       const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
