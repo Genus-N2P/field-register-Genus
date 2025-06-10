@@ -2186,6 +2186,7 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
       location.reload();
     } catch (err) {
       console.error(err);
+          if (existingRecordId) {
       alert('Submission failed.');
     }
   });});
