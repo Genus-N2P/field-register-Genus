@@ -2182,6 +2182,7 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
       });
 
       const result = await response.json();
+          if (existingRecordId) {
       alert('Submission successful!');
       location.reload();
     } catch (err) {
