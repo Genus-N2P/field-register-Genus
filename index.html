@@ -1954,61 +1954,52 @@ showSuccessMessage();
 
 
 
-document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+        document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-  // ✅ First validate the form structure
-  if (!validateGenericForm('pitlinkin-form')) {
-    return;
-  }
+       // Validate the form
+        if (!validateGenericForm('pitlinkin-form')) {
+            return;
+        }
+            
+            // Collect form data - modify this based on your actual form fields
+            const formData = {
+                'Type of work': document.getElementById('pitlinkin-type').value,
+                'Your Name': document.getElementById('pitlinkin-site-contact').value,
+                'Pit Link-in Date': document.getElementById('pitlinkin-date').value,
+                'SAM': document.getElementById('pitlinkin-SAM').value,
+                'ADA': document.getElementById('pitlinkin-ADA').value,
+                'Duct Note ID': document.getElementById('pitlinkin-Duct-Note-ID').value,
+                'Pit A Note ID': document.getElementById('pitlinkin-PitA-Note-ID').value,
+                'Pit B Note ID': document.getElementById('pitlinkin-PitB-Note-ID').value,
+                'Pit A Required': document.getElementById('pitlinkin-PitA-linkin-required').checked,
+                'Pit B Required': document.getElementById('pitlinkin-PitB-linkin-required').checked,
+                'Pit A Fit for Purpose': document.getElementById('pitlinkin-PitA-ffp').value,
+                'Pit B Fit for Purpose': document.getElementById('pitlinkin-PitB-ffp').value,
+                'RRP Completed?': document.getElementById('pitlinkin-rrp').value,
+                'RRP Completed - No': document.getElementById('pitlinkin-rrp-no').value,
+                'Additional Comments': document.getElementById('pitlinkin-comments').value,
+		'Pit Link-ins Completed': document.getElementById('pitlinkin-completed').checked
+            };
+            
+            try {
+                // await submitToAirtable('pitlinkin', formData);
+                // showSuccessMessage();
+const response = await submitToAirtable('pitlinkin', formData);
+const result = await response.json();
 
-  // ✅ Then validate 5-digit requirement
-  const ductNote = document.getElementById('pitlinkin-Duct-Note-ID').value.trim();
-  const pitA = document.getElementById('pitlinkin-PitA-Note-ID').value.trim();
-  const pitB = document.getElementById('pitlinkin-PitB-Note-ID').value.trim();
-  const isValid5Digit = (val) => /^\d{5}$/.test(val);
+if (!response.ok) {
+  console.error('Airtable error:', result);
+  alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
+  return;
+}
 
-  if (!isValid5Digit(ductNote) || !isValid5Digit(pitA) || !isValid5Digit(pitB)) {
-    alert("Duct Note ID, Pit A Note ID, and Pit B Note ID must each be exactly 5 digits.");
-    return;
-  }
-
-  // ✅ Now collect the form data
-  const formData = {
-    'Type of work': document.getElementById('pitlinkin-type').value,
-    'Your Name': document.getElementById('pitlinkin-site-contact').value,
-    'Pit Link-in Date': document.getElementById('pitlinkin-date').value,
-    'SAM': document.getElementById('pitlinkin-SAM').value,
-    'ADA': document.getElementById('pitlinkin-ADA').value,
-    'Duct Note ID': ductNote,
-    'Pit A Note ID': pitA,
-    'Pit B Note ID': pitB,
-    'Pit A Required': document.getElementById('pitlinkin-PitA-linkin-required').checked,
-    'Pit B Required': document.getElementById('pitlinkin-PitB-linkin-required').checked,
-    'Pit A Fit for Purpose': document.getElementById('pitlinkin-PitA-ffp').value,
-    'Pit B Fit for Purpose': document.getElementById('pitlinkin-PitB-ffp').value,
-    'RRP Completed?': document.getElementById('pitlinkin-rrp').value,
-    'RRP Completed - No': document.getElementById('pitlinkin-rrp-no').value,
-    'Additional Comments': document.getElementById('pitlinkin-comments').value,
-    'Pit Link-ins Completed': document.getElementById('pitlinkin-completed').checked
-  };
-
-  try {
-    const response = await submitToAirtable('pitlinkin', formData);
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error('Airtable error:', result);
-      alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
-      return; // ❌ Don’t reload if failed
-    }
-
-    showSuccessMessage(); // ✅ Proceed only on success
-  } catch (error) {
-    console.error('Error submitting Pit Link-in form:', error);
-    alert('Error submitting form. Please try again.');
-  }
-});
+showSuccessMessage();
+            } catch (error) {
+                console.error('Error submitting Pit Link-in form:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
 
 function returnToFormSwitcher() {
     // Hide thank you message
@@ -2149,74 +2140,50 @@ document.getElementById('pitlinkin-completed').disabled = true;
 
 // Attach search button listener
 document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
-document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+  document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-  const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
-  if (noteIdEntered && !existingRecordId) {
-    alert("Please click 'Search' after entering a Duct Note ID before submitting.");
-    return;
-  }
-
-  // Validate 5-digit requirement
-  const ductNote = document.getElementById('pitlinkin-Duct-Note-ID').value.trim();
-  const pitA = document.getElementById('pitlinkin-PitA-Note-ID').value.trim();
-  const pitB = document.getElementById('pitlinkin-PitB-Note-ID').value.trim();
-  const isValid5Digit = (val) => /^\d{5}$/.test(val);
-
-  if (!isValid5Digit(ductNote) || !isValid5Digit(pitA) || !isValid5Digit(pitB)) {
-    alert("Duct Note ID, Pit A Note ID, and Pit B Note ID must each be exactly 5 digits.");
-    return;
-  }
-
-  let data = {};
-
-  if (existingRecordId) {
-    // ONLY UPDATE COMPLETED FIELD + TIMESTAMP
-    const completedCheckbox = document.getElementById('pitlinkin-completed');
-    data["Pit Link-ins Completed"] = completedCheckbox.checked;
-
-    if (completedCheckbox.checked) {
-      const perthDate = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Perth" });
-      data["Pit Link-in Completed Timestamp"] = perthDate; // YYYY-MM-DD
+    const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
+    if (noteIdEntered && !existingRecordId) {
+      alert("Please click 'Search' after entering a Duct Note ID before submitting.");
+      return;
     }
-  } else {
-    // Collect all fields for a new record
-    for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
-      const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
-      if (!el) continue;
-      data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
-    }
-  }
 
-  const url = existingRecordId
-    ? `${apiBase}/update/${existingRecordId}`
-    : `${apiBase}/create`;
-  const method = existingRecordId ? 'PATCH' : 'POST';
+    let data = {};
 
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: data })
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) throw new Error(result?.error || 'Unknown server error.');
-
-    alert('Submission successful!');
-    location.reload(); // ✅ Only reload on successful submission
-
-  } catch (err) {
-    console.error(err);
     if (existingRecordId) {
-      alert('Submission failed. Please fix any issues and try again.');
-      // ❌ Do NOT reload, allow user to make edits
+      // Only update the "Pit Link-in's Completed" field
+      const completedCheckbox = document.getElementById('pitlinkin-completed');
+      data["Pit Link-in's Completed"] = completedCheckbox.checked;
+    } else {
+      // Collect all fields for a new record
+      for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+        const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+        if (!el) continue;
+        data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+      }
     }
-  }
-});
-});
+
+    const url = existingRecordId
+      ? `${apiBase}/update/${existingRecordId}`
+      : `${apiBase}/create`;
+    const method = existingRecordId ? 'PATCH' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: data })
+      });
+
+      const result = await response.json();
+      alert('Submission successful!');
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert('Submission failed.');
+    }
+  });});
 </script>
 </body>
 </html>
