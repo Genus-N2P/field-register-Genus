@@ -2154,7 +2154,11 @@ const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
         } else {
           el.value = value;
         }
-        el.disabled = key !== "Pit Link-ins Completed";
+        if (key === "Pit Link-ins Completed") {
+  el.disabled = value === true; // Disable if checked
+} else {
+  el.disabled = true;
+}
       }
     }
   }
