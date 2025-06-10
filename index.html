@@ -2034,19 +2034,22 @@ showSuccessMessage();
         });
     
     // Hide all forms using both methods
-    const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin'];
-    forms.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.classList.add('hidden');
-            element.style.display = 'none';
-            // Reset the form
+const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin'];
+forms.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+        element.classList.add('hidden');
+        // Optional: skip this if .hidden already handles display:none
+        element.style.display = 'none';
+
+        if (element.tagName === 'FORM') {
             element.reset();
-            // Remove any error styling
-            const errorFields = element.querySelectorAll('.field-error');
-            errorFields.forEach(field => field.classList.remove('field-error'));
         }
-    });
+
+        const errorFields = element.querySelectorAll('.field-error');
+        errorFields.forEach(field => field.classList.remove('field-error'));
+    }
+});
 
     // Show all buttons and remove active state
     const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin'];
