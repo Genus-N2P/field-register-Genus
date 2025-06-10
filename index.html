@@ -2140,8 +2140,8 @@ document.getElementById('pitlinkin-completed').disabled = true;
 
 // Attach search button listener
 document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
-  document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
+document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
   const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
   if (noteIdEntered && !existingRecordId) {
@@ -2161,49 +2161,52 @@ document.getElementById('search-btn').addEventListener('click', searchDuctNoteID
   }
 
   let data = {};
+
+  if (existingRecordId) {
+    // ONLY UPDATE COMPLETED FIELD + TIMESTAMP
+    const completedCheckbox = document.getElementById('pitlinkin-completed');
+    data["Pit Link-ins Completed"] = completedCheckbox.checked;
+
+    if (completedCheckbox.checked) {
+      const perthDate = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Perth" });
+      data["Pit Link-in Completed Timestamp"] = perthDate; // YYYY-MM-DD
+    }
+  } else {
+    // Collect all fields for a new record
+    for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
+      const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
+      if (!el) continue;
+      data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
+    }
+  }
+
+  const url = existingRecordId
+    ? `${apiBase}/update/${existingRecordId}`
+    : `${apiBase}/create`;
+  const method = existingRecordId ? 'PATCH' : 'POST';
+
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: data })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) throw new Error(result?.error || 'Unknown server error.');
+
+    alert('Submission successful!');
+    location.reload(); // ✅ Only reload on successful submission
+
+  } catch (err) {
+    console.error(err);
     if (existingRecordId) {
-      // ONLY UPDATE COMPLETED FIELD + TIMESTAMP
-      const completedCheckbox = document.getElementById('pitlinkin-completed');
-      data["Pit Link-ins Completed"] = completedCheckbox.checked;
-
-      if (completedCheckbox.checked) {
-        const perthDate = new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Perth" });
-        data["Pit Link-in Completed Timestamp"] = perthDate; // YYYY-MM-DD
-      }
-    } else {
-      // Collect all fields for a new record
-      for (const [airtableField, htmlFieldId] of Object.entries(fieldMap)) {
-        const el = document.getElementById(`pitlinkin-${htmlFieldId}`);
-        if (!el) continue;
-        data[airtableField] = el.type === 'checkbox' ? el.checked : el.value;
-      }
+      alert('Submission failed. Please fix any issues and try again.');
+      // ❌ Do NOT reload, allow user to make edits
     }
-
-    const url = existingRecordId
-      ? `${apiBase}/update/${existingRecordId}`
-      : `${apiBase}/create`;
-    const method = existingRecordId ? 'PATCH' : 'POST';
-
-    try {
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: data })
-      });
-
-      const result = await response.json();
-
-      if (existingRecordId) {
-        alert('Submission successful!');
-        location.reload();
-      }
-    } catch (err) {
-      console.error(err);
-      if (existingRecordId) {
-        alert('Submission failed.');
-      }
-    }
-  });
+  }
+});
 });
 </script>
 </body>
