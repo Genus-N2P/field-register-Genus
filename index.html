@@ -2084,9 +2084,10 @@ forms.forEach(id => {
 document.addEventListener('DOMContentLoaded', () => {
   let existingRecordId = null;
 
-const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
+  const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
+  const tableKey = 'pit-link-in'; // must match your worker tableMap key
 
- const fieldMap = {
+  const fieldMap = {
     "Your Name": "site-contact",
     "Pit Link-in Date": "date",
     "SAM": "SAM",
@@ -2115,10 +2116,18 @@ const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
     }
 
     try {
-      const response = await fetch(`${apiBase}/lookup?noteId=${noteId}`);
+      const response = await fetch(`${apiBase}/lookup/${tableKey}?noteId=${encodeURIComponent(noteId)}`);
+      const contentType = response.headers.get('Content-Type') || '';
+
+      if (!response.ok) {
+        const message = contentType.includes('application/json')
+          ? (await response.json()).error || 'Lookup failed'
+          : await response.text();
+        throw new Error(message);
+      }
+
       const data = await response.json();
       const submitBtn = document.getElementById('pitlinkin-submit-btn');
-      // Unlock completed checkbox after search (record found or not)
       document.getElementById('pitlinkin-completed').disabled = false;
 
       if (!data.record) {
@@ -2126,110 +2135,94 @@ const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
         existingRecordId = null;
         unlockForm();
         submitBtn.textContent = 'Submit';
-        // document.getElementById('pitlinkin-note-id-search').disabled = false;
       } else {
         summary.textContent = 'Record found. All fields locked except completion checkbox.';
         existingRecordId = data.record.id;
         populateAndLockForm(data.record.fields);
         submitBtn.textContent = 'Update';
-        // document.getElementById('pitlinkin-note-id-search').disabled = true;
       }
     } catch (err) {
       console.error(err);
-      const summary = document.getElementById('pitlinkin-note-summary');
-      if (summary) summary.textContent = 'Error looking up Note ID.';
+      summary.textContent = 'Error looking up Note ID.';
     }
   }
 
   function populateAndLockForm(fields) {
-  for (const [key, value] of Object.entries(fields)) {
-    const mappedId = fieldMap[key] || key;
-    const el = document.getElementById(`pitlinkin-${mappedId}`);
-    if (!el) continue;
+    for (const [key, value] of Object.entries(fields)) {
+      const mappedId = fieldMap[key] || key;
+      const el = document.getElementById(`pitlinkin-${mappedId}`);
+      if (!el) continue;
 
-    if (el.type === 'checkbox') {
-      el.checked = value === true;
-    } else {
-      el.value = value;
-    }
-
-    if (key === "Pit Link-ins Completed") {
-      if (value === true) {
-        el.checked = true;
-        el.disabled = true;
+      if (el.type === 'checkbox') {
+        el.checked = value === true;
       } else {
-        el.checked = false;
-        el.disabled = false;
+        el.value = value;
       }
-    } else {
-      el.disabled = true;
+
+      if (key === "Pit Link-ins Completed") {
+        el.checked = !!value;
+        el.disabled = !value;
+      } else {
+        el.disabled = true;
+      }
     }
   }
-}
 
   function unlockForm() {
     document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea')
       .forEach(el => el.disabled = false);
   }
 
-// Lock the completed checkbox on page load
-document.getElementById('pitlinkin-completed').disabled = true;
+  document.getElementById('pitlinkin-completed').disabled = true;
+  document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
 
-// Attach search button listener
-document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
-document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+  document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-  const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
-  const completedCheckbox = document.getElementById('pitlinkin-completed');
-  const isChecked = completedCheckbox.checked;
+    const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
+    const completedCheckbox = document.getElementById('pitlinkin-completed');
+    const isChecked = completedCheckbox.checked;
 
-   if (!noteIdEntered || !existingRecordId) {
-  //  alert("Please search for a Duct Note ID before submitting.");
-    return;
-   }
+    if (!noteIdEntered || !existingRecordId) return;
 
-  // Only proceed if checkbox is checked
-  if (!isChecked) {
-    alert("Please check 'Pit Link-ins Completed' before submitting.");
-    return;
-  }
-
-  // Only update the completed fields
-  let data = {
-    "Pit Link-ins Completed": true
-  };
-
-  // Add timestamp if checkbox is checked
-  const now = new Date();
-  const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
-  const year = perthTime.getFullYear();
-  const month = String(perthTime.getMonth() + 1).padStart(2, '0');
-  const day = String(perthTime.getDate()).padStart(2, '0');
-  data["Pit Link-in Completed Timestamp"] = `${year}-${month}-${day}`;
-
-  try {
-    const url = `${apiBase}/update/${existingRecordId}`;
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: data })
-    });
-
-    const result = await response.json();
-    if (!response.ok) {
-      alert('Update failed.');
+    if (!isChecked) {
+      alert("Please check 'Pit Link-ins Completed' before submitting.");
       return;
     }
 
-    alert('Record updated successfully!');
-    location.reload();
+    let data = {
+      "Pit Link-ins Completed": true
+    };
 
-  } catch (err) {
-    console.error(err);
-    alert('There was an error updating the record.');
-  }
-});
+    const now = new Date();
+    const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+    const year = perthTime.getFullYear();
+    const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+    const day = String(perthTime.getDate()).padStart(2, '0');
+    data["Pit Link-in Completed Timestamp"] = `${year}-${month}-${day}`;
+
+    try {
+      const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: data })
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        alert('Update failed.');
+        return;
+      }
+
+      alert('Record updated successfully!');
+      location.reload();
+
+    } catch (err) {
+      console.error(err);
+      alert('There was an error updating the record.');
+    }
+  });
 });
 </script>
 </body>
