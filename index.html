@@ -2198,12 +2198,13 @@ if (existingRecordId) {
   const isChecked = completedCheckbox.checked;
   data["Pit Link-ins Completed"] = isChecked;
 
-  if (isChecked) {
-    const perthTime = new Date().toLocaleString("en-US", { timeZone: "Australia/Perth" });
-    const isoDate = new Date(perthTime).toISOString().split('T')[0]; // YYYY-MM-DD
-    data["Pit Link-in Completed Timestamp"] = isoDate;
-  } else {
-    data["Pit Link-in Completed Timestamp"] = null; // Clear timestamp if unchecked
+if (isChecked) {
+  const now = new Date();
+  const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+  const isoString = perthTime.toISOString(); // Full ISO string
+  data["Pit Link-in Completed Timestamp"] = isoString;
+} else {
+  data["Pit Link-in Completed Timestamp"] = null; // Clear timestamp if unchecked
   }
     } else {
       // Collect all fields for a new record
@@ -2229,7 +2230,7 @@ if (existingRecordId) {
       const result = await response.json();
       if (!response.ok) {
         alert('Submission failed.');
-        console.error(result);
+        // console.error(result);
         return;
       }
 
@@ -2237,7 +2238,7 @@ if (existingRecordId) {
       location.reload();
 
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert('Submission failed. Please fix any issues and try again.');
     }
 }
