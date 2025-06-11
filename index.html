@@ -443,6 +443,8 @@ textarea {
       <button id="btn-bog" onclick="showForm('bog')">Boots on Ground</button>
       <button id="btn-reinstatement" onclick="showForm('reinstatement')">Reinstatement Register</button>
       <button id="btn-pitlinkin" onclick="showForm('pitlinkin')">Pit Link-in Register</button>
+      <button id="btn-vactruck" onclick="showForm('vactruck')">Vac Truck Register</button>
+
     </section>
 
     <div id="form-forecast" class="form-section hidden">
@@ -1331,6 +1333,149 @@ textarea {
         </div>
       </form>
     </div>
+
+    <div id="form-vactruck" class="form-section hidden">
+      <h3>Vac Truck Register: Genus N2P project</h3>
+      <form id="vactruck-form" onsubmit="return validateGenericForm('vactruck-form')">
+
+<label for="vactruck-note-id-search">Search Duct Note ID</label>
+<div style="display: flex; gap: 0.5rem; align-items: center;">
+  <input type="text" id="vactruck-note-id-search" placeholder="Enter Note ID" />
+  <button type="button" id="search-btn" class="search-btn">Search</button>
+</div>
+
+<!-- Optional read-only summary or error display -->
+<div id="vactruck-note-summary" style="margin-top: 1rem; font-weight: bold;"></div>
+
+<!-- OR Divider -->
+<div class="or-divider">
+  <hr class="line" />
+  <span class="or-text">OR</span>
+  <hr class="line" />
+</div>
+
+	<!-- Hidden input hardcoded to 'Vac Truck' -->
+	<input type="hidden" id="vactruck-type" name="vactruck-type" value="Vac Truck">
+
+        <label for="vactruck-company-name">Your Company Name</label>
+          <select id="vactruck-company-name" name="vactruck-company-name" required>
+          <option value="">Select one</option>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
+        </select>
+
+        <label for="vactruck-date">Date Idendified</label>
+        <input type="date" id="vactruck-date" name="vactruck-date" required />
+
+        <label for="vactruck-SAM">SAM ID</label>
+        <select id="vactruck-SAM" name="vactruck-SAM" required>
+          <option value="">Select one</option>
+          <option value="K-6ALN-05">K-6ALN-05</option>
+          <option value="K-6ALN-20">K-6ALN-20</option>
+          <option value="K-6ALN-21">K-6ALN-21</option>
+          <option value="K-6ALN-22">K-6ALN-22</option>
+          <option value="K-6ALN-23">K-6ALN-23</option>
+          <option value="K-6AUU-20">K-6AUU-20</option>
+          <option value="K-6BGT-20">K-6BGT-20</option>
+          <option value="K-6CGD-20">K-6CGD-20</option>
+          <option value="K-6CND-20">K-6CND-20</option>
+          <option value="K-6CVN-20">K-6CVN-20</option>
+          <option value="K-6DNH-20">K-6DNH-20</option>
+          <option value="K-6DNK-20">K-6DNK-20</option>
+          <option value="K-6ESP-20">K-6ESP-20</option>
+          <option value="K-6ESP-21">K-6ESP-21</option>
+          <option value="K-6ESP-40">K-6ESP-40</option>
+          <option value="K-6EXM-01">K-6EXM-01</option>
+          <option value="K-6HOP-01">K-6HOP-01</option>
+          <option value="K-6KAM-20">K-6KAM-20</option>
+          <option value="K-6KAT-20">K-6KAT-20</option>
+          <option value="K-6KLB-01">K-6KLB-01</option>
+          <option value="K-6KOJ-20">K-6KOJ-20</option>
+          <option value="K-6LEA-20">K-6LEA-20</option>
+          <option value="K-6MBA-20">K-6MBA-20</option>
+          <option value="K-6MJM-01">K-6MJM-01</option>
+          <option value="K-6NRG-20">K-6NRG-20</option>
+          <option value="K-6NWM-01">K-6NWM-01</option>
+          <option value="K-6NWM-20">K-6NWM-20</option>
+          <option value="K-6PDO-20">K-6PDO-20</option>
+          <option value="K-6SCR-20">K-6SCR-20</option>
+          <option value="K-6TPC-20">K-6TPC-20</option>
+          <option value="L-6ALN-05">L-6ALN-05</option>
+          <option value="L-6ALN-20">L-6ALN-20</option>
+          <option value="L-6ALN-21">L-6ALN-21</option>
+          <option value="L-6ALN-23">L-6ALN-23</option>
+          <option value="M-6ALN-21">M-6ALN-21</option>
+          <option value="X-6ALN-20">X-6ALN-20</option>
+          <option value="X-6BGT-20">X-6BGT-20</option>
+          <option value="X-6COI-01">X-6COI-01</option>
+          <option value="X-6DNK-20">X-6DNK-20</option>
+          <option value="Z-6ALN-22">Z-6ALN-22</option>
+          <option value="Z-6KAT-20">Z-6KAT-20</option>
+          <option value="Z-6NRG-20">Z-6NRG-20</option>
+        </select>
+
+        <label for="vactruck-ADA">ADA ID</label>
+        <select id="vactruck-ADA" name="vactruck-ADA" required>
+          <option value="">Select one</option>
+          <option value="01">01</option>
+          <option value="02">02</option>
+          <option value="03">03</option>
+          <option value="04">04</option>
+          <option value="05">05</option>
+          <option value="06">06</option>
+          <option value="07">07</option>
+          <option value="08">08</option>
+          <option value="09">09</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+          <option value="25">25</option>
+          <option value="27">27</option>
+          <option value="28">28</option>
+          <option value="30">30</option>
+          <option value="31">31</option>
+        </select>
+
+        <label for="vactruck-Pit-Note-ID">Pit Note ID:</label>
+        <input type="text" id="vactruck-Pit-Note-ID" name="vactruck-Pit-Note-ID" required />
+
+        <label for="vactruck-comments">Any additional comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
+        <textarea id="vactruck-comments" name="vactruck-comments" placeholder="If there are no additional comments, there is no need to enter anything here"></textarea>
+                
+	<label>
+	<input type="checkbox" id="vactruck-completed" name="vactruck-completed" />
+	Pit Cleanout Completed
+	</label>
+
+        <div class="form-footer">
+          <button type="button" class="btn-back" onclick="confirmReset('vactruck')">Back</button>
+          <button type="submit" id="vactruck-submit-btn">Submit Vac Truck</button>
+        </div>
+      </form>
+    </div>
   </main>
 
   <script>
@@ -1462,6 +1607,11 @@ function confirmReset(formType) {
                 tableId: 'Pit Link-in',
                 apiKey: 'patHwUeS1KtSAEshe.6c903369a5dfb1bd994c2c3efb3d9cf037198cec7b4daec52f388fa57429ab6c'
             }
+            vactruck: {
+                baseId: 'appegmSLEvbJSkRvd',
+                tableId: 'Vac Truck',
+                apiKey: 'patHwUeS1KtSAEshe.6c903369a5dfb1bd994c2c3efb3d9cf037198cec7b4daec52f388fa57429ab6c'
+            }
         };
 
 	   // Global submitToAirtable function
@@ -1498,10 +1648,12 @@ function confirmReset(formType) {
       const bogDateField = document.getElementById('bog-date');
       const pitlinkinDateField = document.getElementById('pitlinkin-date');
       const reinstatementDateField = document.getElementById('reinstatement-date');
+      const vactruckDateField = document.getElementById('vactruck-date');
 
       if (bogDateField) bogDateField.value = todayString;
       if (pitlinkinDateField) pitlinkinDateField.value = todayString;
       if (reinstatementDateField) reinstatementDateField.value = todayString;
+      if (vactruckDateField) vactruckDateField.value = todayString;
     }
 
     // Function to calculate and update week commencing/ending dates
@@ -1646,7 +1798,7 @@ function showForm(formType) {
     document.getElementById('thank-you-message').style.display = 'none';
         
     // Hide all forms using both methods
-    const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin'];
+    const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin', 'form-vactruck'];
     forms.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -1669,7 +1821,7 @@ function showForm(formType) {
       setDefaultDate();
 
        // Hide all buttons except the selected one
-            const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin'];
+            const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin', 'btn-vactruck'];
             buttons.forEach(btnId => {
                 const btn = document.getElementById(btnId);
                 if (btn) {
@@ -2030,9 +2182,81 @@ showSuccessMessage();
                 alert('Error submitting form. Please try again.');
             }
         });
+
+        document.getElementById('vactruck-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+    // --- New 5-digit ID Validation (Updated) ---
+    let isValid = true;
+    const idFieldsToValidate = [
+        { id: 'vactruck-Pit-Note-ID', name: 'Duct Pit ID' },
+    ];
+    let errorMessage = '';
+
+    idFieldsToValidate.forEach(fieldInfo => {
+        const inputElement = document.getElementById(fieldInfo.id);
+        const value = inputElement ? inputElement.value.trim() : '';
+
+        // Validate if the input element exists and is not disabled.
+        // PitA-Note-ID and PitB-Note-ID are now always validated regardless of checkboxes.
+        if (inputElement && !inputElement.disabled) {
+            // Check for exactly 5 digits
+            if (!/^\d{5}$/.test(value)) {
+                errorMessage += `- '${fieldInfo.name}' must contain exactly 5 digits.\n`;
+                inputElement.classList.add('field-error'); // Add error styling
+                isValid = false;
+            } else {
+                inputElement.classList.remove('field-error'); // Remove error styling if valid
+            }
+        } else if (inputElement) {
+            // Ensure no error styling if the field is disabled
+            inputElement.classList.remove('field-error');
+        }
+    });
+
+    // If a value is empty, it won't match /^\d{5}$/ and will be flagged.
+
+    if (!isValid) {
+        alert('Please correct the following errors before submitting:\n' + errorMessage);
+        return; // Prevent submission if validation fails
+    }
+
+       // Validate the form
+        if (!validateGenericForm('vactruck-form')) {
+            return;
+        }
+            
+            // Collect form data - modify this based on your actual form fields
+            const formData = {
+                'Contractor': document.getElementById('vactruck-company-name').value,
+                'Submission Date': document.getElementById('vactruck-date').value,
+                'SAM': document.getElementById('vactruck-SAM').value,
+                'ADA ID': document.getElementById('vactruck-ADA').value,
+                'Pit Note ID': document.getElementById('vactruck-Pit-Note-ID').value,
+                'Additional Comments': document.getElementById('vactruck-comments').value,
+		'Pit Cleanout Completed': document.getElementById('vactruck-completed').checked
+            };
+            
+            try {
+                // showSuccessMessage();
+const response = await submitToAirtable('vactruck', formData);
+const result = await response.json();
+
+if (!response.ok) {
+  console.error('Airtable error:', result);
+  alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
+  return;
+}
+
+showSuccessMessage();
+            } catch (error) {
+                console.error('Error submitting Vac Truck form:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
     
     // Hide all forms using both methods
-const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin'];
+const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin', 'form-vactruck'];
 forms.forEach(id => {
     const element = document.getElementById(id);
     if (element) {
@@ -2050,7 +2274,7 @@ forms.forEach(id => {
 });
 
     // Show all buttons and remove active state
-    const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin'];
+    const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin', 'btn-vactruck'];
     buttons.forEach(btnId => {
         const btn = document.getElementById(btnId);
         if (btn) {
@@ -2192,6 +2416,143 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let data = {
       "Pit Link-ins Completed": true
+    };
+
+    const now = new Date();
+    const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+    const year = perthTime.getFullYear();
+    const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+    const day = String(perthTime.getDate()).padStart(2, '0');
+    data["Pit Link-in Completed Timestamp"] = `${year}-${month}-${day}`;
+
+    try {
+      const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: data })
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        alert('Update failed.');
+        return;
+      }
+
+      alert('Record updated successfully!');
+      location.reload();
+
+    } catch (err) {
+      console.error(err);
+      alert('There was an error updating the record.');
+    }
+  });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let existingRecordId = null;
+
+  const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
+  const tableKey = 'vac truck'; // must match your worker tableMap key
+
+  const fieldMap = {
+    "Contractor": "company-name",
+    "Submission Date": "date",
+    "SAM": "SAM",
+    "ADA ID": "ADA",
+    "Pit Note ID": "Pit-Note-ID",
+    "Additional Comments": "comments",
+    "Pit Cleanout Completed": "completed"
+  };
+
+  async function searchPitNoteID() {
+    const noteId = document.getElementById('vactruck-note-id-search').value.trim();
+    const summary = document.getElementById('vactruck-note-summary');
+    summary.textContent = '';
+
+    if (!noteId) {
+      alert('Please enter a Note ID to search.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiBase}/lookup/${tableKey}?noteId=${encodeURIComponent(noteId)}`);
+      const contentType = response.headers.get('Content-Type') || '';
+
+      if (!response.ok) {
+        const message = contentType.includes('application/json')
+          ? (await response.json()).error || 'Lookup failed'
+          : await response.text();
+        throw new Error(message);
+      }
+
+      const data = await response.json();
+      const submitBtn = document.getElementById('vactruck-submit-btn');
+      document.getElementById('vactruck-completed').disabled = false;
+
+      if (!data.record) {
+        summary.textContent = 'No record found. A new entry will need to be created.';
+        existingRecordId = null;
+        unlockForm();
+        submitBtn.textContent = 'Submit';
+      } else {
+        summary.textContent = 'Record found. All fields locked except completion checkbox.';
+        existingRecordId = data.record.id;
+        populateAndLockForm(data.record.fields);
+        submitBtn.textContent = 'Update';
+      }
+    } catch (err) {
+      console.error(err);
+      summary.textContent = 'Error looking up Note ID.';
+    }
+  }
+
+  function populateAndLockForm(fields) {
+    for (const [key, value] of Object.entries(fields)) {
+      const mappedId = fieldMap[key] || key;
+      const el = document.getElementById(`vactruck-${mappedId}`);
+      if (!el) continue;
+
+      if (el.type === 'checkbox') {
+        el.checked = value === true;
+      } else {
+        el.value = value;
+      }
+
+      if (key === "Pit Cleanout Completed") {
+        el.checked = !!value;
+        el.disabled = !value;
+      } else {
+        el.disabled = true;
+      }
+    }
+  }
+
+  function unlockForm() {
+    document.querySelectorAll('#vactruck-form input, #vactruck-form select, #vactruck-form textarea')
+      .forEach(el => el.disabled = false);
+  }
+
+  document.getElementById('vactruck-completed').disabled = true;
+  document.getElementById('search-btn').addEventListener('click', searchPitNoteID);
+
+  document.getElementById('vactruck-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const noteIdEntered = document.getElementById('vactruck-note-id-search').value.trim();
+    const completedCheckbox = document.getElementById('vactruck-completed');
+    const isChecked = completedCheckbox.checked;
+
+    if (!noteIdEntered || !existingRecordId) return;
+
+    if (!isChecked) {
+      alert("Please check 'Pit Cleanout Completed' before submitting.");
+      return;
+    }
+
+    let data = {
+      "Pit Cleanout Completed": true
     };
 
     const now = new Date();
