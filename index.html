@@ -1158,7 +1158,7 @@ textarea {
 <label for="pitlinkin-note-id-search">Search Duct Note ID</label>
 <div style="display: flex; gap: 0.5rem; align-items: center;">
   <input type="text" id="pitlinkin-note-id-search" placeholder="Enter Note ID" />
-  <button type="button" id="search-btn" class="search-btn">Search</button>
+  <button type="button" id="pitlinkin-search-btn" class="search-btn">Search</button>
 </div>
 
 <!-- Optional read-only summary or error display -->
@@ -1341,7 +1341,7 @@ textarea {
 <label for="vactruck-note-id-search">Search Duct Note ID</label>
 <div style="display: flex; gap: 0.5rem; align-items: center;">
   <input type="text" id="vactruck-note-id-search" placeholder="Enter Note ID" />
-  <button type="button" id="search-btn" class="search-btn">Search</button>
+  <button type="button" id="vactruck-search-btn" class="search-btn">Search</button>
 </div>
 
 <!-- Optional read-only summary or error display -->
@@ -2398,7 +2398,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('pitlinkin-completed').disabled = true;
-  document.getElementById('search-btn').addEventListener('click', searchDuctNoteID);
+  document.getElementById('pitlinkin-search-btn').addEventListener('click', searchDuctNoteID);
 
   document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -2535,7 +2535,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('vactruck-completed').disabled = true;
-  document.getElementById('search-btn').addEventListener('click', searchPitNoteID);
+  document.getElementById('vactruck-search-btn').addEventListener('click', searchPitNoteID);
 
   document.getElementById('vactruck-form').addEventListener('submit', async function(e) {
     e.preventDefault();
