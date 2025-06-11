@@ -2202,7 +2202,7 @@ if (isChecked) {
   const now = new Date();
   const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
   const isoString = perthTime.toISOString(); // Full ISO string
-  data["Pit Link-in Completed Timestamp"] = isoString;
+  data["Pit Link-in Completed Timestamp"] = new Date(perthTime).toISOString(); // e.g., "2025-06-09T06:52:11.123Z"
 } else {
   data["Pit Link-in Completed Timestamp"] = null; // Clear timestamp if unchecked
   }
