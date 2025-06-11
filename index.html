@@ -1910,7 +1910,6 @@ showSuccessMessage();
             
             // Collect form data - modify this based on your actual form fields
             const formData = {
-                'Type of work': document.getElementById('reinstatement-type').value,
                 'Your Name': document.getElementById('reinstatement-site-contact').value,
                 'Temp Reinstatement Date': document.getElementById('reinstatement-date').value,
                 'Address': document.getElementById('reinstatement-address').value,
@@ -1997,7 +1996,6 @@ showSuccessMessage();
             
             // Collect form data - modify this based on your actual form fields
             const formData = {
-                'Type of work': document.getElementById('pitlinkin-type').value,
                 'Your Name': document.getElementById('pitlinkin-site-contact').value,
                 'Pit Link-in Date': document.getElementById('pitlinkin-date').value,
                 'SAM': document.getElementById('pitlinkin-SAM').value,
@@ -2089,7 +2087,6 @@ document.addEventListener('DOMContentLoaded', () => {
 const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
 
  const fieldMap = {
-    "Type of work": "type",
     "Your Name": "site-contact",
     "Pit Link-in Date": "date",
     "SAM": "SAM",
