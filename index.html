@@ -2187,10 +2187,10 @@ document.getElementById('pitlinkin-form').addEventListener('submit', async funct
   const completedCheckbox = document.getElementById('pitlinkin-completed');
   const isChecked = completedCheckbox.checked;
 
-  // if (!noteIdEntered || !existingRecordId) {
+   if (!noteIdEntered || !existingRecordId) {
   //  alert("Please search for a Duct Note ID before submitting.");
-  //  return;
-  // }
+    return;
+   }
 
   // Only proceed if checkbox is checked
   if (!isChecked) {
