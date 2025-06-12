@@ -2722,7 +2722,6 @@ function populateAndLockForm(fields) {
 });
 </script>
 
-<script>
 document.addEventListener('DOMContentLoaded', () => {
   let existingRecordId = null;
   let searchPerformed = false;
@@ -2825,6 +2824,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const mappedId = fieldMap[key] || key;
       let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
       if (!el) continue;
+
+      // Skip auto-populating the completion checkbox - user must manually check it
+      if (el.id === 'reinstatement-completed') {
+        continue;
+      }
 
       if (el.type === 'checkbox') {
         el.checked = value === true;
@@ -2932,10 +2936,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const completedCheckbox = document.getElementById('reinstatement-completed');
     const isChecked = completedCheckbox.checked;
 
-    if (!noteIdEntered) {
-      alert('Please enter a Note ID.');
-      return;
-    }
+    // if (!noteIdEntered) {
+    //  alert('Please enter a Note ID.');
+    //  return;
+    // }
 
     if (existingRecordId) {
   if (!isChecked) {
@@ -3013,6 +3017,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-</script>
 </body>
 </html>
