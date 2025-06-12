@@ -2370,27 +2370,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function populateAndLockForm(fields) {
-    for (const [key, value] of Object.entries(fields)) {
-      const mappedId = fieldMap[key] || key;
-      const el = document.getElementById(`pitlinkin-${mappedId}`);
-      if (!el) continue;
+function populateAndLockForm(fields) {
+  for (const [key, value] of Object.entries(fields)) {
+    const mappedId = fieldMap[key] || key;
+    const el = document.getElementById(`pitlinkin-${mappedId}`);
+    if (!el) continue;
 
-      if (el.type === 'checkbox') {
-        el.checked = value === true;
-      } else {
-        el.value = value;
+    if (el.type === 'checkbox') {
+      el.checked = value === true;
+    } else if (el.tagName === 'SELECT') {
+      // Add missing option if not present
+      let optionExists = [...el.options].some(opt => opt.value === value);
+      if (!optionExists && value !== undefined && value !== null) {
+        const newOption = document.createElement('option');
+        newOption.value = value;
+        newOption.textContent = value;
+        newOption.selected = true;
+        el.appendChild(newOption);
       }
+      el.value = value;
+    } else {
+      el.value = value;
+    }
 
-      if (key === "Pit Link-ins Completed") {
-        el.checked = !!value;
-        el.disabled = !value;
-      } else {
-        el.disabled = true;
-      }
+    if (key === "Pit Link-ins Completed") {
+      el.checked = !!value;
+      el.disabled = !value;
+    } else {
+      el.disabled = true;
     }
   }
-
+}
   function unlockForm() {
     document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea')
       .forEach(el => el.disabled = false);
@@ -2507,27 +2517,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function populateAndLockForm(fields) {
-    for (const [key, value] of Object.entries(fields)) {
-      const mappedId = fieldMap[key] || key;
-      const el = document.getElementById(`vactruck-${mappedId}`);
-      if (!el) continue;
+function populateAndLockForm(fields) {
+  for (const [key, value] of Object.entries(fields)) {
+    const mappedId = fieldMap[key] || key;
+    const el = document.getElementById(`vactruck-${mappedId}`);
+    if (!el) continue;
 
-      if (el.type === 'checkbox') {
-        el.checked = value === true;
-      } else {
-        el.value = value;
+    if (el.type === 'checkbox') {
+      el.checked = value === true;
+    } else if (el.tagName === 'SELECT') {
+      // Add missing option if not present
+      let optionExists = [...el.options].some(opt => opt.value === value);
+      if (!optionExists && value !== undefined && value !== null) {
+        const newOption = document.createElement('option');
+        newOption.value = value;
+        newOption.textContent = value;
+        newOption.selected = true;
+        el.appendChild(newOption);
       }
+      el.value = value;
+    } else {
+      el.value = value;
+    }
 
-      if (key === "Pit Cleanout Completed") {
-        el.checked = !!value;
-        el.disabled = !value;
-      } else {
-        el.disabled = true;
-      }
+    if (key === "Pit Cleanout Completed") {
+      el.checked = !!value;
+      el.disabled = !value;
+    } else {
+      el.disabled = true;
     }
   }
-
+}
   function unlockForm() {
     document.querySelectorAll('#vactruck-form input, #vactruck-form select, #vactruck-form textarea')
       .forEach(el => el.disabled = false);
