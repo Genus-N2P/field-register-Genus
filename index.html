@@ -2826,11 +2826,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
       if (!el) continue;
 
-      // Skip auto-populating the completion checkbox - user must manually check it
-      if (el.id === 'reinstatement-completed') {
-        continue;
-      }
-
       if (el.type === 'checkbox') {
         el.checked = value === true;
       } else if (el.tagName === 'SELECT') {
