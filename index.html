@@ -2797,57 +2797,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-function populateAndLockForm(fields) {
-  for (const [key, value] of Object.entries(fields)) {
-    const mappedId = fieldMap[key] || key;
-    let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
-    if (!el) continue;
+  function populateAndLockForm(fields) {
+    for (const [key, value] of Object.entries(fields)) {
+      const mappedId = fieldMap[key] || key;
+      let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
+      if (!el) continue;
 
-    if (el.type === 'checkbox') {
-      el.checked = value === true;
-    } else if (el.tagName === 'SELECT') {
-      // Add missing option if not present
-      let optionExists = [...el.options].some(opt => opt.value === value);
-      if (!optionExists && value !== undefined && value !== null) {
-        const newOption = document.createElement('option');
-        newOption.value = value;
-        newOption.textContent = value;
-        newOption.selected = true;
-        el.appendChild(newOption);
-      }
-      el.value = value;
-    } else {
-      el.value = value;
-    }
-
-    // ===== Special case: Reinstatement Material Type (show/hide "Other" field) =====
-    if (mappedId === 'perm-material') {
-      const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
-      const otherField = document.getElementById('reinstatement-perm-material-other');
-      if (value === 'Other') {
-        otherFieldWrapper.style.display = 'block';
-        otherField.disabled = true; // Lock "Other" input if in locked state
+      if (el.type === 'checkbox') {
+        el.checked = value === true;
+      } else if (el.tagName === 'SELECT') {
+        let optionExists = [...el.options].some(opt => opt.value === value);
+        if (!optionExists && value !== undefined && value !== null) {
+          const newOption = document.createElement('option');
+          newOption.value = value;
+          newOption.textContent = value;
+          newOption.selected = true;
+          el.appendChild(newOption);
+        }
+        el.value = value;
       } else {
-        otherFieldWrapper.style.display = 'none';
-        if (otherField) otherField.value = '';
+        el.value = value;
       }
-    }
 
-    // ===== Checkbox exception logic =====
-    if (
-      key === "Pit Cleanout Completed" || 
-      key === "Permanent Reinstatement Completed"
-    ) {
-      el.checked = !!value;
-      el.disabled = !value; // only enable completion checkbox
-    } else {
-      el.disabled = true; // lock all other fields
+      if (mappedId === 'perm-material') {
+        const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
+        const otherField = document.getElementById('reinstatement-perm-material-other');
+        if (value === 'Other') {
+          otherFieldWrapper.style.display = 'block';
+          otherField.disabled = true;
+        } else {
+          otherFieldWrapper.style.display = 'none';
+          if (otherField) otherField.value = '';
+        }
+      }
+
+      if (
+        key === "Pit Cleanout Completed" || 
+        key === "Permanent Reinstatement Completed"
+      ) {
+        el.checked = !!value;
+        el.disabled = !value;
+      } else {
+        el.disabled = true;
+      }
     }
   }
-}
+
   function unlockForm() {
-    document.querySelectorAll('#reinstatement-form input, #reinstatement-form select, #reinstatement-form textarea')
-      .forEach(el => el.disabled = false);
+    const editableFields = [
+      'reinstatement-perm-material',
+      'reinstatement-perm-material-other',
+      'reinstatement-perm-company-name',
+      'reinstatement-Non-Standard',
+      'reinstatement-comments',
+      'reinstatement-completed'
+    ];
+
+    editableFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = false;
+    });
+
+    const permMaterial = document.getElementById('reinstatement-perm-material');
+    const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
+    if (permMaterial && permMaterial.value === 'Other') {
+      if (otherFieldWrapper) otherFieldWrapper.style.display = 'block';
+    } else if (otherFieldWrapper) {
+      otherFieldWrapper.style.display = 'none';
+    }
   }
 
   document.getElementById('reinstatement-completed').disabled = true;
