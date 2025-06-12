@@ -2592,7 +2592,7 @@ document.addEventListener('DOMContentLoaded', () => {
     "Pit Cleanout Completed": "completed"
   };
 
-  async function searchPitNoteID() {
+  async function searchvactruckNoteID() {
     const noteId = document.getElementById('vactruck-note-id-search').value.trim();
     const summary = document.getElementById('vactruck-note-summary');
     summary.textContent = '';
@@ -2671,7 +2671,7 @@ function populateAndLockForm(fields) {
   }
 
   document.getElementById('vactruck-completed').disabled = true;
-  document.getElementById('vactruck-search-btn').addEventListener('click', searchPitNoteID);
+  document.getElementById('vactruck-search-btn').addEventListener('click', searchvactruckNoteID);
 
   document.getElementById('vactruck-form').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -2756,7 +2756,7 @@ document.addEventListener('DOMContentLoaded', () => {
     "Permanent Reinstatement Completed": "completed"
   };
 
-  async function searchPitNoteID() {
+  async function searchreinstatementNoteID() {
     const noteId = document.getElementById('reinstatement-note-id-search').value.trim();
     const summary = document.getElementById('reinstatement-note-summary');
     summary.textContent = '';
@@ -2867,7 +2867,7 @@ function populateAndLockForm(fields) {
   // Initially lock the completion fields
   lockCompletionFields();
 
-  document.getElementById('reinstatement-search-btn').addEventListener('click', searchPitNoteID);
+  document.getElementById('reinstatement-search-btn').addEventListener('click', searchreinstatementNoteID);
 
   document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
     e.preventDefault();
