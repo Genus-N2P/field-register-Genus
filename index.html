@@ -2725,6 +2725,7 @@ function populateAndLockForm(fields) {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   let existingRecordId = null;
+  let searchPerformed = false; // Track if search has been performed
 
   const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
   const tableKey = 'reinstatement'; // must match your worker tableMap key
@@ -2755,6 +2756,27 @@ document.addEventListener('DOMContentLoaded', () => {
     "Permanent Reinstatement Completed": "completed"
   };
 
+  // Initialize form - lock specific fields on page load
+  function initializeForm() {
+    const fieldsToLock = [
+      'reinstatement-perm-material',
+      'reinstatement-perm-material-other',
+      'reinstatement-perm-company-name',
+      'reinstatement-Non-Standard',
+      'reinstatement-comments',
+      'reinstatement-completed'
+    ];
+
+    fieldsToLock.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.disabled = true;
+        el.style.backgroundColor = '#f5f5f5';
+        el.style.color = '#666';
+      }
+    });
+  }
+
   async function searchPitNoteID() {
     const noteId = document.getElementById('reinstatement-note-id-search').value.trim();
     const summary = document.getElementById('reinstatement-note-summary');
@@ -2777,19 +2799,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await response.json();
-      const submitBtn = document.getElementById('reinstatement-submit-btn');
-      document.getElementById('reinstatement-completed').disabled = false;
+      const submitBtn = document.querySelector('#reinstatement-form button[type="submit"]');
+      searchPerformed = true; // Mark search as performed
 
       if (!data.record) {
         summary.textContent = 'No record found. A new entry will need to be created.';
         existingRecordId = null;
-        unlockForm();
-        submitBtn.textContent = 'Submit';
+        unlockTargetFields(); // Unlock the target fields for new entry
+        if (submitBtn) submitBtn.textContent = 'Submit';
       } else {
-        summary.textContent = 'Record found. All fields locked except completion checkbox.';
+        summary.textContent = 'Record found. All fields locked except completion fields.';
         existingRecordId = data.record.id;
         populateAndLockForm(data.record.fields);
-        submitBtn.textContent = 'Update';
+        if (submitBtn) submitBtn.textContent = 'Update';
       }
     } catch (err) {
       console.error(err);
@@ -2798,6 +2820,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function populateAndLockForm(fields) {
+    // First, lock ALL form fields
+    lockAllFields();
+
+    // Then populate the fields
     for (const [key, value] of Object.entries(fields)) {
       const mappedId = fieldMap[key] || key;
       let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
@@ -2819,32 +2845,44 @@ document.addEventListener('DOMContentLoaded', () => {
         el.value = value;
       }
 
+      // Handle conditional field visibility
       if (mappedId === 'perm-material') {
         const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
         const otherField = document.getElementById('reinstatement-perm-material-other');
         if (value === 'Other') {
           otherFieldWrapper.style.display = 'block';
-          otherField.disabled = true;
         } else {
           otherFieldWrapper.style.display = 'none';
           if (otherField) otherField.value = '';
         }
       }
+    }
 
-      if (
-        key === "Pit Cleanout Completed" || 
-        key === "Permanent Reinstatement Completed"
-      ) {
-        el.checked = !!value;
-        el.disabled = !value;
-      } else {
-        el.disabled = true;
-      }
+    // Only unlock the completion checkbox for existing records
+    const completedCheckbox = document.getElementById('reinstatement-completed');
+    if (completedCheckbox) {
+      completedCheckbox.disabled = false;
+      completedCheckbox.style.backgroundColor = '';
+      completedCheckbox.style.color = '';
     }
   }
 
-  function unlockForm() {
-    const editableFields = [
+  function lockAllFields() {
+    const form = document.getElementById('reinstatement-form');
+    const allInputs = form.querySelectorAll('input, select, textarea');
+    
+    allInputs.forEach(el => {
+      if (el.id !== 'reinstatement-note-id-search') { // Don't lock the search field
+        el.disabled = true;
+        el.style.backgroundColor = '#f5f5f5';
+        el.style.color = '#666';
+      }
+    });
+  }
+
+  function unlockTargetFields() {
+    // When search is successful but no record found, unlock the target fields
+    const fieldsToUnlock = [
       'reinstatement-perm-material',
       'reinstatement-perm-material-other',
       'reinstatement-perm-company-name',
@@ -2853,68 +2891,123 @@ document.addEventListener('DOMContentLoaded', () => {
       'reinstatement-completed'
     ];
 
-    editableFields.forEach(id => {
+    fieldsToUnlock.forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.disabled = false;
+      if (el) {
+        el.disabled = false;
+        el.style.backgroundColor = '';
+        el.style.color = '';
+      }
     });
 
+    // Handle conditional field for perm-material
     const permMaterial = document.getElementById('reinstatement-perm-material');
     const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
+    const otherField = document.getElementById('reinstatement-perm-material-other');
+    
     if (permMaterial && permMaterial.value === 'Other') {
       if (otherFieldWrapper) otherFieldWrapper.style.display = 'block';
+      if (otherField) {
+        otherField.disabled = false;
+        otherField.style.backgroundColor = '';
+        otherField.style.color = '';
+      }
     } else if (otherFieldWrapper) {
       otherFieldWrapper.style.display = 'none';
     }
   }
 
-  document.getElementById('reinstatement-completed').disabled = true;
+  // Initialize the form on page load
+  initializeForm();
+
+  // Add event listener for the search button
   document.getElementById('reinstatement-search-btn').addEventListener('click', searchPitNoteID);
 
+  // Handle form submission
   document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+
+    if (!searchPerformed) {
+      alert('Please perform a search for the Duct Note ID before submitting.');
+      return;
+    }
 
     const noteIdEntered = document.getElementById('reinstatement-note-id-search').value.trim();
     const completedCheckbox = document.getElementById('reinstatement-completed');
     const isChecked = completedCheckbox.checked;
 
-    if (!noteIdEntered || !existingRecordId) return;
-
-    if (!isChecked) {
-      alert("Please check 'Permanent Reinstatement Completed' before submitting.");
+    if (!noteIdEntered) {
+      alert('Please enter a Note ID.');
       return;
     }
 
-    let data = {
-      "Permanent Reinstatement Completed": true
-    };
-
-    const now = new Date();
-    const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
-    const year = perthTime.getFullYear();
-    const month = String(perthTime.getMonth() + 1).padStart(2, '0');
-    const day = String(perthTime.getDate()).padStart(2, '0');
-    data["Pit Cleanout Datestamp"] = `${year}-${month}-${day}`;
-
-    try {
-      const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
-      const response = await fetch(url, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: data })
-      });
-
-      const result = await response.json();
-      if (!response.ok) {
-        alert('Update failed.');
+    if (existingRecordId) {
+      // Updating existing record
+      if (!isChecked) {
+        alert("Please check 'Permanent Reinstatement Completed' before submitting.");
         return;
       }
 
-      alert('Record updated successfully!');
-      location.reload();
+      let data = {
+        "Permanent Reinstatement Completed": true
+      };
 
-    } catch (err) {
-      console.error(err);
-      alert('There was an error updating the record.');
+      const now = new Date();
+      const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+      const year = perthTime.getFullYear();
+      const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+      const day = String(perthTime.getDate()).padStart(2, '0');
+      data["Pit Cleanout Datestamp"] = `${year}-${month}-${day}`;
+
+      try {
+        const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+        const response = await fetch(url, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: data })
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+          alert('Update failed.');
+          return;
+        }
+
+        alert('Record updated successfully!');
+        location.reload();
+
+      } catch (err) {
+        console.error(err);
+        alert('There was an error updating the record.');
+      }
+    } else {
+      // Handle new record creation here if needed
+      alert('New record creation functionality needs to be implemented.');
+    }
+  });
+
+  // Handle conditional field visibility for perm-material when it changes
+  document.getElementById('reinstatement-perm-material').addEventListener('change', function() {
+    const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
+    const otherField = document.getElementById('reinstatement-perm-material-other');
+    
+    if (this.value === 'Other') {
+      otherFieldWrapper.style.display = 'block';
+      if (!this.disabled && otherField) {
+        otherField.disabled = false;
+        otherField.style.backgroundColor = '';
+        otherField.style.color = '';
+      }
+    } else {
+      otherFieldWrapper.style.display = 'none';
+      if (otherField) {
+        otherField.value = '';
+        if (this.disabled) {
+          otherField.disabled = true;
+          otherField.style.backgroundColor = '#f5f5f5';
+          otherField.style.color = '#666';
+        }
+      }
     }
   });
 });
