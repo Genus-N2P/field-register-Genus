@@ -2731,8 +2731,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const tableKey = 'reinstatement';
 
   const fieldMap = {
-    "Temp Reinstatement Date": "site-contact",
-    "Your Name": "date",
+    "Temp Reinstatement Date": "date",
+    "Your Name": "site-contact",
     "Address": "address",
     "SAM": "SAM",
     "ADA ID": "ADA",
@@ -2756,17 +2756,17 @@ document.addEventListener('DOMContentLoaded', () => {
     "Permanent Reinstatement Completed": "completed"
   };
 
-  const targetFields = [
-    'reinstatement-perm-material',
-    'reinstatement-perm-material-other',
-    'reinstatement-perm-company-name',
-    'reinstatement-Non-Standard',
-    'reinstatement-comments',
-    'reinstatement-completed'
-  ];
+  function initializeForm() {
+    const fieldsToLock = [
+      'reinstatement-perm-material',
+      'reinstatement-perm-material-other',
+      'reinstatement-perm-company-name',
+      'reinstatement-Non-Standard',
+      'reinstatement-comments',
+      'reinstatement-completed'
+    ];
 
-  function lockFields(ids) {
-    ids.forEach(id => {
+    fieldsToLock.forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.disabled = true;
@@ -2774,21 +2774,6 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.color = '#666';
       }
     });
-  }
-
-  function unlockFields(ids) {
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.disabled = false;
-        el.style.backgroundColor = '';
-        el.style.color = '';
-      }
-    });
-  }
-
-  function initializeForm() {
-    lockFields(targetFields);
   }
 
   async function searchPitNoteID() {
@@ -2822,7 +2807,7 @@ document.addEventListener('DOMContentLoaded', () => {
         unlockTargetFields();
         if (submitBtn) submitBtn.textContent = 'Submit';
       } else {
-        summary.textContent = 'Record found. All fields locked except completion fields.';
+        summary.textContent = 'Record found. Only completion fields unlocked.';
         existingRecordId = data.record.id;
         populateAndLockForm(data.record.fields);
         if (submitBtn) submitBtn.textContent = 'Update';
@@ -2857,30 +2842,42 @@ document.addEventListener('DOMContentLoaded', () => {
         el.value = value;
       }
 
-      // Handle perm-material 'Other'
       if (mappedId === 'perm-material') {
         const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
         const otherField = document.getElementById('reinstatement-perm-material-other');
         if (value === 'Other') {
-          if (otherFieldWrapper) otherFieldWrapper.style.display = 'block';
+          otherFieldWrapper.style.display = 'block';
         } else {
-          if (otherFieldWrapper) otherFieldWrapper.style.display = 'none';
+          otherFieldWrapper.style.display = 'none';
           if (otherField) otherField.value = '';
         }
       }
     }
 
-    const completedCheckbox = document.getElementById('reinstatement-completed');
-    if (completedCheckbox) {
-      completedCheckbox.disabled = false;
-      completedCheckbox.style.backgroundColor = '';
-      completedCheckbox.style.color = '';
-    }
+    // Unlock only these fields
+    const fieldsToUnlock = [
+      'reinstatement-perm-material',
+      'reinstatement-perm-material-other',
+      'reinstatement-perm-company-name',
+      'reinstatement-Non-Standard',
+      'reinstatement-comments',
+      'reinstatement-completed'
+    ];
+
+    fieldsToUnlock.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.disabled = false;
+        el.style.backgroundColor = '';
+        el.style.color = '';
+      }
+    });
   }
 
   function lockAllFields() {
     const form = document.getElementById('reinstatement-form');
     const allInputs = form.querySelectorAll('input, select, textarea');
+
     allInputs.forEach(el => {
       if (el.id !== 'reinstatement-note-id-search') {
         el.disabled = true;
@@ -2891,7 +2888,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function unlockTargetFields() {
-    unlockFields(targetFields);
+    const fieldsToUnlock = [
+      'reinstatement-perm-material',
+      'reinstatement-perm-material-other',
+      'reinstatement-perm-company-name',
+      'reinstatement-Non-Standard',
+      'reinstatement-comments',
+      'reinstatement-completed'
+    ];
+
+    fieldsToUnlock.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.disabled = false;
+        el.style.backgroundColor = '';
+        el.style.color = '';
+      }
+    });
 
     const permMaterial = document.getElementById('reinstatement-perm-material');
     const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
@@ -2910,7 +2923,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initializeForm();
-
   document.getElementById('reinstatement-search-btn').addEventListener('click', searchPitNoteID);
 
   document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
@@ -2967,19 +2979,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.getElementById('reinstatement-perm-material').addEventListener('change', function () {
+  document.getElementById('reinstatement-perm-material').addEventListener('change', function() {
     const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
     const otherField = document.getElementById('reinstatement-perm-material-other');
 
     if (this.value === 'Other') {
-      if (otherFieldWrapper) otherFieldWrapper.style.display = 'block';
+      otherFieldWrapper.style.display = 'block';
       if (!this.disabled && otherField) {
         otherField.disabled = false;
         otherField.style.backgroundColor = '';
         otherField.style.color = '';
       }
     } else {
-      if (otherFieldWrapper) otherFieldWrapper.style.display = 'none';
+      otherFieldWrapper.style.display = 'none';
       if (otherField) {
         otherField.value = '';
         if (this.disabled) {
@@ -2992,6 +3004,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-
 </body>
 </html>
