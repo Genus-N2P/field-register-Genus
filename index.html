@@ -2781,10 +2781,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const summary = document.getElementById('reinstatement-note-summary');
     summary.textContent = '';
 
-    if (!noteId) {
-      alert('Please enter a Note ID to search.');
-      return;
-    }
+    // if (!noteId) {
+    //  alert('Please enter a Note ID to search.');
+    //  return;
+    // }
 
     try {
       const response = await fetch(`${apiBase}/lookup/${tableKey}?noteId=${encodeURIComponent(noteId)}`);
@@ -2922,7 +2922,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  initializeForm();
+ initializeForm();
   document.getElementById('reinstatement-search-btn').addEventListener('click', searchPitNoteID);
 
   document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
@@ -2947,12 +2947,13 @@ document.addEventListener('DOMContentLoaded', () => {
         "Permanent Reinstatement Completed": true
       };
 
+      // Add timestamp
       const now = new Date();
       const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
       const year = perthTime.getFullYear();
       const month = String(perthTime.getMonth() + 1).padStart(2, '0');
       const day = String(perthTime.getDate()).padStart(2, '0');
-      data["Pit Cleanout Datestamp"] = `${year}-${month}-${day}`;
+      data["Permanent Reinstatement Timestamp"] = `${year}-${month}-${day}`;
 
       try {
         const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
@@ -2978,7 +2979,6 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('New record creation functionality needs to be implemented.');
     }
   });
-
   document.getElementById('reinstatement-perm-material').addEventListener('change', function() {
     const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
     const otherField = document.getElementById('reinstatement-perm-material-other');
