@@ -2559,7 +2559,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const year = perthTime.getFullYear();
     const month = String(perthTime.getMonth() + 1).padStart(2, '0');
     const day = String(perthTime.getDate()).padStart(2, '0');
-    data["Pit Link-in Completed Timestamp"] = `${year}-${month}-${day}`;
+    data["Pit Cleanout Datestamp"] = `${year}-${month}-${day}`;
 
     try {
       const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
