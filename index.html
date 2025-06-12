@@ -2726,10 +2726,9 @@ function populateAndLockForm(fields) {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   let existingRecordId = null;
-  let searchPerformed = false;
 
   const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
-  const tableKey = 'reinstatement';
+  const tableKey = 'reinstatement'; // must match your worker tableMap key
 
   const fieldMap = {
     "Temp Reinstatement Date": "date",
@@ -2757,35 +2756,15 @@ document.addEventListener('DOMContentLoaded', () => {
     "Permanent Reinstatement Completed": "completed"
   };
 
-  function initializeForm() {
-    const fieldsToLock = [
-      'reinstatement-perm-material',
-      'reinstatement-perm-material-other',
-      'reinstatement-perm-company-name',
-      'reinstatement-Non-Standard',
-      'reinstatement-comments',
-      'reinstatement-completed'
-    ];
-
-    fieldsToLock.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.disabled = true;
-        el.style.backgroundColor = '#f5f5f5';
-        el.style.color = '#666';
-      }
-    });
-  }
-
   async function searchPitNoteID() {
     const noteId = document.getElementById('reinstatement-note-id-search').value.trim();
     const summary = document.getElementById('reinstatement-note-summary');
     summary.textContent = '';
 
-    // if (!noteId) {
-    //  alert('Please enter a Note ID to search.');
-    //  return;
-    // }
+    if (!noteId) {
+      alert('Please enter a Note ID to search.');
+      return;
+    }
 
     try {
       const response = await fetch(`${apiBase}/lookup/${tableKey}?noteId=${encodeURIComponent(noteId)}`);
@@ -2799,19 +2778,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await response.json();
-      const submitBtn = document.querySelector('#reinstatement-form button[type="submit"]');
-      searchPerformed = true;
+      const submitBtn = document.getElementById('reinstatement-submit-btn');
 
       if (!data.record) {
         summary.textContent = 'No record found. A new entry will need to be created.';
         existingRecordId = null;
-        unlockTargetFields();
-        if (submitBtn) submitBtn.textContent = 'Submit';
+        unlockForm();
+        // Lock the specific completion fields for new records
+        lockCompletionFields();
+        submitBtn.textContent = 'Submit';
       } else {
-        summary.textContent = 'Record found. Only completion fields unlocked.';
+        summary.textContent = 'Record found. Populated fields locked, unpopulated fields available for editing.';
         existingRecordId = data.record.id;
         populateAndLockForm(data.record.fields);
-        if (submitBtn) submitBtn.textContent = 'Update';
+        submitBtn.textContent = 'Update';
       }
     } catch (err) {
       console.error(err);
@@ -2819,93 +2799,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function populateAndLockForm(fields) {
-    lockAllFields();
+function populateAndLockForm(fields) {
+  const completionFields = [
+    'reinstatement-perm-material',
+    'reinstatement-perm-material-other',
+    'reinstatement-perm-company-name',
+    'reinstatement-Non-Standard',
+    'reinstatement-comments',
+    'reinstatement-completed'
+  ];
 
-    // Check if "Permanent Reinstatement Timestamp" exists and is not null
-    const hasTimestamp = fields["Permanent Reinstatement Timestamp"] && 
-                        fields["Permanent Reinstatement Timestamp"] !== null && 
-                        fields["Permanent Reinstatement Timestamp"] !== '';
+  // First unlock all fields
+  unlockForm();
 
-    for (const [key, value] of Object.entries(fields)) {
-      const mappedId = fieldMap[key] || key;
-      let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
-      if (!el) continue;
+  for (const [key, value] of Object.entries(fields)) {
+    const mappedId = fieldMap[key] || key;
+    const el = document.getElementById(`reinstatement-${mappedId}`);
+    if (!el) continue;
 
-      // Skip auto-populating the completion checkbox - user must manually check it
-      if (el.id === 'reinstatement-completed') {
-        continue;
+    if (el.type === 'checkbox') {
+      el.checked = value === true;
+    } else if (el.tagName === 'SELECT') {
+      // Add missing option if not present
+      let optionExists = [...el.options].some(opt => opt.value === value);
+      if (!optionExists && value !== undefined && value !== null) {
+        const newOption = document.createElement('option');
+        newOption.value = value;
+        newOption.textContent = value;
+        newOption.selected = true;
+        el.appendChild(newOption);
       }
-
-      if (el.type === 'checkbox') {
-        el.checked = value === true;
-      } else if (el.tagName === 'SELECT') {
-        let optionExists = [...el.options].some(opt => opt.value === value);
-        if (!optionExists && value !== undefined && value !== null) {
-          const newOption = document.createElement('option');
-          newOption.value = value;
-          newOption.textContent = value;
-          newOption.selected = true;
-          el.appendChild(newOption);
-        }
-        el.value = value;
-      } else {
-        el.value = value;
-      }
-
-      if (mappedId === 'perm-material') {
-        const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
-        const otherField = document.getElementById('reinstatement-perm-material-other');
-        if (value === 'Other') {
-          otherFieldWrapper.style.display = 'block';
-        } else {
-          otherFieldWrapper.style.display = 'none';
-          if (otherField) otherField.value = '';
-        }
-      }
-    }
-
-    // If timestamp exists, lock all fields. Otherwise, unlock the target fields.
-    if (hasTimestamp) {
-      // Keep all fields locked - they're already locked by lockAllFields()
-      return;
+      el.value = value;
     } else {
-      // Unlock only these fields
-      const fieldsToUnlock = [
-        'reinstatement-perm-material',
-        'reinstatement-perm-material-other',
-        'reinstatement-perm-company-name',
-        'reinstatement-Non-Standard',
-        'reinstatement-comments',
-        'reinstatement-completed'
-      ];
+      el.value = value;
+    }
 
-      fieldsToUnlock.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.disabled = false;
-          el.style.backgroundColor = '';
-          el.style.color = '';
-        }
-      });
+    // If field has a value (is populated), lock it
+    if (value !== undefined && value !== null && value !== '') {
+      el.disabled = true;
     }
   }
+}
 
-  function lockAllFields() {
-    const form = document.getElementById('reinstatement-form');
-    const allInputs = form.querySelectorAll('input, select, textarea');
-
-    allInputs.forEach(el => {
-      if (el.id !== 'reinstatement-note-id-search') {
-        el.disabled = true;
-        el.style.backgroundColor = '#f5f5f5';
-        el.style.color = '#666';
-      }
-    });
+  function unlockForm() {
+    document.querySelectorAll('#reinstatement-form input, #reinstatement-form select, #reinstatement-form textarea')
+      .forEach(el => el.disabled = false);
   }
 
-  function unlockTargetFields() {
-    const fieldsToUnlock = [
+  function lockCompletionFields() {
+    const completionFields = [
       'reinstatement-perm-material',
       'reinstatement-perm-material-other',
       'reinstatement-perm-company-name',
@@ -2913,33 +2855,18 @@ document.addEventListener('DOMContentLoaded', () => {
       'reinstatement-comments',
       'reinstatement-completed'
     ];
-
-    fieldsToUnlock.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.disabled = false;
-        el.style.backgroundColor = '';
-        el.style.color = '';
+    
+    completionFields.forEach(fieldId => {
+      const element = document.getElementById(fieldId);
+      if (element) {
+        element.disabled = true;
       }
     });
-
-    const permMaterial = document.getElementById('reinstatement-perm-material');
-    const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
-    const otherField = document.getElementById('reinstatement-perm-material-other');
-
-    if (permMaterial && permMaterial.value === 'Other') {
-      if (otherFieldWrapper) otherFieldWrapper.style.display = 'block';
-      if (otherField) {
-        otherField.disabled = false;
-        otherField.style.backgroundColor = '';
-        otherField.style.color = '';
-      }
-    } else if (otherFieldWrapper) {
-      otherFieldWrapper.style.display = 'none';
-    }
   }
 
- initializeForm();
+  // Initially lock the completion fields
+  lockCompletionFields();
+
   document.getElementById('reinstatement-search-btn').addEventListener('click', searchPitNoteID);
 
   document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
@@ -2949,86 +2876,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const completedCheckbox = document.getElementById('reinstatement-completed');
     const isChecked = completedCheckbox.checked;
 
-    // if (!noteIdEntered) {
-    //  alert('Please enter a Note ID.');
-    //  return;
-    // }
+    if (!noteIdEntered || !existingRecordId) return;
 
-    if (existingRecordId) {
-  if (!isChecked) {
-    alert("Please check 'Permanent Reinstatement Completed' before submitting.");
-    return;
-  }
-
-  const permMaterial = document.getElementById('reinstatement-perm-material')?.value || '';
-  const permMaterialOther = document.getElementById('reinstatement-perm-material-other')?.value || '';
-  const permCompany = document.getElementById('reinstatement-perm-company-name')?.value || '';
-  const nonStandard = document.getElementById('reinstatement-Non-Standard')?.checked || false;
-  const comments = document.getElementById('reinstatement-comments')?.value || '';
-
-  const now = new Date();
-  const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
-  const year = perthTime.getFullYear();
-  const month = String(perthTime.getMonth() + 1).padStart(2, '0');
-  const day = String(perthTime.getDate()).padStart(2, '0');
-
-  const data = {
-    "Permanent Material": permMaterial,
-    "Permanent Material - Other": permMaterialOther,
-    "Permanent Contractor Company Name": permCompany,
-    "Non-Standard Reinstatement": nonStandard,
-    "Additional Comments": comments,
-    "Permanent Reinstatement Completed": true,
-    "Permanent Reinstatement Timestamp": `${year}-${month}-${day}`
-  };
-
-  try {
-    const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: data })
-    });
-
-    const result = await response.json();
-    if (!response.ok) {
-      alert('Update failed.');
+    if (!isChecked) {
+      alert("Please check 'Permanent Reinstatement Completed' before submitting.");
       return;
     }
 
-    alert('Record updated successfully!');
-    location.reload();
-  } catch (err) {
-    console.error(err);
-    alert('There was an error updating the record.');
-  }
-} else {
-      alert('New record creation functionality needs to be implemented.');
-    }
-  });
-  document.getElementById('reinstatement-perm-material').addEventListener('change', function() {
-    const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
-    const otherField = document.getElementById('reinstatement-perm-material-other');
+    let data = {
+      "Permanent Reinstatement Completed": true
+    };
 
-    if (this.value === 'Other') {
-      otherFieldWrapper.style.display = 'block';
-      if (!this.disabled && otherField) {
-        otherField.disabled = false;
-        otherField.style.backgroundColor = '';
-        otherField.style.color = '';
+    const now = new Date();
+    const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+    const year = perthTime.getFullYear();
+    const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+    const day = String(perthTime.getDate()).padStart(2, '0');
+    data["Permanent Reinstatement Completed Timestamp"] = `${year}-${month}-${day}`;
+
+    try {
+      const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: data })
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        alert('Update failed.');
+        return;
       }
-    } else {
-      otherFieldWrapper.style.display = 'none';
-      if (otherField) {
-        otherField.value = '';
-        if (this.disabled) {
-          otherField.disabled = true;
-          otherField.style.backgroundColor = '#f5f5f5';
-          otherField.style.color = '#666';
-        }
-      }
+
+      alert('Record updated successfully!');
+      location.reload();
+
+    } catch (err) {
+      console.error(err);
+      alert('There was an error updating the record.');
     }
   });
-});</script>
+});
+</script>
 </body>
 </html>
