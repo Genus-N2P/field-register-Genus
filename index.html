@@ -2883,16 +2883,33 @@ function populateAndLockForm(fields) {
       return;
     }
 
+    // Collect all the unlocked completion fields for update
     let data = {
-      "Permanent Reinstatement Completed": true
+      "Permanent Reinstatement Completed": isChecked
     };
 
-    const now = new Date();
-    const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
-    const year = perthTime.getFullYear();
-    const month = String(perthTime.getMonth() + 1).padStart(2, '0');
-    const day = String(perthTime.getDate()).padStart(2, '0');
-    data["Permanent Reinstatement Completed Timestamp"] = `${year}-${month}-${day}`;
+    // Add timestamp only if checkbox is checked
+    if (isChecked) {
+      const now = new Date();
+      const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+      const year = perthTime.getFullYear();
+      const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+      const day = String(perthTime.getDate()).padStart(2, '0');
+      data["Permanent Reinstatement Timestamp"] = `${year}-${month}-${day}`;
+    }
+
+    // Collect other completion field values
+    const permMaterial = document.getElementById('reinstatement-perm-material').value;
+    const permMaterialOther = document.getElementById('reinstatement-perm-material-other').value;
+    const permCompanyName = document.getElementById('reinstatement-perm-company-name').value;
+    const nonStandard = document.getElementById('reinstatement-Non-Standard').checked;
+    const comments = document.getElementById('reinstatement-comments').value;
+
+    if (permMaterial) data["Permanent Material"] = permMaterial;
+    if (permMaterialOther) data["Permanent Material - Other"] = permMaterialOther;
+    if (permCompanyName) data["Permanent Contractor Company Name"] = permCompanyName;
+    data["Non-Standard Reinstatement"] = nonStandard;
+    if (comments) data["Additional Comments"] = comments;
 
     try {
       const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
