@@ -2821,10 +2821,20 @@ document.addEventListener('DOMContentLoaded', () => {
   function populateAndLockForm(fields) {
     lockAllFields();
 
+    // Check if "Permanent Reinstatement Timestamp" exists and is not null
+    const hasTimestamp = fields["Permanent Reinstatement Timestamp"] && 
+                        fields["Permanent Reinstatement Timestamp"] !== null && 
+                        fields["Permanent Reinstatement Timestamp"] !== '';
+
     for (const [key, value] of Object.entries(fields)) {
       const mappedId = fieldMap[key] || key;
       let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
       if (!el) continue;
+
+      // Skip auto-populating the completion checkbox - user must manually check it
+      if (el.id === 'reinstatement-completed') {
+        continue;
+      }
 
       if (el.type === 'checkbox') {
         el.checked = value === true;
@@ -2854,24 +2864,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Unlock only these fields
-    const fieldsToUnlock = [
-      'reinstatement-perm-material',
-      'reinstatement-perm-material-other',
-      'reinstatement-perm-company-name',
-      'reinstatement-Non-Standard',
-      'reinstatement-comments',
-      'reinstatement-completed'
-    ];
+    // If timestamp exists, lock all fields. Otherwise, unlock the target fields.
+    if (hasTimestamp) {
+      // Keep all fields locked - they're already locked by lockAllFields()
+      return;
+    } else {
+      // Unlock only these fields
+      const fieldsToUnlock = [
+        'reinstatement-perm-material',
+        'reinstatement-perm-material-other',
+        'reinstatement-perm-company-name',
+        'reinstatement-Non-Standard',
+        'reinstatement-comments',
+        'reinstatement-completed'
+      ];
 
-    fieldsToUnlock.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.disabled = false;
-        el.style.backgroundColor = '';
-        el.style.color = '';
-      }
-    });
+      fieldsToUnlock.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.disabled = false;
+          el.style.backgroundColor = '';
+          el.style.color = '';
+        }
+      });
+    }
   }
 
   function lockAllFields() {
@@ -3012,7 +3028,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
-});
-</script>
+});</script>
 </body>
 </html>
