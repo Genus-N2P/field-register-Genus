@@ -2938,44 +2938,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (existingRecordId) {
-      if (!isChecked) {
-        alert("Please check 'Permanent Reinstatement Completed' before submitting.");
-        return;
-      }
+  if (!isChecked) {
+    alert("Please check 'Permanent Reinstatement Completed' before submitting.");
+    return;
+  }
 
-      let data = {
-        "Permanent Reinstatement Completed": true
-      };
+  const permMaterial = document.getElementById('reinstatement-perm-material')?.value || '';
+  const permMaterialOther = document.getElementById('reinstatement-perm-material-other')?.value || '';
+  const permCompany = document.getElementById('reinstatement-perm-company-name')?.value || '';
+  const nonStandard = document.getElementById('reinstatement-Non-Standard')?.checked || false;
+  const comments = document.getElementById('reinstatement-comments')?.value || '';
 
-      // Add timestamp
-      const now = new Date();
-      const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
-      const year = perthTime.getFullYear();
-      const month = String(perthTime.getMonth() + 1).padStart(2, '0');
-      const day = String(perthTime.getDate()).padStart(2, '0');
-      data["Permanent Reinstatement Timestamp"] = `${year}-${month}-${day}`;
+  const now = new Date();
+  const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+  const year = perthTime.getFullYear();
+  const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+  const day = String(perthTime.getDate()).padStart(2, '0');
 
-      try {
-        const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
-        const response = await fetch(url, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: data })
-        });
+  const data = {
+    "Permanent Material": permMaterial,
+    "Permanent Material - Other": permMaterialOther,
+    "Permanent Contractor Company Name": permCompany,
+    "Non-Standard Reinstatement": nonStandard,
+    "Additional Comments": comments,
+    "Permanent Reinstatement Completed": true,
+    "Permanent Reinstatement Timestamp": `${year}-${month}-${day}`
+  };
 
-        const result = await response.json();
-        if (!response.ok) {
-          alert('Update failed.');
-          return;
-        }
+  try {
+    const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields: data })
+    });
 
-        alert('Record updated successfully!');
-        location.reload();
-      } catch (err) {
-        console.error(err);
-        alert('There was an error updating the record.');
-      }
-    } else {
+    const result = await response.json();
+    if (!response.ok) {
+      alert('Update failed.');
+      return;
+    }
+
+    alert('Record updated successfully!');
+    location.reload();
+  } catch (err) {
+    console.error(err);
+    alert('There was an error updating the record.');
+  }
+} else {
       alert('New record creation functionality needs to be implemented.');
     }
   });
