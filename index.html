@@ -2120,9 +2120,9 @@ showSuccessMessage();
         // Validate if the input element exists and is not disabled.
         // PitA-Note-ID and PitB-Note-ID are now always validated regardless of checkboxes.
         if (inputElement && !inputElement.disabled) {
-            // Check for exactly 5 digits
-            if (!/^\d{5}$/.test(value)) {
-                errorMessage += `- '${fieldInfo.name}' must contain exactly 5 digits.\n`;
+            // Check for between 5-7 digits
+            if (!/^\d{5,7}$/.test(value)) {
+                errorMessage += `- '${fieldInfo.name}' must contain between 5-7 digits.\n`;
                 inputElement.classList.add('field-error'); // Add error styling
                 isValid = false;
             } else {
@@ -2134,7 +2134,7 @@ showSuccessMessage();
         }
     });
 
-    // If a value is empty, it won't match /^\d{5}$/ and will be flagged.
+    // If a value is empty, it won't match /^\d{5,7}$/ and will be flagged.
 
     if (!isValid) {
         alert('Please correct the following errors before submitting:\n' + errorMessage);
@@ -2186,10 +2186,10 @@ showSuccessMessage();
         document.getElementById('vactruck-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-    // --- New 5-digit ID Validation (Updated) ---
+    // --- New 5-7-digit ID Validation (Updated) ---
     let isValid = true;
     const idFieldsToValidate = [
-        { id: 'vactruck-Pit-Note-ID', name: 'Duct Pit ID' },
+        { id: 'vactruck-Pit-Note-ID', name: 'Pit Note ID' },
     ];
     let errorMessage = '';
 
@@ -2198,11 +2198,10 @@ showSuccessMessage();
         const value = inputElement ? inputElement.value.trim() : '';
 
         // Validate if the input element exists and is not disabled.
-        // PitA-Note-ID and PitB-Note-ID are now always validated regardless of checkboxes.
         if (inputElement && !inputElement.disabled) {
-            // Check for exactly 5 digits
-            if (!/^\d{5}$/.test(value)) {
-                errorMessage += `- '${fieldInfo.name}' must contain exactly 5 digits.\n`;
+            // Check for between 5-7 digits
+            if (!/^\d{5,7}$/.test(value)) {
+                errorMessage += `- '${fieldInfo.name}' must contain between 5-7 digits.\n`;
                 inputElement.classList.add('field-error'); // Add error styling
                 isValid = false;
             } else {
@@ -2214,7 +2213,7 @@ showSuccessMessage();
         }
     });
 
-    // If a value is empty, it won't match /^\d{5}$/ and will be flagged.
+    // If a value is empty, it won't match /^\d{5,7}$/ and will be flagged.
 
     if (!isValid) {
         alert('Please correct the following errors before submitting:\n' + errorMessage);
