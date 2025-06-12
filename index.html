@@ -946,7 +946,7 @@ textarea {
       <p>Please complete for any temporary reinstatement works.</p>
       <form id="reinstatement-form" onsubmit="return validateGenericForm('reinstatement-form')">
 
-<label for="reinstatement-note-id-search">Search Duct Note ID</label>
+<label for="reinstatement-note-id-search">Search Note ID</label>
 <div style="display: flex; gap: 0.5rem; align-items: center;">
   <input type="text" id="reinstatement-note-id-search" placeholder="Enter Note ID" />
   <button type="button" id="reinstatement-search-btn" class="search-btn">Search</button>
@@ -2195,7 +2195,7 @@ showSuccessMessage();
                 'Permanent Contractor Company Name': document.getElementById('reinstatement-perm-company-name').value,
                 'Non-Standard Reinstatement': document.getElementById('reinstatement-Non-Standard').checked,
                 'Additional Comments': document.getElementById('reinstatement-comments').value,
-                'Permanent Reinstatement Completed': document.getElementById('reinstatement-completed').value,
+                'Permanent Reinstatement Completed': document.getElementById('reinstatement-completed').checked,
             };
             
             try {
