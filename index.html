@@ -945,6 +945,23 @@ textarea {
       <p>Please complete for any temporary reinstatement works.</p>
       <form id="reinstatement-form" onsubmit="return validateGenericForm('reinstatement-form')">
 
+<label for="reinstatement-note-id-search">Search Duct Note ID</label>
+<div style="display: flex; gap: 0.5rem; align-items: center;">
+  <input type="text" id="reinstatement-note-id-search" placeholder="Enter Note ID" />
+  <button type="button" id="reinstatement-search-btn" class="search-btn">Search</button>
+</div>
+
+<!-- Optional read-only summary or error display -->
+<div id="reinstatement-note-summary" style="margin-top: 1rem; font-weight: bold;"></div>
+
+<!-- OR Divider -->
+<div class="or-divider">
+  <hr class="line" />
+  <span class="or-text">OR</span>
+  <hr class="line" />
+</div>
+
+
 	<!-- Hidden input hardcoded to 'Reinstatement' -->
 	<input type="hidden" id="reinstatement-type" name="reinstatement-type" value="Reinstatement">
 
@@ -1038,17 +1055,9 @@ textarea {
           <option value="31">31</option>
         </select>
 
-        <label for="reinstatement-note-id">Note ID</label>
-<input
-  type="text"
-  id="reinstatement-note-id"
-  name="reinstatement-note-id"
-  placeholder="Enter Note ID number only, e.g. 12345"
-  pattern="^\d{5}$"
-  oninvalid="this.setCustomValidity('Enter a 5-digit number like 12345')"
-  oninput="this.setCustomValidity('')"
-  required
-/>
+        <label for="reinstatement-Pit-Note-ID">Pit Note ID:</label>
+        <input type="text" id="reinstatement-Pit-Note-ID" name="reinstatement-Pit-Note-ID" required />
+
 
         <label for="reinstatement-asset-type">Asset Type</label>
         <select id="reinstatement-asset-type" name="reinstatement-asset-type" required>
@@ -1063,7 +1072,7 @@ textarea {
         <select id="reinstatement-surface-type" name="reinstatement-surface-type" onchange="toggleSurfaceTypeField()" required>
           <option value="">Select one</option>
           <option value="Aggregate">Aggregate</option>
-          <option value="Bitument">Bitument</option>
+          <option value="Bitumen">Bitumen</option>
           <option value="Concrete">Concrete</option>
           <option value="Cracker Dust">Cracker Dust</option>
           <option value="Gravel">Gravel</option>
@@ -1142,6 +1151,57 @@ textarea {
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
+
+        <label for="reinstatement-perm-material">Permanent Reinstatement Material Type</label>
+        <select id="reinstatement-perm-material" name="reinstatement-perm-material" onchange="togglePermMaterialTypeField()" required>
+          <option value="">Select one</option>
+          <option value="Aggregate">Aggregate</option>
+          <option value="Bitumen">Bitumen</option>
+          <option value="Bitumen-Red">Bitumen - Red</option>
+          <option value="Concrete">Concrete</option>
+          <option value="Cracker Dust">Cracker Dust</option>
+          <option value="Gravel">Gravel</option>
+          <option value="Limestone">Limestone</option>
+          <option value="Paved">Paved</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <!-- Conditional Field -->
+<div id="reinstatement-perm-material-notification-field" style="display: none; margin-top: 10px;">
+  <label for="reinstatement-perm-material-other">Permanent Reinstatement Material Used - Other</label>
+<input type="text" id="reinstatement-perm-material-other" name="reinstatement-perm-material-other" />
+</div>
+
+        <label for="reinstatement-perm-company-name">Permanent Reinstatement Contractor Company Name</label>
+        <select id="reinstatement-perm-company-name" name="reinstatement-perm-company-name" required>
+          <option value="">Select one</option>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
+        </select>
+
+	<label>
+	<input type="checkbox" id="reinstatement-Non-Standard" name="reinstatement-Non-Standard" />
+	Was this a non-standard Permanent Reinstatement?
+	</label>
+
+        <label for="reinstatement-comments">Any additional comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
+        <textarea id="reinstatement-comments" name="reinstatement-comments" placeholder="If there are no additional comments, there is no need to enter anything here"></textarea>
+
+	<label>
+	<input type="checkbox" id="reinstatement-completed" name="reinstatement-completed" />
+	Permanent Reinstatement Completed
+	</label>
 
         <div class="form-footer">
           <button type="button" class="btn-back" onclick="confirmReset('reinstatement')">Back</button>
@@ -1568,6 +1628,21 @@ function confirmReset(formType) {
        materialtypeField.style.display = "none";
         materialtypeInput.required = false;
         materialtypeInput.value = ""; // clear the input if hidden
+      }
+    }
+
+    function togglePermMaterialTypeField() {
+      const permmaterialtypeSelect = document.getElementById("reinstatement-perm-material");
+      const permmaterialtypeField = document.getElementById("reinstatement-perm-material-notification-field");
+      const permmaterialtypeInput = document.getElementById("reinstatement-perm-material-other");
+
+      if (permmaterialtypeSelect.value === "Other") {
+        permmaterialtypeField.style.display = "block";
+        permmaterialtypeInput.required = true;
+      } else {
+       permmaterialtypeField.style.display = "none";
+        permmaterialtypeInput.required = false;
+        permmaterialtypeInput.value = ""; // clear the input if hidden
       }
     }
 
@@ -2055,6 +2130,41 @@ showSuccessMessage();
         document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+    // --- New 5-7-digit ID Validation (Updated) ---
+    let isValid = true;
+    const idFieldsToValidate = [
+        { id: 'reinstatement-Pit-Note-ID', name: 'Pit Note ID' },
+    ];
+    let errorMessage = '';
+
+    idFieldsToValidate.forEach(fieldInfo => {
+        const inputElement = document.getElementById(fieldInfo.id);
+        const value = inputElement ? inputElement.value.trim() : '';
+
+        // Validate if the input element exists and is not disabled.
+        if (inputElement && !inputElement.disabled) {
+            // Check for between 5-7 digits
+            if (!/^\d{5,7}$/.test(value)) {
+                errorMessage += `- '${fieldInfo.name}' must contain between 5-7 digits.\n`;
+                inputElement.classList.add('field-error'); // Add error styling
+                isValid = false;
+            } else {
+                inputElement.classList.remove('field-error'); // Remove error styling if valid
+            }
+        } else if (inputElement) {
+            // Ensure no error styling if the field is disabled
+            inputElement.classList.remove('field-error');
+        }
+    });
+
+    // If a value is empty, it won't match /^\d{5,7}$/ and will be flagged.
+
+    if (!isValid) {
+        alert('Please correct the following errors before submitting:\n' + errorMessage);
+        return; // Prevent submission if validation fails
+    }
+
+
        // Validate the form
         if (!validateGenericForm('reinstatement-form')) {
             return;
@@ -2067,7 +2177,7 @@ showSuccessMessage();
                 'Address': document.getElementById('reinstatement-address').value,
                 'SAM': document.getElementById('reinstatement-SAM').value,
                 'ADA ID': document.getElementById('reinstatement-ADA').value,
-                'Note ID': document.getElementById('reinstatement-note-id').value,
+                'Pit Note ID': document.getElementById('reinstatement-Pit-Note-ID').value,
                 'Asset Type': document.getElementById('reinstatement-asset-type').value,
                 'Surface Type': document.getElementById('reinstatement-surface-type').value,
                 'Surface Type - Other': document.getElementById('reinstatement-surface-type-other').value,
@@ -2079,6 +2189,12 @@ showSuccessMessage();
                 'Proposed Permanent Reinstatement Date': document.getElementById('reinstatement-perm-date').value,
                 'Permanent Reinstatement Area (m2)': document.getElementById('reinstatement-area').value,
                 'Full Panel Required?': document.getElementById('reinstatement-panel').value,
+                'Permanent Material': document.getElementById('reinstatement-perm-material').value,
+                'Permanent Material - Other': document.getElementById('reinstatement-perm-material-other').value,
+                'Permanent Contractor Company Name': document.getElementById('reinstatement-perm-company-name').value,
+                'Non-Standard Reinstatement': document.getElementById('reinstatement-Non-Standard').checked,
+                'Additional Comments': document.getElementById('reinstatement-comments').value,
+                'Permanent Reinstatement Completed': document.getElementById('reinstatement-completed').value,
             };
             
             try {
@@ -2104,7 +2220,7 @@ showSuccessMessage();
         document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-    // --- New 5-digit ID Validation (Updated) ---
+    // --- New 5-7-digit ID Validation (Updated) ---
     let isValid = true;
     const idFieldsToValidate = [
         { id: 'pitlinkin-Duct-Note-ID', name: 'Duct Note ID' },
@@ -2605,5 +2721,187 @@ function populateAndLockForm(fields) {
   });
 });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let existingRecordId = null;
+
+  const apiBase = 'https://airtable-api.richard-ociepa.workers.dev';
+  const tableKey = 'reinstatement'; // must match your worker tableMap key
+
+  const fieldMap = {
+    "Temp Reinstatement Date": "site-contact",
+    "Your Name": "date",
+    "Address": "address",
+    "SAM": "SAM",
+    "ADA ID": "ADA",
+    "Pit Note ID": "Pit-Note-ID",
+    "Asset Type": "asset-type",
+    "Surface Type": "surface-type",
+    "Surface Type - Other": "surface-type-other",
+    "Location Type": "location-type",
+    "Location Type - Other": "location-type-other",
+    "Temp Material Used": "material-type",
+    "Temp Material Used - Other": "material-type-other",
+    "Temp Contractor Company Name": "company-name",
+    "Proposed Permanent Reinstatement Date": "perm-date",
+    "Permanent Reinstatement Area (m2)": "area",
+    "Full Panel Required?": "panel",
+    "Permanent Material": "perm-material",
+    "Permanent Material - Other": "perm-material-other",
+    "Permanent Contractor Company Name": "perm-company-name",
+    "Non-Standard Reinstatement": "Non-Standard",
+    "Additional Comments": "comments",
+    "Permanent Reinstatement Completed": "completed"
+  };
+
+  async function searchPitNoteID() {
+    const noteId = document.getElementById('reinstatement-note-id-search').value.trim();
+    const summary = document.getElementById('reinstatement-note-summary');
+    summary.textContent = '';
+
+    if (!noteId) {
+      alert('Please enter a Note ID to search.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiBase}/lookup/${tableKey}?noteId=${encodeURIComponent(noteId)}`);
+      const contentType = response.headers.get('Content-Type') || '';
+
+      if (!response.ok) {
+        const message = contentType.includes('application/json')
+          ? (await response.json()).error || 'Lookup failed'
+          : await response.text();
+        throw new Error(message);
+      }
+
+      const data = await response.json();
+      const submitBtn = document.getElementById('reinstatement-submit-btn');
+      document.getElementById('reinstatement-completed').disabled = false;
+
+      if (!data.record) {
+        summary.textContent = 'No record found. A new entry will need to be created.';
+        existingRecordId = null;
+        unlockForm();
+        submitBtn.textContent = 'Submit';
+      } else {
+        summary.textContent = 'Record found. All fields locked except completion checkbox.';
+        existingRecordId = data.record.id;
+        populateAndLockForm(data.record.fields);
+        submitBtn.textContent = 'Update';
+      }
+    } catch (err) {
+      console.error(err);
+      summary.textContent = 'Error looking up Note ID.';
+    }
+  }
+
+function populateAndLockForm(fields) {
+  for (const [key, value] of Object.entries(fields)) {
+    const mappedId = fieldMap[key] || key;
+    let el = document.getElementById(`reinstatement-${mappedId}`) || document.getElementById(`vactruck-${mappedId}`);
+    if (!el) continue;
+
+    if (el.type === 'checkbox') {
+      el.checked = value === true;
+    } else if (el.tagName === 'SELECT') {
+      // Add missing option if not present
+      let optionExists = [...el.options].some(opt => opt.value === value);
+      if (!optionExists && value !== undefined && value !== null) {
+        const newOption = document.createElement('option');
+        newOption.value = value;
+        newOption.textContent = value;
+        newOption.selected = true;
+        el.appendChild(newOption);
+      }
+      el.value = value;
+    } else {
+      el.value = value;
+    }
+
+    // ===== Special case: Reinstatement Material Type (show/hide "Other" field) =====
+    if (mappedId === 'perm-material') {
+      const otherFieldWrapper = document.getElementById('reinstatement-perm-material-notification-field');
+      const otherField = document.getElementById('reinstatement-perm-material-other');
+      if (value === 'Other') {
+        otherFieldWrapper.style.display = 'block';
+        otherField.disabled = true; // Lock "Other" input if in locked state
+      } else {
+        otherFieldWrapper.style.display = 'none';
+        if (otherField) otherField.value = '';
+      }
+    }
+
+    // ===== Checkbox exception logic =====
+    if (
+      key === "Pit Cleanout Completed" || 
+      key === "Permanent Reinstatement Completed"
+    ) {
+      el.checked = !!value;
+      el.disabled = !value; // only enable completion checkbox
+    } else {
+      el.disabled = true; // lock all other fields
+    }
+  }
+}
+  function unlockForm() {
+    document.querySelectorAll('#reinstatement-form input, #reinstatement-form select, #reinstatement-form textarea')
+      .forEach(el => el.disabled = false);
+  }
+
+  document.getElementById('reinstatement-completed').disabled = true;
+  document.getElementById('reinstatement-search-btn').addEventListener('click', searchPitNoteID);
+
+  document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const noteIdEntered = document.getElementById('reinstatement-note-id-search').value.trim();
+    const completedCheckbox = document.getElementById('reinstatement-completed');
+    const isChecked = completedCheckbox.checked;
+
+    if (!noteIdEntered || !existingRecordId) return;
+
+    if (!isChecked) {
+      alert("Please check 'Permanent Reinstatement Completed' before submitting.");
+      return;
+    }
+
+    let data = {
+      "Permanent Reinstatement Completed": true
+    };
+
+    const now = new Date();
+    const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+    const year = perthTime.getFullYear();
+    const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+    const day = String(perthTime.getDate()).padStart(2, '0');
+    data["Pit Cleanout Datestamp"] = `${year}-${month}-${day}`;
+
+    try {
+      const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: data })
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        alert('Update failed.');
+        return;
+      }
+
+      alert('Record updated successfully!');
+      location.reload();
+
+    } catch (err) {
+      console.error(err);
+      alert('There was an error updating the record.');
+    }
+  });
+});
+</script>
+
 </body>
 </html>
