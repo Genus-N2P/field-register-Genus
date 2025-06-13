@@ -2523,6 +2523,17 @@ function populateAndLockForm(fields) {
     // Lock populated fields, leave non-populated fields unlocked
     if (value !== undefined && value !== null && value !== '') {
       el.disabled = true;
+      // Remove required attribute from disabled fields to prevent validation conflicts
+      if (el.hasAttribute('required')) {
+        el.removeAttribute('required');
+        el.setAttribute('data-was-required', 'true');
+      }
+    } else {
+      // Restore required attribute for non-populated fields if it was previously required
+      if (el.hasAttribute('data-was-required')) {
+        el.setAttribute('required', '');
+        el.removeAttribute('data-was-required');
+      }
     }
   }
 
@@ -2535,7 +2546,14 @@ function populateAndLockForm(fields) {
 
   function unlockForm() {
     document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea')
-      .forEach(el => el.disabled = false);
+      .forEach(el => {
+        el.disabled = false;
+        // Restore required attribute if it was previously required
+        if (el.hasAttribute('data-was-required')) {
+          el.setAttribute('required', '');
+          el.removeAttribute('data-was-required');
+        }
+      });
   }
 
   // Initialize form on page load
