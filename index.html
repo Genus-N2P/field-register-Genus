@@ -2848,7 +2848,16 @@ document.addEventListener('DOMContentLoaded', () => {
       isChecked
     });
 
-    if (!noteIdEntered) {
+    // For new records, get Note ID from the form field instead of search field
+    let noteIdForSubmission = noteIdEntered;
+    if (!existingRecordId) {
+      const noteIdFormField = document.getElementById('vactruck-Pit-Note-ID');
+      if (noteIdFormField && noteIdFormField.value.trim()) {
+        noteIdForSubmission = noteIdFormField.value.trim();
+      }
+    }
+
+    if (!noteIdForSubmission) {
       alert('Note ID is required.');
       return;
     }
@@ -2898,8 +2907,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Set Note ID from search field for new records
-      data["Pit Note ID"] = noteIdEntered;
+      // Set Note ID from form field or search field for new records
+      data["Pit Note ID"] = noteIdForSubmission;
 
       // Add submission date for new records
       const now = new Date();
