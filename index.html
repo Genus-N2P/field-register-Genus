@@ -2523,14 +2523,14 @@ function populateAndLockForm(fields) {
     // Lock populated fields, leave non-populated fields unlocked
     if (value !== undefined && value !== null && value !== '') {
       el.disabled = true;
-      // Remove required attribute from disabled fields to prevent validation conflicts
-      if (el.hasAttribute('required')) {
+      // For conditional fields, only remove required if they're not managed by conditional logic
+      if (el.hasAttribute('required') && el.id !== 'pitlinkin-rrp-no') {
         el.removeAttribute('required');
         el.setAttribute('data-was-required', 'true');
       }
     } else {
       // Restore required attribute for non-populated fields if it was previously required
-      if (el.hasAttribute('data-was-required')) {
+      if (el.hasAttribute('data-was-required') && el.id !== 'pitlinkin-rrp-no') {
         el.setAttribute('required', '');
         el.removeAttribute('data-was-required');
       }
@@ -2542,14 +2542,20 @@ function populateAndLockForm(fields) {
   if (completedCheckbox) {
     completedCheckbox.disabled = false;
   }
+
+  // Trigger the conditional logic for RRP field to ensure proper state
+  const rrpSelect = document.getElementById('pitlinkin-rrp');
+  if (rrpSelect && typeof toggleRRPCompleteField === 'function') {
+    toggleRRPCompleteField();
+  }
 }
 
   function unlockForm() {
     document.querySelectorAll('#pitlinkin-form input, #pitlinkin-form select, #pitlinkin-form textarea')
       .forEach(el => {
         el.disabled = false;
-        // Restore required attribute if it was previously required
-        if (el.hasAttribute('data-was-required')) {
+        // Restore required attribute if it was previously required (but not for conditional fields)
+        if (el.hasAttribute('data-was-required') && el.id !== 'pitlinkin-rrp-no') {
           el.setAttribute('required', '');
           el.removeAttribute('data-was-required');
         }
