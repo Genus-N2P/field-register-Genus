@@ -2901,6 +2901,31 @@ document.addEventListener('DOMContentLoaded', () => {
     "Permanent Reinstatement Completed": "completed"
   };
 
+  // Function to collect all form data
+  function collectFormData() {
+    const data = {};
+    
+    // Iterate through all form fields
+    for (const [airtableField, elementId] of Object.entries(fieldMap)) {
+      const element = document.getElementById(`reinstatement-${elementId}`);
+      if (!element) continue;
+
+      let value;
+      if (element.type === 'checkbox') {
+        value = element.checked;
+      } else if (element.value && element.value.trim() !== '') {
+        value = element.value.trim();
+      }
+
+      // Only add non-empty values to data
+      if (value !== undefined && value !== null && value !== '') {
+        data[airtableField] = value;
+      }
+    }
+
+    return data;
+  }
+
   async function searchreinstatementNoteID() {
     const noteId = document.getElementById('reinstatement-note-id-search').value.trim();
     const summary = document.getElementById('reinstatement-note-summary');
@@ -3021,61 +3046,92 @@ function populateAndLockForm(fields) {
     const completedCheckbox = document.getElementById('reinstatement-completed');
     const isChecked = completedCheckbox.checked;
 
-    if (!noteIdEntered || !existingRecordId) return;
+    // Handle existing record updates
+    if (existingRecordId) {
+      if (!noteIdEntered) return;
 
-    if (!isChecked) {
-      alert("Please check 'Permanent Reinstatement Completed' before submitting.");
-      return;
-    }
-
-    // Collect all the unlocked completion fields for update
-    let data = {
-      "Permanent Reinstatement Completed": isChecked
-    };
-
-    // Add timestamp only if checkbox is checked
-    if (isChecked) {
-      const now = new Date();
-      const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
-      const year = perthTime.getFullYear();
-      const month = String(perthTime.getMonth() + 1).padStart(2, '0');
-      const day = String(perthTime.getDate()).padStart(2, '0');
-      data["Permanent Reinstatement Timestamp"] = `${year}-${month}-${day}`;
-    }
-
-    // Collect other completion field values
-    const permMaterial = document.getElementById('reinstatement-perm-material').value;
-    const permMaterialOther = document.getElementById('reinstatement-perm-material-other').value;
-    const permCompanyName = document.getElementById('reinstatement-perm-company-name').value;
-    const nonStandard = document.getElementById('reinstatement-Non-Standard').checked;
-    const comments = document.getElementById('reinstatement-comments').value;
-
-    if (permMaterial) data["Permanent Material"] = permMaterial;
-    if (permMaterialOther) data["Permanent Material - Other"] = permMaterialOther;
-    if (permCompanyName) data["Permanent Contractor Company Name"] = permCompanyName;
-    data["Non-Standard Reinstatement"] = nonStandard;
-    if (comments) data["Additional Comments"] = comments;
-
-    try {
-      const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
-      const response = await fetch(url, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: data })
-      });
-
-      const result = await response.json();
-      if (!response.ok) {
-        alert('Update failed.');
+      if (!isChecked) {
+        alert("Please check 'Permanent Reinstatement Completed' before submitting.");
         return;
       }
 
-      alert('Record updated successfully!');
-      location.reload();
+      // Collect all the unlocked completion fields for update
+      let data = {
+        "Permanent Reinstatement Completed": isChecked
+      };
 
-    } catch (err) {
-      console.error(err);
-      alert('There was an error updating the record.');
+      // Add timestamp only if checkbox is checked
+      if (isChecked) {
+        const now = new Date();
+        const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
+        const year = perthTime.getFullYear();
+        const month = String(perthTime.getMonth() + 1).padStart(2, '0');
+        const day = String(perthTime.getDate()).padStart(2, '0');
+        data["Permanent Reinstatement Timestamp"] = `${year}-${month}-${day}`;
+      }
+
+      // Collect other completion field values
+      const permMaterial = document.getElementById('reinstatement-perm-material').value;
+      const permMaterialOther = document.getElementById('reinstatement-perm-material-other').value;
+      const permCompanyName = document.getElementById('reinstatement-perm-company-name').value;
+      const nonStandard = document.getElementById('reinstatement-Non-Standard').checked;
+      const comments = document.getElementById('reinstatement-comments').value;
+
+      if (permMaterial) data["Permanent Material"] = permMaterial;
+      if (permMaterialOther) data["Permanent Material - Other"] = permMaterialOther;
+      if (permCompanyName) data["Permanent Contractor Company Name"] = permCompanyName;
+      data["Non-Standard Reinstatement"] = nonStandard;
+      if (comments) data["Additional Comments"] = comments;
+
+      try {
+        const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+        const response = await fetch(url, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: data })
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+          alert('Update failed.');
+          return;
+        }
+
+        alert('Record updated successfully!');
+        location.reload();
+
+      } catch (err) {
+        console.error(err);
+        alert('There was an error updating the record.');
+      }
+    } 
+    // Handle new record creation
+    else {
+      // Collect all form data for new record
+      const data = collectFormData();
+
+      try {
+        const url = `${apiBase}/create/${tableKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: data })
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+          alert('Failed to create new record.');
+          console.error('Create error:', result);
+          return;
+        }
+
+        alert('New record created successfully!');
+        location.reload();
+
+      } catch (err) {
+        console.error(err);
+        alert('There was an error creating the record.');
+      }
     }
   });
 });
