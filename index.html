@@ -2574,17 +2574,33 @@ function populateAndLockForm(fields) {
     const completedCheckbox = document.getElementById('pitlinkin-completed');
     const isChecked = completedCheckbox.checked;
 
-    if (!noteIdEntered || !existingRecordId) return;
+    console.log('Form submission debug:', {
+      noteIdEntered,
+      existingRecordId,
+      isChecked
+    });
+
+    if (!noteIdEntered) {
+      alert('Note ID is required.');
+      return;
+    }
+
+    if (!existingRecordId) {
+      alert('No existing record found. Please search for a valid Note ID first.');
+      return;
+    }
 
     if (!isChecked) {
       alert("Please check 'Pit Link-ins Completed' before submitting.");
       return;
     }
 
+    // Collect all unlocked (editable) field data for update
     let data = {
       "Pit Link-ins Completed": true
     };
 
+    // Add timestamp
     const now = new Date();
     const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
     const year = perthTime.getFullYear();
@@ -2592,8 +2608,24 @@ function populateAndLockForm(fields) {
     const day = String(perthTime.getDate()).padStart(2, '0');
     data["Pit Link-in Completed Timestamp"] = `${year}-${month}-${day}`;
 
+    // Collect data from unlocked fields
+    for (const [airtableField, formFieldId] of Object.entries(fieldMap)) {
+      const el = document.getElementById(`pitlinkin-${formFieldId}`);
+      if (el && !el.disabled && airtableField !== "Pit Link-ins Completed") {
+        if (el.type === 'checkbox') {
+          data[airtableField] = el.checked;
+        } else if (el.value && el.value.trim() !== '') {
+          data[airtableField] = el.value.trim();
+        }
+      }
+    }
+
+    console.log('Update data:', data);
+
     try {
       const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+      console.log('Update URL:', url);
+      
       const response = await fetch(url, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -2601,8 +2633,10 @@ function populateAndLockForm(fields) {
       });
 
       const result = await response.json();
+      console.log('Update response:', result);
+      
       if (!response.ok) {
-        alert('Update failed.');
+        alert(`Update failed: ${result.error || 'Unknown error'}`);
         return;
       }
 
@@ -2610,7 +2644,7 @@ function populateAndLockForm(fields) {
       location.reload();
 
     } catch (err) {
-      console.error(err);
+      console.error('Update error:', err);
       alert('There was an error updating the record.');
     }
   });
