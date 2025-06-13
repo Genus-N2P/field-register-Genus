@@ -2668,6 +2668,11 @@ document.addEventListener('DOMContentLoaded', () => {
     "Pit Cleanout Completed": "completed"
   };
 
+  // Initialize form - lock completion checkbox by default
+  function initializeForm() {
+    document.getElementById('vactruck-completed').disabled = true;
+  }
+
   async function searchvactruckNoteID() {
     const noteId = document.getElementById('vactruck-note-id-search').value.trim();
     const summary = document.getElementById('vactruck-note-summary');
@@ -2691,12 +2696,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await response.json();
       const submitBtn = document.getElementById('vactruck-submit-btn');
-      document.getElementById('vactruck-completed').disabled = false;
 
       if (!data.record) {
         summary.textContent = 'No record found. A new entry will need to be created.';
         existingRecordId = null;
         unlockForm();
+        // Keep completion checkbox locked when no record exists
+        document.getElementById('vactruck-completed').disabled = true;
         submitBtn.textContent = 'Submit';
       } else {
         summary.textContent = 'Record found. All fields locked except completion checkbox.';
@@ -2710,43 +2716,72 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-function populateAndLockForm(fields) {
-  for (const [key, value] of Object.entries(fields)) {
-    const mappedId = fieldMap[key] || key;
-    const el = document.getElementById(`vactruck-${mappedId}`);
-    if (!el) continue;
+  function populateAndLockForm(fields) {
+    // First, unlock all fields to reset state
+    unlockForm();
+    
+    for (const [key, value] of Object.entries(fields)) {
+      const mappedId = fieldMap[key] || key;
+      const el = document.getElementById(`vactruck-${mappedId}`);
+      if (!el) continue;
 
-    if (el.type === 'checkbox') {
-      el.checked = value === true;
-    } else if (el.tagName === 'SELECT') {
-      // Add missing option if not present
-      let optionExists = [...el.options].some(opt => opt.value === value);
-      if (!optionExists && value !== undefined && value !== null) {
-        const newOption = document.createElement('option');
-        newOption.value = value;
-        newOption.textContent = value;
-        newOption.selected = true;
-        el.appendChild(newOption);
+      // Populate the field
+      if (el.type === 'checkbox') {
+        el.checked = value === true;
+      } else if (el.tagName === 'SELECT') {
+        // Add missing option if not present
+        let optionExists = [...el.options].some(opt => opt.value === value);
+        if (!optionExists && value !== undefined && value !== null) {
+          const newOption = document.createElement('option');
+          newOption.value = value;
+          newOption.textContent = value;
+          newOption.selected = true;
+          el.appendChild(newOption);
+        }
+        el.value = value;
+      } else {
+        el.value = value;
       }
-      el.value = value;
-    } else {
-      el.value = value;
+
+      // Lock populated fields, leave non-populated fields unlocked
+      if (value !== undefined && value !== null && value !== '') {
+        el.disabled = true;
+        // Remove required attribute for populated fields and store it
+        if (el.hasAttribute('required')) {
+          el.removeAttribute('required');
+          el.setAttribute('data-was-required', 'true');
+        }
+      } else {
+        // Restore required attribute for non-populated fields if it was previously required
+        if (el.hasAttribute('data-was-required')) {
+          el.setAttribute('required', '');
+          el.removeAttribute('data-was-required');
+        }
+      }
     }
 
-    if (key === "Pit Cleanout Completed") {
-      el.checked = !!value;
-      el.disabled = !value;
-    } else {
-      el.disabled = true;
+    // Special handling for completion checkbox - always unlock it for existing records
+    const completedCheckbox = document.getElementById('vactruck-completed');
+    if (completedCheckbox) {
+      completedCheckbox.disabled = false;
     }
   }
-}
+
   function unlockForm() {
     document.querySelectorAll('#vactruck-form input, #vactruck-form select, #vactruck-form textarea')
-      .forEach(el => el.disabled = false);
+      .forEach(el => {
+        el.disabled = false;
+        // Restore required attribute if it was previously required
+        if (el.hasAttribute('data-was-required')) {
+          el.setAttribute('required', '');
+          el.removeAttribute('data-was-required');
+        }
+      });
   }
 
-  document.getElementById('vactruck-completed').disabled = true;
+  // Initialize form on page load
+  initializeForm();
+  
   document.getElementById('vactruck-search-btn').addEventListener('click', searchvactruckNoteID);
 
   document.getElementById('vactruck-form').addEventListener('submit', async function(e) {
@@ -2756,17 +2791,33 @@ function populateAndLockForm(fields) {
     const completedCheckbox = document.getElementById('vactruck-completed');
     const isChecked = completedCheckbox.checked;
 
-    if (!noteIdEntered || !existingRecordId) return;
+    console.log('Form submission debug:', {
+      noteIdEntered,
+      existingRecordId,
+      isChecked
+    });
+
+    if (!noteIdEntered) {
+      alert('Note ID is required.');
+      return;
+    }
+
+    if (!existingRecordId) {
+      alert('No existing record found. Please search for a valid Note ID first.');
+      return;
+    }
 
     if (!isChecked) {
       alert("Please check 'Pit Cleanout Completed' before submitting.");
       return;
     }
 
+    // Collect all unlocked (editable) field data for update
     let data = {
       "Pit Cleanout Completed": true
     };
 
+    // Add timestamp
     const now = new Date();
     const perthTime = new Date(now.toLocaleString("en-US", { timeZone: "Australia/Perth" }));
     const year = perthTime.getFullYear();
@@ -2774,8 +2825,24 @@ function populateAndLockForm(fields) {
     const day = String(perthTime.getDate()).padStart(2, '0');
     data["Pit Cleanout Datestamp"] = `${year}-${month}-${day}`;
 
+    // Collect data from unlocked fields
+    for (const [airtableField, formFieldId] of Object.entries(fieldMap)) {
+      const el = document.getElementById(`vactruck-${formFieldId}`);
+      if (el && !el.disabled && airtableField !== "Pit Cleanout Completed") {
+        if (el.type === 'checkbox') {
+          data[airtableField] = el.checked;
+        } else if (el.value && el.value.trim() !== '') {
+          data[airtableField] = el.value.trim();
+        }
+      }
+    }
+
+    console.log('Update data:', data);
+
     try {
       const url = `${apiBase}/update/${tableKey}/${existingRecordId}`;
+      console.log('Update URL:', url);
+      
       const response = await fetch(url, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -2783,8 +2850,10 @@ function populateAndLockForm(fields) {
       });
 
       const result = await response.json();
+      console.log('Update response:', result);
+      
       if (!response.ok) {
-        alert('Update failed.');
+        alert(`Update failed: ${result.error || 'Unknown error'}`);
         return;
       }
 
@@ -2792,7 +2861,7 @@ function populateAndLockForm(fields) {
       location.reload();
 
     } catch (err) {
-      console.error(err);
+      console.error('Update error:', err);
       alert('There was an error updating the record.');
     }
   });
