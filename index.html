@@ -387,10 +387,6 @@ textarea {
   flex: 1;
 }
 
- .right-group label {
-  white-space: nowrap; /* prevents label from wrapping */
- }
-
 #pitlinkin-PitA-Note-ID {
   width: 100%;
 }
@@ -762,6 +758,16 @@ textarea {
 
         <label for="bog-site-location">First Site Location</label>
         <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
+
+	<label for="estimated-start-time">Estimated Start Time</label>
+	<select id="estimated-start-time" required></select>
+
+	<label for="estimated-finish-time">Estimated Finish Time</label>
+	<select id="estimated-finish-time" required></select>
+
+	<!-- Hidden fields for timestamp submission -->
+	<input type="hidden" name="estimated-start-timestamp" id="estimated-start-timestamp" />
+	<input type="hidden" name="estimated-finish-timestamp" id="estimated-finish-timestamp" />
 
         <label for="bog-site-contact">Onsite Crew Lead</label>
         <input type="text" id="bog-site-contact" name="bog-site-contact" required />
@@ -1742,6 +1748,8 @@ function confirmReset(formType) {
       if (vactruckDateField) vactruckDateField.value = todayString;
     }
 
+
+
     // Function to calculate and update week commencing/ending dates
   function updateForecastWeekDates() {
     const today = new Date();
@@ -2101,12 +2109,16 @@ document.getElementById('forecast-form').addEventListener('submit', async functi
             
             // Collect form data - modify this based on your actual form fields
             const formData = {
-                'Date': document.getElementById('bog-date').value,
+                'Date On-Site': document.getElementById('bog-date').value,
 		'Mobilisation': document.getElementById('bog-mob').checked,
 		'De-Mobilisation': document.getElementById('bog-demob').checked,
                 'First Site Location2': document.getElementById('bog-site-location').value,
+                'Estimated Start Timestamp': document.getElementById('bog-estimated-start-timestamp').value,
+                'Estimated Finish Timestamp': document.getElementById('bog-estimated-finish-timestamp').value,
                 'Onsite Crew Lead': document.getElementById('bog-site-contact').value,
                 'Onsite Crew Lead Mobile_original': document.getElementById('bog-onsite-crew-lead-mobile').value,
+                'Construction Partner Technician Email': document.getElementById('bog-onsite-crew-lead-email').value,
+                'Enable ID (if applicable)': document.getElementById('bog-onsite-crew-lead-EnableID').value,
                 'Your Company Name': document.getElementById('bog-company-name').value,
                 'Discipline': document.getElementById('bog-discipline').value,
                 'Number of People at Location?': document.getElementById('bog-Number-of-People-at-Location').value,
@@ -3242,5 +3254,46 @@ function populateAndLockForm(fields) {
   });
 });
 </script>
+
+<script>
+function generateTimeOptions(selectId) {
+  const select = document.getElementById(selectId);
+  for (let hour = 0; hour < 24; hour++) {
+    for (let min = 0; min < 60; min += 30) {
+      const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+      const displayStr = new Date(`1970-01-01T${timeStr}:00`).toLocaleTimeString([], {
+        hour: '2-digit', minute: '2-digit', hour12: true
+      });
+      const option = document.createElement('option');
+      option.value = timeStr;
+      option.textContent = displayStr;
+      select.appendChild(option);
+    }
+  }
+}
+
+function updateTimestamps() {
+  const dateInput = document.getElementById('bog-date');
+  const date = dateInput?.value;
+  const start = document.getElementById('estimated-start-time').value;
+  const finish = document.getElementById('estimated-finish-time').value;
+  if (date && start && finish) {
+    document.getElementById('estimated-start-timestamp').value = `${date}T${start}:00`;
+    document.getElementById('estimated-finish-timestamp').value = `${date}T${finish}:00`;
+  }
+}
+
+generateTimeOptions('estimated-start-time');
+generateTimeOptions('estimated-finish-time');
+
+// update timestamps on change
+document.getElementById('estimated-start-time').addEventListener('change', updateTimestamps);
+document.getElementById('estimated-finish-time').addEventListener('change', updateTimestamps);
+document.getElementById('bog-date').addEventListener('change', updateTimestamps);
+
+// update before form submit
+document.getElementById('bog-form').addEventListener('submit', updateTimestamps);
+</script>
+
 </body>
 </html>
