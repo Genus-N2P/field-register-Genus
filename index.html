@@ -2446,14 +2446,14 @@ forms.forEach(id => {
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // ✅ Safely generate dropdown options
+  // Generate time dropdown options safely
   function generateTimeOptions(selectId) {
     const select = document.getElementById(selectId);
     if (!select) return;
     for (let hour = 0; hour < 24; hour++) {
       for (let min = 0; min < 60; min += 30) {
-        const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
-        const displayStr = new Date(`1970-01-01T${timeStr}:00`).toLocaleTimeString([], {
+        const timeStr = \`\${hour.toString().padStart(2, '0')}:\${min.toString().padStart(2, '0')}\`;
+        const displayStr = new Date(\`1970-01-01T\${timeStr}:00\`).toLocaleTimeString([], {
           hour: '2-digit', minute: '2-digit', hour12: true
         });
         const option = document.createElement('option');
@@ -2467,7 +2467,7 @@ document.addEventListener('DOMContentLoaded', () => {
   generateTimeOptions('estimated-start-time');
   generateTimeOptions('estimated-finish-time');
 
-  // ✅ Function to update hidden timestamps safely
+  // Combine selected date and time into ISO timestamps
   function updateBogTimestamps() {
     const dateEl = document.getElementById('bog-date');
     const startEl = document.getElementById('estimated-start-time');
@@ -2480,13 +2480,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const start = startEl.value;
       const finish = finishEl.value;
       if (date && start && finish) {
-        outStart.value = `${date}T${start}:00`;
-        outFinish.value = `${date}T${finish}:00`;
+        outStart.value = \`\${date}T\${start}:00\`;
+        outFinish.value = \`\${date}T\${finish}:00\`;
       }
     }
   }
 
-  // ✅ Attach listeners only if form exists
   const bogForm = document.getElementById('bog-form');
   if (bogForm) {
     bogForm.addEventListener('submit', updateBogTimestamps);
