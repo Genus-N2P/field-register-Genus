@@ -759,11 +759,21 @@ textarea {
         <label for="bog-site-location">First Site Location</label>
         <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
 
+<label for="bog-estimated-start-time">Estimated Start Time</label>
+<select id="bog-estimated-start-time" name="bog-estimated-start-time" required></select>
+
+<label for="bog-estimated-finish-time">Estimated Finish Time</label>
+<select id="bog-estimated-finish-time" name="bog-estimated-finish-time" required></select>
+
+<!-- Hidden fields to store timestamps in ISO format -->
+<input type="hidden" id="bog-estimated-start-timestamp" name="bog-estimated-start-timestamp" />
+<input type="hidden" id="bog-estimated-finish-timestamp" name="bog-estimated-finish-timestamp" />
+
 	<label for="bog-site-contact">Onsite Crew Lead</label>
         <input type="text" id="bog-site-contact" name="bog-site-contact" required />
 
         <label for="bog-onsite-crew-lead-mobile">Onsite Crew Lead Mobile</label>
-        <input type="tel" id="bog-onsite-crew-lead-mobile" name="bog-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
+        <input type="tel" id="bog-onsite-crew-lead-mobile" name="bog-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 	10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
 
         <label for="bog-company-name">Your Company Name</label>
         <select id="bog-company-name" name="bog-company-name" required>
@@ -802,7 +812,7 @@ textarea {
         <input type="number" id="bog-Number-of-People-at-Location" name="bog-Number-of-People-at-Location" step="1" required>
         
         <label for="bog-crews-names">List Names of Workers in Crew</label>
-        <textarea id="bog-crews-names" name="bog-crews-names" placeholder="Separate Names with a comma (First Name Last Name required)" required></textarea>
+        <textarea id="bog-crews-names" name="bog-crews-names" placeholder="Separate Names with a comma (First Name Last Name required)" required>	</textarea>
 
         <label for="bog-SAM">SAM ID</label>
         <select id="bog-SAM" name="bog-SAM" required>
@@ -3242,5 +3252,55 @@ function populateAndLockForm(fields) {
   });
 });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  function generateTimeOptions(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    for (let hour = 0; hour < 24; hour++) {
+      for (let min = 0; min < 60; min += 30) {
+        const timeStr = hour.toString().padStart(2, '0') + ':' + min.toString().padStart(2, '0');
+        const displayStr = new Date('1970-01-01T' + timeStr + ':00').toLocaleTimeString([], {
+          hour: '2-digit', minute: '2-digit', hour12: true
+        });
+
+        const option = document.createElement('option');
+        option.value = timeStr;
+        option.textContent = displayStr;
+        select.appendChild(option);
+      }
+    }
+  }
+
+  generateTimeOptions('bog-estimated-start-time');
+  generateTimeOptions('bog-estimated-finish-time');
+
+  function updateBogTimestamps() {
+    const dateEl = document.getElementById('bog-date');
+    const startEl = document.getElementById('bog-estimated-start-time');
+    const finishEl = document.getElementById('bog-estimated-finish-time');
+    const outStart = document.getElementById('bog-estimated-start-timestamp');
+    const outFinish = document.getElementById('bog-estimated-finish-timestamp');
+
+    if (dateEl && startEl && finishEl && outStart && outFinish) {
+      const date = dateEl.value;
+      const start = startEl.value;
+      const finish = finishEl.value;
+      if (date && start && finish) {
+        outStart.value = date + 'T' + start + ':00';
+        outFinish.value = date + 'T' + finish + ':00';
+      }
+    }
+  }
+
+  document.getElementById('bog-estimated-start-time')?.addEventListener('change', updateBogTimestamps);
+  document.getElementById('bog-estimated-finish-time')?.addEventListener('change', updateBogTimestamps);
+  document.getElementById('bog-date')?.addEventListener('change', updateBogTimestamps);
+  document.getElementById('bog-form')?.addEventListener('submit', updateBogTimestamps);
+});
+</script>
+
 </body>
 </html>
