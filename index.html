@@ -768,7 +768,7 @@ textarea {
 	<!-- Hidden fields for timestamp submission -->
 	<input type="hidden" name="bog-estimated-start-timestamp" id="bog-estimated-start-timestamp" />
 	<input type="hidden" name="estimated-finish-timestamp" id="bog-estimated-finish-timestamp" />
-bog-
+
         <label for="bog-site-contact">Onsite Crew Lead</label>
         <input type="text" id="bog-site-contact" name="bog-site-contact" required />
 
@@ -2447,22 +2447,22 @@ forms.forEach(id => {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   // Generate time dropdown options safely
-  function generateTimeOptions(selectId) {
-    const select = document.getElementById(selectId);
-    if (!select) return;
-    for (let hour = 0; hour < 24; hour++) {
-      for (let min = 0; min < 60; min += 30) {
-        const timeStr = \`\${hour.toString().padStart(2, '0')}:\${min.toString().padStart(2, '0')}\`;
-        const displayStr = new Date(\`1970-01-01T\${timeStr}:00\`).toLocaleTimeString([], {
-          hour: '2-digit', minute: '2-digit', hour12: true
-        });
-        const option = document.createElement('option');
-        option.value = timeStr;
-        option.textContent = displayStr;
-        select.appendChild(option);
-      }
+function generateTimeOptions(selectId) {
+  const select = document.getElementById(selectId);
+  if (!select) return;
+  for (let hour = 0; hour < 24; hour++) {
+    for (let min = 0; min < 60; min += 30) {
+      const timeStr = hour.toString().padStart(2, '0') + ':' + min.toString().padStart(2, '0');
+      const displayStr = new Date('1970-01-01T' + timeStr + ':00').toLocaleTimeString([], {
+        hour: '2-digit', minute: '2-digit', hour12: true
+      });
+      const option = document.createElement('option');
+      option.value = timeStr;
+      option.textContent = displayStr;
+      select.appendChild(option);
     }
   }
+}
 
   generateTimeOptions('bog-estimated-start-time');
   generateTimeOptions('bog-estimated-finish-time');
