@@ -759,16 +759,16 @@ textarea {
         <label for="bog-site-location">First Site Location</label>
         <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
 
-	<label for="estimated-start-time">Estimated Start Time</label>
-	<select id="estimated-start-time" required></select>
+	<label for="bog-estimated-start-time">Estimated Start Time</label>
+	<select id="bog-estimated-start-time" required></select>
 
-	<label for="estimated-finish-time">Estimated Finish Time</label>
-	<select id="estimated-finish-time" required></select>
+	<label for="bog-estimated-finish-time">Estimated Finish Time</label>
+	<select id="bog-estimated-finish-time" required></select>
 
 	<!-- Hidden fields for timestamp submission -->
-	<input type="hidden" name="estimated-start-timestamp" id="estimated-start-timestamp" />
-	<input type="hidden" name="estimated-finish-timestamp" id="estimated-finish-timestamp" />
-
+	<input type="hidden" name="bog-estimated-start-timestamp" id="bog-estimated-start-timestamp" />
+	<input type="hidden" name="estimated-finish-timestamp" id="bog-estimated-finish-timestamp" />
+bog-
         <label for="bog-site-contact">Onsite Crew Lead</label>
         <input type="text" id="bog-site-contact" name="bog-site-contact" required />
 
@@ -2464,16 +2464,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  generateTimeOptions('estimated-start-time');
-  generateTimeOptions('estimated-finish-time');
+  generateTimeOptions('bog-estimated-start-time');
+  generateTimeOptions('bog-estimated-finish-time');
 
   // Combine selected date and time into ISO timestamps
   function updateBogTimestamps() {
     const dateEl = document.getElementById('bog-date');
-    const startEl = document.getElementById('estimated-start-time');
-    const finishEl = document.getElementById('estimated-finish-time');
-    const outStart = document.getElementById('estimated-start-timestamp');
-    const outFinish = document.getElementById('estimated-finish-timestamp');
+    const startEl = document.getElementById('bog-estimated-start-time');
+    const finishEl = document.getElementById('bog-estimated-finish-time');
+    const outStart = document.getElementById('bog-estimated-start-timestamp');
+    const outFinish = document.getElementById('bog-estimated-finish-timestamp');
 
     if (dateEl && startEl && finishEl && outStart && outFinish) {
       const date = dateEl.value;
@@ -2491,8 +2491,8 @@ document.addEventListener('DOMContentLoaded', () => {
     bogForm.addEventListener('submit', updateBogTimestamps);
   }
 
-  document.getElementById('estimated-start-time')?.addEventListener('change', updateBogTimestamps);
-  document.getElementById('estimated-finish-time')?.addEventListener('change', updateBogTimestamps);
+  document.getElementById('bog-estimated-start-time')?.addEventListener('change', updateBogTimestamps);
+  document.getElementById('bog-estimated-finish-time')?.addEventListener('change', updateBogTimestamps);
   document.getElementById('bog-date')?.addEventListener('change', updateBogTimestamps);
 });
 </script>
