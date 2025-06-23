@@ -775,6 +775,12 @@ textarea {
         <label for="bog-onsite-crew-lead-mobile">Onsite Crew Lead Mobile</label>
         <input type="tel" id="bog-onsite-crew-lead-mobile" name="bog-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 	10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
 
+        <label for="bog-onsite-crew-lead-email">Onsite Crew Lead Email</label>
+        <input type="text" id="bog-onsite-crew-lead-email" name="bog-onsite-crew-lead-email" />
+
+        <label for="bog-onsite-crew-lead-EnableID">Onsite Crew Lead Enable ID (if applicable)</label>
+        <input type="text" id="bog-onsite-crew-lead-EnableID" name="bog-onsite-crew-lead-EnableID" />
+
         <label for="bog-company-name">Your Company Name</label>
         <select id="bog-company-name" name="bog-company-name" required>
           <option value="">Select one</option>
@@ -3252,7 +3258,6 @@ function populateAndLockForm(fields) {
   });
 });
 </script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   function generateTimeOptions(selectId) {
