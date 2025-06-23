@@ -2422,7 +2422,6 @@ forms.forEach(id => {
             btn.classList.remove('active');
         }
     });
-});
 
 // Generate 30-minute time intervals in dropdowns
 function generateTimeOptions(selectId) {
@@ -2464,6 +2463,7 @@ document.getElementById('bog-date').addEventListener('change', updateBogTimestam
 
 // Run update before form is submitted
 document.getElementById('bog-form').addEventListener('submit', updateBogTimestamps);
+});
   </script>
 
 <script>
