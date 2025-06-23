@@ -2422,47 +2422,6 @@ forms.forEach(id => {
             btn.classList.remove('active');
         }
     });
-
-// Generate 30-minute time intervals in dropdowns
-function generateTimeOptions(selectId) {
-  const select = document.getElementById(selectId);
-  for (let hour = 0; hour < 24; hour++) {
-    for (let min = 0; min < 60; min += 30) {
-      const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
-      const displayStr = new Date(`1970-01-01T${timeStr}:00`).toLocaleTimeString([], {
-        hour: '2-digit', minute: '2-digit', hour12: true
-      });
-      const option = document.createElement('option');
-      option.value = timeStr;
-      option.textContent = displayStr;
-      select.appendChild(option);
-    }
-  }
-}
-
-// Populate both time dropdowns
-generateTimeOptions('estimated-start-time');
-generateTimeOptions('estimated-finish-time');
-
-// Format selected date + time into Airtable-ready ISO timestamps
-function updateBogTimestamps() {
-  const date = document.getElementById('bog-date')?.value;
-  const start = document.getElementById('estimated-start-time')?.value;
-  const finish = document.getElementById('estimated-finish-time')?.value;
-
-  if (date && start && finish) {
-    document.getElementById('estimated-start-timestamp').value = `${date}T${start}:00`;
-    document.getElementById('estimated-finish-timestamp').value = `${date}T${finish}:00`;
-  }
-}
-
-// Attach update on field change
-document.getElementById('estimated-start-time').addEventListener('change', updateBogTimestamps);
-document.getElementById('estimated-finish-time').addEventListener('change', updateBogTimestamps);
-document.getElementById('bog-date').addEventListener('change', updateBogTimestamps);
-
-// Run update before form is submitted
-document.getElementById('bog-form').addEventListener('submit', updateBogTimestamps);
 });
   </script>
 
@@ -2484,6 +2443,60 @@ document.getElementById('bog-form').addEventListener('submit', updateBogTimestam
     }
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-EKPtC5W7fRHgiONVPIyGsVU7Ti_xjBc&libraries=places&callback=initAutocomplete" async defer></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ✅ Safely generate dropdown options
+  function generateTimeOptions(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    for (let hour = 0; hour < 24; hour++) {
+      for (let min = 0; min < 60; min += 30) {
+        const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+        const displayStr = new Date(`1970-01-01T${timeStr}:00`).toLocaleTimeString([], {
+          hour: '2-digit', minute: '2-digit', hour12: true
+        });
+        const option = document.createElement('option');
+        option.value = timeStr;
+        option.textContent = displayStr;
+        select.appendChild(option);
+      }
+    }
+  }
+
+  generateTimeOptions('estimated-start-time');
+  generateTimeOptions('estimated-finish-time');
+
+  // ✅ Function to update hidden timestamps safely
+  function updateBogTimestamps() {
+    const dateEl = document.getElementById('bog-date');
+    const startEl = document.getElementById('estimated-start-time');
+    const finishEl = document.getElementById('estimated-finish-time');
+    const outStart = document.getElementById('estimated-start-timestamp');
+    const outFinish = document.getElementById('estimated-finish-timestamp');
+
+    if (dateEl && startEl && finishEl && outStart && outFinish) {
+      const date = dateEl.value;
+      const start = startEl.value;
+      const finish = finishEl.value;
+      if (date && start && finish) {
+        outStart.value = `${date}T${start}:00`;
+        outFinish.value = `${date}T${finish}:00`;
+      }
+    }
+  }
+
+  // ✅ Attach listeners only if form exists
+  const bogForm = document.getElementById('bog-form');
+  if (bogForm) {
+    bogForm.addEventListener('submit', updateBogTimestamps);
+  }
+
+  document.getElementById('estimated-start-time')?.addEventListener('change', updateBogTimestamps);
+  document.getElementById('estimated-finish-time')?.addEventListener('change', updateBogTimestamps);
+  document.getElementById('bog-date')?.addEventListener('change', updateBogTimestamps);
+});
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
