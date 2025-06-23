@@ -369,7 +369,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  gap: 15px;
   width: 100%;
 }
 
@@ -386,6 +386,10 @@ textarea {
   gap: 0.5rem;
   flex: 1;
 }
+
+.right-group label {
+  white-space: nowrap; /* prevents label from wrapping */
+ }
 
 #pitlinkin-PitA-Note-ID {
   width: 100%;
@@ -948,10 +952,10 @@ textarea {
 </div>
                 
         <label for="bog-guards">Ensure Telstra guards are fully locked around all open manholes. Calibrated gas detector required for spot sampling manhole access and ongoing monitoring.</label>
-          <input type="checkbox" id="bog-guards" name="bog-guards" required> Refer to HSE Guidance Note - Spot Sampling (Manhole) Gas Action Chart.
+          <input type="checkbox" id="bog-guards" name="bog-guards"> Refer to HSE Guidance Note - Spot Sampling (Manhole) Gas Action Chart.
                 
         <label for="bog-excavation">Excavation work- have you follow the 5Ps  with a competent locator onsite?</label>
-          <input type="checkbox" id="bog-excavation" name="bog-excavation" required> Refer to HSE Guidance Note – Construction JHA and Excavation permit process
+          <input type="checkbox" id="bog-excavation" name="bog-excavation"> Refer to HSE Guidance Note – Construction JHA and Excavation permit process
         
         <label for="bog-comments">Additional Comments? Escalate SHEQ concerns to your Genus FCM/Supervisor or SHEQ Advisor</label>
         <textarea id="bog-comments" name="bog-comments" placeholder="Track required actions in MyOsh with SHEQ support"></textarea>
