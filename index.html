@@ -2113,8 +2113,8 @@ document.getElementById('forecast-form').addEventListener('submit', async functi
 		'Mobilisation': document.getElementById('bog-mob').checked,
 		'De-Mobilisation': document.getElementById('bog-demob').checked,
                 'First Site Location2': document.getElementById('bog-site-location').value,
-                'Estimated Start Timestamp': document.getElementById('bog-estimated-start-time').value,
-                'Estimated Finish Timestamp': document.getElementById('bog-estimated-finish-time').value,
+                'Estimated Start Timestamp': document.getElementById('bog-estimated-start-timestamp').value,
+                'Estimated Finish Timestamp': document.getElementById('bog-estimated-finish-timestamp').value,
                 'Onsite Crew Lead': document.getElementById('bog-site-contact').value,
                 'Onsite Crew Lead Mobile_original': document.getElementById('bog-onsite-crew-lead-mobile').value,
                 'Construction Partner Technician Email': document.getElementById('bog-onsite-crew-lead-email').value,
@@ -2423,6 +2423,47 @@ forms.forEach(id => {
         }
     });
 });
+
+// Generate 30-minute time intervals in dropdowns
+function generateTimeOptions(selectId) {
+  const select = document.getElementById(selectId);
+  for (let hour = 0; hour < 24; hour++) {
+    for (let min = 0; min < 60; min += 30) {
+      const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+      const displayStr = new Date(`1970-01-01T${timeStr}:00`).toLocaleTimeString([], {
+        hour: '2-digit', minute: '2-digit', hour12: true
+      });
+      const option = document.createElement('option');
+      option.value = timeStr;
+      option.textContent = displayStr;
+      select.appendChild(option);
+    }
+  }
+}
+
+// Populate both time dropdowns
+generateTimeOptions('estimated-start-time');
+generateTimeOptions('estimated-finish-time');
+
+// Format selected date + time into Airtable-ready ISO timestamps
+function updateBogTimestamps() {
+  const date = document.getElementById('bog-date')?.value;
+  const start = document.getElementById('estimated-start-time')?.value;
+  const finish = document.getElementById('estimated-finish-time')?.value;
+
+  if (date && start && finish) {
+    document.getElementById('estimated-start-timestamp').value = `${date}T${start}:00`;
+    document.getElementById('estimated-finish-timestamp').value = `${date}T${finish}:00`;
+  }
+}
+
+// Attach update on field change
+document.getElementById('estimated-start-time').addEventListener('change', updateBogTimestamps);
+document.getElementById('estimated-finish-time').addEventListener('change', updateBogTimestamps);
+document.getElementById('bog-date').addEventListener('change', updateBogTimestamps);
+
+// Run update before form is submitted
+document.getElementById('bog-form').addEventListener('submit', updateBogTimestamps);
   </script>
 
 <script>
@@ -3253,46 +3294,6 @@ function populateAndLockForm(fields) {
     }
   });
 });
-</script>
-
-<script>
-function generateTimeOptions(selectId) {
-  const select = document.getElementById(selectId);
-  for (let hour = 0; hour < 24; hour++) {
-    for (let min = 0; min < 60; min += 30) {
-      const timeStr = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
-      const displayStr = new Date(`1970-01-01T${timeStr}:00`).toLocaleTimeString([], {
-        hour: '2-digit', minute: '2-digit', hour12: true
-      });
-      const option = document.createElement('option');
-      option.value = timeStr;
-      option.textContent = displayStr;
-      select.appendChild(option);
-    }
-  }
-}
-
-function updateTimestamps() {
-  const dateInput = document.getElementById('bog-date');
-  const date = dateInput?.value;
-  const start = document.getElementById('estimated-start-time').value;
-  const finish = document.getElementById('estimated-finish-time').value;
-  if (date && start && finish) {
-    document.getElementById('estimated-start-timestamp').value = `${date}T${start}:00`;
-    document.getElementById('estimated-finish-timestamp').value = `${date}T${finish}:00`;
-  }
-}
-
-generateTimeOptions('estimated-start-time');
-generateTimeOptions('estimated-finish-time');
-
-// update timestamps on change
-document.getElementById('estimated-start-time').addEventListener('change', updateTimestamps);
-document.getElementById('estimated-finish-time').addEventListener('change', updateTimestamps);
-document.getElementById('bog-date').addEventListener('change', updateTimestamps);
-
-// update before form submit
-document.getElementById('bog-form').addEventListener('submit', updateTimestamps);
 </script>
 
 </body>
