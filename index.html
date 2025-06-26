@@ -3388,79 +3388,81 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-    <script>
-        function showBuildPhaseContent() {
-            const buildPhase = document.getElementById('forecast-build-phase').value;
-            const designContent = document.getElementById('design-content');
-            const constructionContent = document.getElementById('construction-content');
-            
-            // Hide all content first
-            designContent.style.display = 'none';
-            constructionContent.style.display = 'none';
-            
-            // Show relevant content based on selection
-            if (buildPhase === 'Design') {
-                designContent.style.display = 'block';
-            } else if (buildPhase === 'Construction') {
-                constructionContent.style.display = 'block';
-            }
-            
-            // Reset all checkboxes and hide their fields when switching phases
-            resetAllDisciplineFields();
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function showBuildPhaseContent() {
+        const buildPhase = document.getElementById('forecast-build-phase').value;
+        const designContent = document.getElementById('design-content');
+        const constructionContent = document.getElementById('construction-content');
+
+        // Hide all content first
+        designContent.style.display = 'none';
+        constructionContent.style.display = 'none';
+
+        // Show relevant content based on selection
+        if (buildPhase === 'Design') {
+            designContent.style.display = 'block';
+        } else if (buildPhase === 'Construction') {
+            constructionContent.style.display = 'block';
         }
-        
-        function toggleDisciplineFields(checkbox) {
+
+        // Reset all checkboxes and hide their fields when switching phases
+        resetAllDisciplineFields();
+    }
+
+    function toggleDisciplineFields(checkbox) {
+        const disciplineValue = checkbox.value.toLowerCase().replace(/[^a-z]/g, '-');
+        const fieldsId = 'discipline-' + disciplineValue + '-fields';
+        const fields = document.getElementById(fieldsId);
+
+        if (fields) {
+            if (checkbox.checked) {
+                fields.style.display = 'block';
+            } else {
+                fields.style.display = 'none';
+                // Clear the fields when hiding
+                clearDisciplineFields(fieldsId);
+            }
+        }
+    }
+
+    function clearDisciplineFields(fieldsId) {
+        const fields = document.getElementById(fieldsId);
+        if (fields) {
+            // Clear number inputs
+            const numberInputs = fields.querySelectorAll('input[type="number"]');
+            numberInputs.forEach(input => input.value = '');
+
+            // Uncheck day checkboxes
+            const dayCheckboxes = fields.querySelectorAll('input[type="checkbox"]');
+            dayCheckboxes.forEach(checkbox => checkbox.checked = false);
+
+            // Hide error messages
+            const errorMessages = fields.querySelectorAll('.discipline-days-error');
+            errorMessages.forEach(error => error.style.display = 'none');
+        }
+    }
+
+    function resetAllDisciplineFields() {
+        // Get all discipline checkboxes
+        const disciplineCheckboxes = document.querySelectorAll('input[name="discipline[]"]');
+
+        disciplineCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+
+            // Hide associated fields
             const disciplineValue = checkbox.value.toLowerCase().replace(/[^a-z]/g, '-');
             const fieldsId = 'discipline-' + disciplineValue + '-fields';
             const fields = document.getElementById(fieldsId);
-            
+
             if (fields) {
-                if (checkbox.checked) {
-                    fields.style.display = 'block';
-                } else {
-                    fields.style.display = 'none';
-                    // Clear the fields when hiding
-                    clearDisciplineFields(fieldsId);
-                }
+                fields.style.display = 'none';
+                clearDisciplineFields(fieldsId);
             }
-        }
-        
-        function clearDisciplineFields(fieldsId) {
-            const fields = document.getElementById(fieldsId);
-            if (fields) {
-                // Clear number inputs
-                const numberInputs = fields.querySelectorAll('input[type="number"]');
-                numberInputs.forEach(input => input.value = '');
-                
-                // Uncheck day checkboxes
-                const dayCheckboxes = fields.querySelectorAll('input[type="checkbox"]');
-                dayCheckboxes.forEach(checkbox => checkbox.checked = false);
-                
-                // Hide error messages
-                const errorMessages = fields.querySelectorAll('.discipline-days-error');
-                errorMessages.forEach(error => error.style.display = 'none');
-            }
-        }
-        
-        function resetAllDisciplineFields() {
-            // Get all discipline checkboxes
-            const disciplineCheckboxes = document.querySelectorAll('input[name="discipline[]"]');
-            
-            disciplineCheckboxes.forEach(checkbox => {
-                checkbox.checked = false;
-                
-                // Hide associated fields
-                const disciplineValue = checkbox.value.toLowerCase().replace(/[^a-z]/g, '-');
-                const fieldsId = 'discipline-' + disciplineValue + '-fields';
-                const fields = document.getElementById(fieldsId);
-                
-                if (fields) {
-                    fields.style.display = 'none';
-                    clearDisciplineFields(fieldsId);
-                }
-            });
-        }
-    </script>
+        });
+    }
+});
+</script>
 
 </body>
 </html>
