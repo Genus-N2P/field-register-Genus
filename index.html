@@ -519,6 +519,89 @@ textarea {
           <option value="Z-6NRG-20">Z-6NRG-20</option>
         </select>
 
+        <label for="forecast-site-location">Please enter a location a crew plan to work on during the forecast week</label>
+        <input type="text" id="forecast-site-location" name="forecast-site-location" class="address-autocomplete" required />
+
+        <label for="forecast-Genus-FCM">Your Genus FCM</label>
+        <select id="forecast-Genus-FCM" name="forecast-Genus-FCM" required>
+          <option value="">Select one</option>
+          <option value="Alex McConville">Alex McConville</option>
+          <option value="Sean Muldoon">Sean Muldoon</option>
+        </select>
+
+	<label for="forecast-site-contact">Crew Lead Contact Name</label>
+        <input type="text" id="forecast-site-contact" name="forecast-site-contact" required />
+
+        <label for="forecast-onsite-crew-lead-mobile">Crew Lead Contact Mobile</label>
+        <input type="tel" id="forecast-onsite-crew-lead-mobile" name="forecast-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 	10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
+
+        <label for="forecast-onsite-crew-lead-email">Crew Lead Contact Email</label>
+        <input type="text" id="forecast-onsite-crew-lead-email" name="forecast-onsite-crew-lead-email" />
+
+        <label for="forecast-onsite-crew-lead-EnableID">Crew Lead Enable ID (if applicable)</label>
+        <input type="text" id="forecast-onsite-crew-lead-EnableID" name="forecast-onsite-crew-lead-EnableID" />
+
+
+        <label for="forecast-build-phase">Select the build phase you are working on for this SAM / Project</label>
+        <select id="forecast-build-phase" name="forecast-build-phase" required onchange="showBuildPhaseContent()">
+            <option value="">Select one</option>
+            <option value="Design">Design</option>
+            <option value="Construction">Construction</option>
+        </select>
+
+        <!-- Design Phase Content -->
+        <div id="design-content" class="phase-content" style="display: none;">
+            <fieldset>
+                <legend>Select the activity type(s) your company will be working on:</legend>
+                <div class="discipline-checkbox-group">
+                    <!-- Survey -->
+                    <div>
+                        <input type="checkbox" id="discipline-survey" name="discipline[]" value="Survey" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-survey">Survey</label>
+                    </div>
+                    <div id="discipline-survey-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="survey-crews">Number of Survey crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="survey-crews" name="survey-crews" min="0" step="1" />
+                        <fieldset>
+                            <legend>Select the day(s) that your Survey crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="survey-monday" name="survey-days[]" value="Monday" /><label for="survey-monday">Monday</label></div>
+                                <div><input type="checkbox" id="survey-tuesday" name="survey-days[]" value="Tuesday" /><label for="survey-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="survey-wednesday" name="survey-days[]" value="Wednesday" /><label for="survey-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="survey-thursday" name="survey-days[]" value="Thursday" /><label for="survey-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="survey-friday" name="survey-days[]" value="Friday" /><label for="survey-friday">Friday</label></div>
+                                <div><input type="checkbox" id="survey-saturday" name="survey-days[]" value="Saturday" /><label for="survey-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="survey-sunday" name="survey-days[]" value="Sunday" /><label for="survey-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="survey-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+
+                    <!-- Blockage Repair - Survey -->
+                    <div>
+                        <input type="checkbox" id="discipline-blockage-survey" name="discipline[]" value="Blockage Repair - Survey" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-blockage-survey">Blockage Repair - Survey</label>
+                    </div>
+                    <div id="discipline-blockage-survey-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="blockage-survey-crews">Number of Blockage Repair - Survey crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="blockage-survey-crews" name="blockage-survey-crews" min="0" step="1" />
+                        <fieldset>
+                            <legend>Select the day(s) that your Blockage Repair - Survey crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="blockage-survey-monday" name="blockage-survey-days[]" value="Monday" /><label for="blockage-survey-monday">Monday</label></div>
+                                <div><input type="checkbox" id="blockage-survey-tuesday" name="blockage-survey-days[]" value="Tuesday" /><label for="blockage-survey-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="blockage-survey-wednesday" name="blockage-survey-days[]" value="Wednesday" /><label for="blockage-survey-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="blockage-survey-thursday" name="blockage-survey-days[]" value="Thursday" /><label for="blockage-survey-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="blockage-survey-friday" name="blockage-survey-days[]" value="Friday" /><label for="blockage-survey-friday">Friday</label></div>
+                                <div><input type="checkbox" id="blockage-survey-saturday" name="blockage-survey-days[]" value="Saturday" /><label for="blockage-survey-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="blockage-survey-sunday" name="blockage-survey-days[]" value="Sunday" /><label for="blockage-survey-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="blockage-survey-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
 
 <fieldset>
                 <legend>Select the discipline(s) your company will be working on:</legend>
@@ -3304,6 +3387,80 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('bog-form')?.addEventListener('submit', updateBogTimestamps);
 });
 </script>
+
+    <script>
+        function showBuildPhaseContent() {
+            const buildPhase = document.getElementById('forecast-build-phase').value;
+            const designContent = document.getElementById('design-content');
+            const constructionContent = document.getElementById('construction-content');
+            
+            // Hide all content first
+            designContent.style.display = 'none';
+            constructionContent.style.display = 'none';
+            
+            // Show relevant content based on selection
+            if (buildPhase === 'Design') {
+                designContent.style.display = 'block';
+            } else if (buildPhase === 'Construction') {
+                constructionContent.style.display = 'block';
+            }
+            
+            // Reset all checkboxes and hide their fields when switching phases
+            resetAllDisciplineFields();
+        }
+        
+        function toggleDisciplineFields(checkbox) {
+            const disciplineValue = checkbox.value.toLowerCase().replace(/[^a-z]/g, '-');
+            const fieldsId = 'discipline-' + disciplineValue + '-fields';
+            const fields = document.getElementById(fieldsId);
+            
+            if (fields) {
+                if (checkbox.checked) {
+                    fields.style.display = 'block';
+                } else {
+                    fields.style.display = 'none';
+                    // Clear the fields when hiding
+                    clearDisciplineFields(fieldsId);
+                }
+            }
+        }
+        
+        function clearDisciplineFields(fieldsId) {
+            const fields = document.getElementById(fieldsId);
+            if (fields) {
+                // Clear number inputs
+                const numberInputs = fields.querySelectorAll('input[type="number"]');
+                numberInputs.forEach(input => input.value = '');
+                
+                // Uncheck day checkboxes
+                const dayCheckboxes = fields.querySelectorAll('input[type="checkbox"]');
+                dayCheckboxes.forEach(checkbox => checkbox.checked = false);
+                
+                // Hide error messages
+                const errorMessages = fields.querySelectorAll('.discipline-days-error');
+                errorMessages.forEach(error => error.style.display = 'none');
+            }
+        }
+        
+        function resetAllDisciplineFields() {
+            // Get all discipline checkboxes
+            const disciplineCheckboxes = document.querySelectorAll('input[name="discipline[]"]');
+            
+            disciplineCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                
+                // Hide associated fields
+                const disciplineValue = checkbox.value.toLowerCase().replace(/[^a-z]/g, '-');
+                const fieldsId = 'discipline-' + disciplineValue + '-fields';
+                const fields = document.getElementById(fieldsId);
+                
+                if (fields) {
+                    fields.style.display = 'none';
+                    clearDisciplineFields(fieldsId);
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
