@@ -3711,9 +3711,12 @@ document.addEventListener("DOMContentLoaded", function () {
       // Fix: remove required from hidden fields to avoid submit errors
       if (hide) {
         el.removeAttribute("required");
-      } else if (["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) {
-        el.setAttribute("required", "required");
-      }
+      } else if (
+  ["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName) &&
+  id !== "bog-comments"
+) {
+  el.setAttribute("required", "required");
+}
     }
     if (label) label.style.display = hide ? "none" : "";
   }
