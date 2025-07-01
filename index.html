@@ -423,6 +423,10 @@ textarea {
     font-style: italic;
   }
 
+.field-error-names {
+  border: 2px solid red;
+}
+
   </style>
 
 </head>
@@ -473,6 +477,25 @@ textarea {
           <option value="MNC Drilling">MNC Drilling</option>
           <option value="Netline Services">Netline Services</option>
           <option value="Versatile Services">Versatile Services</option>
+        </select>
+
+	<label for="forecast-site-contact">Crew Lead Contact Name</label>
+        <input type="text" id="forecast-site-contact" name="forecast-site-contact" required />
+
+	<label for="forecast-onsite-crew-lead-mobile">Crew Lead Contact Mobile</label>
+        <input type="tel" id="forecast-onsite-crew-lead-mobile" name="forecast-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit mobile number (04xxxxxxxx)" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
+
+        <label for="forecast-onsite-crew-lead-email">Crew Lead Contact Email</label>
+        <input type="text" id="forecast-onsite-crew-lead-email" name="forecast-onsite-crew-lead-email" />
+
+        <label for="forecast-onsite-crew-lead-EnableID">Crew Lead Contact Enable ID (if applicable)</label>
+        <input type="text" id="forecast-onsite-crew-lead-EnableID" name="forecast-onsite-crew-lead-EnableID" />
+
+        <label for="forecast-Genus-FCM">Your Genus FCM</label>
+        <select id="forecast-Genus-FCM" name="forecast-Genus-FCM" required>
+          <option value="">Select one</option>
+          <option value="Alex McConville">Alex McConville</option>
+          <option value="Sean Muldoon">Sean Muldoon</option>
         </select>
 
             <label for="forecast-sam-id">SAM ID - Please submit 1 form per SAM.</label>
@@ -535,25 +558,6 @@ textarea {
           <option value="K-6SCR-20">K-6SCR-20</option>
      </optgroup>
         </select>
-
-        <label for="forecast-Genus-FCM">Your Genus FCM</label>
-        <select id="forecast-Genus-FCM" name="forecast-Genus-FCM" required>
-          <option value="">Select one</option>
-          <option value="Alex McConville">Alex McConville</option>
-          <option value="Sean Muldoon">Sean Muldoon</option>
-        </select>
-
-	<label for="forecast-site-contact">Crew Lead Contact Name</label>
-        <input type="text" id="forecast-site-contact" name="forecast-site-contact" required />
-
-        <label for="forecast-onsite-crew-lead-mobile">Crew Lead Contact Mobile</label>
-        <input type="tel" id="forecast-onsite-crew-lead-mobile" name="forecast-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit mobile number (04xxxxxxxx)" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
-
-        <label for="forecast-onsite-crew-lead-email">Crew Lead Contact Email</label>
-        <input type="text" id="forecast-onsite-crew-lead-email" name="forecast-onsite-crew-lead-email" />
-
-        <label for="forecast-onsite-crew-lead-EnableID">Crew Lead Contact Enable ID (if applicable)</label>
-        <input type="text" id="forecast-onsite-crew-lead-EnableID" name="forecast-onsite-crew-lead-EnableID" />
 
         <p>
         <label for="forecast-build-phase">Select the build phase you are working on for this SAM / Project</label>
@@ -964,31 +968,6 @@ textarea {
 	De-mobilisation Day
 	</label>
 
-        <label for="bog-site-location">First Site Location</label>
-        <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
-
-<label for="bog-estimated-start-time">Estimated Start Time</label>
-<select id="bog-estimated-start-time" name="bog-estimated-start-time" required></select>
-
-<label for="bog-estimated-finish-time">Estimated Finish Time</label>
-<select id="bog-estimated-finish-time" name="bog-estimated-finish-time" required></select>
-
-<!-- Hidden fields to store timestamps in ISO format -->
-<input type="hidden" id="bog-estimated-start-timestamp" name="bog-estimated-start-timestamp" />
-<input type="hidden" id="bog-estimated-finish-timestamp" name="bog-estimated-finish-timestamp" />
-
-	<label for="bog-site-contact">Onsite Crew Lead Name</label>
-        <input type="text" id="bog-site-contact" name="bog-site-contact" required />
-
-        <label for="bog-onsite-crew-lead-mobile">Onsite Crew Lead Mobile</label>
-        <input type="tel" id="bog-onsite-crew-lead-mobile" name="bog-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
-
-        <label for="bog-onsite-crew-lead-email">Onsite Crew Lead Email</label>
-        <input type="text" id="bog-onsite-crew-lead-email" name="bog-onsite-crew-lead-email" />
-
-        <label for="bog-onsite-crew-lead-EnableID">Onsite Crew Lead Enable ID (if applicable)</label>
-        <input type="text" id="bog-onsite-crew-lead-EnableID" name="bog-onsite-crew-lead-EnableID" />
-
         <label for="bog-company-name">Your Company Name</label>
         <select id="bog-company-name" name="bog-company-name" required>
           <option value="Boretech Contracting">Boretech Contracting</option>
@@ -1005,6 +984,16 @@ textarea {
           <option value="Netline Services">Netline Services</option>
           <option value="Versatile Services">Versatile Services</option>
         </select>
+
+<label for="bog-estimated-start-time">Estimated Start Time</label>
+<select id="bog-estimated-start-time" name="bog-estimated-start-time" required></select>
+
+<label for="bog-estimated-finish-time">Estimated Finish Time</label>
+<select id="bog-estimated-finish-time" name="bog-estimated-finish-time" required></select>
+
+<!-- Hidden fields to store timestamps in ISO format -->
+<input type="hidden" id="bog-estimated-start-timestamp" name="bog-estimated-start-timestamp" />
+<input type="hidden" id="bog-estimated-finish-timestamp" name="bog-estimated-finish-timestamp" />
         
         <label for="bog-discipline">Discipline</label>
         <select id="bog-discipline" name="bog-discipline" required>
@@ -1028,12 +1017,6 @@ textarea {
           <option value="Supervison">Supervision</option>
      </optgroup>
         </select>
-        
-        <label for="bog-Number-of-People-at-Location">Number of People in Crew at Location</label>
-        <input type="number" id="bog-Number-of-People-at-Location" name="bog-Number-of-People-at-Location" step="1" required>
-        
-        <label for="bog-crews-names">List Names of Workers in Crew</label>
-        <textarea id="bog-crews-names" name="bog-crews-names" placeholder="Separate Names with a comma (First Name Last Name required)" required></textarea>
 
         <label for="bog-SAM">SAM ID</label>
         <select id="bog-SAM" name="bog-SAM" required>
@@ -1130,23 +1113,41 @@ textarea {
           <option value="30" data-sams="L-6ALN-20">30</option>
           <option value="31" data-sams="L-6ALN-20">31</option>
         </select>
+
+        <label for="bog-site-location">First Site Location</label>
+        <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
+
+	<label for="bog-site-contact">Onsite Crew Lead Name</label>
+        <input type="text" id="bog-site-contact" name="bog-site-contact" required />
+
+        <label for="bog-onsite-crew-lead-mobile">Onsite Crew Lead Mobile</label>
+        <input type="tel" id="bog-onsite-crew-lead-mobile" name="bog-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
+
+        <label for="bog-onsite-crew-lead-email">Onsite Crew Lead Email</label>
+        <input type="text" id="bog-onsite-crew-lead-email" name="bog-onsite-crew-lead-email" />
+
+        <label for="bog-onsite-crew-lead-EnableID">Onsite Crew Lead Enable ID (if applicable)</label>
+        <input type="text" id="bog-onsite-crew-lead-EnableID" name="bog-onsite-crew-lead-EnableID" />
         
+        <label for="bog-Number-of-People-at-Location">Number of People in Crew at Location</label>
+        <input type="number" id="bog-Number-of-People-at-Location" name="bog-Number-of-People-at-Location" step="1" required>
+        
+<label for="bog-crews-names">List Names of Workers in Crew</label>
+<textarea
+  id="bog-crews-names"
+  name="bog-crews-names"
+  placeholder="Enter names like: John Smith, Jane Doe, Sam Lee"
+  required
+  title="Enter names like: John Smith, Jane Doe, Sam Lee"></textarea>
+       
         <label for="bog-Genus-FCM">Your Genus FCM</label>
         <select id="bog-Genus-FCM" name="bog-Genus-FCM" required>
           <option value="">Select one</option>
           <option value="Alex McConville">Alex McConville</option>
           <option value="Sean Muldoon">Sean Muldoon</option>
         </select>
-                
-<div id="bog-swms-section">
-  <p id="bog-jha-label">
-    <label for="bog-jha-uploaded">
-      I confirm all workers have been inducted and have signed onto the JHA.
-    </label>
-    <input type="checkbox" id="bog-jha-uploaded" name="bog-jha-uploaded" required>
-    Please induct all visitors to JHA and complete prior to starting at each site.
-  </p>
-
+<br><br>
+<div>
   <fieldset id="bog-swms-fieldset">
     <legend><strong>Discipline with task Specific SWMS</strong></legend>
     <p>
@@ -1167,6 +1168,15 @@ textarea {
     <p id="swms-error" style="color: red; display: none;">Please select at least one SWMS discipline.</p>
   </fieldset>
 </div>
+                
+<div id="bog-swms-section">
+  <id="bog-jha-label">
+    <label for="bog-jha-uploaded">
+      I confirm all workers have been inducted and have signed onto the JHA.
+    </label>
+    <input type="checkbox" id="bog-jha-uploaded" name="bog-jha-uploaded" required>
+    Please induct all visitors to JHA and complete prior to starting at each site.
+  </div>
 
         <label for="bog-ACM">Will you be disturbing/modifying any possible ACM while onsite?</label>
         <select id="bog-ACM" name="bog-ACM" onchange="toggleACMField()" required>
@@ -1234,11 +1244,25 @@ textarea {
         <label for="reinstatement-site-contact">Your Name</label>
         <input type="text" id="reinstatement-site-contact" name="reinstatement-site-contact" required />
 
+        <label for="reinstatement-company-name">Temp Contractor Company Name</label>
+        <select id="reinstatement-company-name" name="reinstatement-company-name" required>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services" selected>Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
+        </select>
+
         <label for="reinstatement-date">Temp Reinstatement Date</label>
         <input type="date" id="reinstatement-date" name="reinstatement-date" required />
-
-        <label for="reinstatement-address">Address of Reinstatement</label>
-        <input type="text" id="reinstatement-address" name="reinstatement-address" class="address-autocomplete" required />
 
         <label for="reinstatement-SAM">SAM ID</label>
         <select id="reinstatement-SAM" name="reinstatement-SAM" required>
@@ -1336,6 +1360,9 @@ textarea {
           <option value="31" data-sams="L-6ALN-20">31</option>
         </select>
 
+        <label for="reinstatement-address">Address of Reinstatement</label>
+        <input type="text" id="reinstatement-address" name="reinstatement-address" class="address-autocomplete" required />
+
         <label for="reinstatement-Pit-Note-ID">Pit Note ID:</label>
         <input type="text" id="reinstatement-Pit-Note-ID" name="reinstatement-Pit-Note-ID" required />
 
@@ -1398,27 +1425,6 @@ textarea {
 <input type="text" id="reinstatement-material-type-other" name="reinstatement-material-type-other" />
 </div>
 
-        <label for="reinstatement-company-name">Temp Contractor Company Name</label>
-        <select id="reinstatement-company-name" name="reinstatement-company-name" required>
-          <option value="Boretech Contracting">Boretech Contracting</option>
-          <option value="Connectit Communications">Connectit Communications</option>
-          <option value="Dawn Techcomms">Dawn Techcomms</option>
-          <option value="DDS Underground">DDS Underground</option>
-          <option value="Dizza Communications">Dizza Communications</option>
-          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
-          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
-          <option value="Genus Services" selected>Genus Services</option>
-          <option value="JNJTech Services">JNJTech Services</option>
-          <option value="Lightsource">Lightsource</option>
-          <option value="MNC Drilling">MNC Drilling</option>
-          <option value="Netline Services">Netline Services</option>
-          <option value="Versatile Services">Versatile Services</option>
-        </select>
-        
-
-        <label for="reinstatement-perm-date">Proposed Permanent Reinstatement Date</label>
-        <input type="date" id="reinstatement-perm-date" name="reinstatement-perm-date" required />
-
         <label for="reinstatement-area">Permanent Reinstatement Area (m2)</label>
         <select id="reinstatement-area" name="reinstatement-area" required>
           <option value="">Select one</option>
@@ -1431,6 +1437,27 @@ textarea {
           <option value="">Select one</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
+        </select>        
+
+        <label for="reinstatement-perm-date">Proposed Permanent Reinstatement Date</label>
+        <input type="date" id="reinstatement-perm-date" name="reinstatement-perm-date" required />
+
+        <label for="reinstatement-perm-company-name">Permanent Reinstatement Contractor Company Name</label>
+        <select id="reinstatement-perm-company-name" name="reinstatement-perm-company-name" required>
+          <option value="">Select one</option>
+          <option value="Boretech Contracting">Boretech Contracting</option>
+          <option value="Connectit Communications">Connectit Communications</option>
+          <option value="Dawn Techcomms">Dawn Techcomms</option>
+          <option value="DDS Underground">DDS Underground</option>
+          <option value="Dizza Communications">Dizza Communications</option>
+          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
+          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
+          <option value="Genus Services">Genus Services</option>
+          <option value="JNJTech Services">JNJTech Services</option>
+          <option value="Lightsource">Lightsource</option>
+          <option value="MNC Drilling">MNC Drilling</option>
+          <option value="Netline Services">Netline Services</option>
+          <option value="Versatile Services">Versatile Services</option>
         </select>
 
         <label for="reinstatement-perm-material">Permanent Reinstatement Material Type</label>
@@ -1452,24 +1479,6 @@ textarea {
   <label for="reinstatement-perm-material-other">Permanent Reinstatement Material Used - Other</label>
 <input type="text" id="reinstatement-perm-material-other" name="reinstatement-perm-material-other" />
 </div>
-
-        <label for="reinstatement-perm-company-name">Permanent Reinstatement Contractor Company Name</label>
-        <select id="reinstatement-perm-company-name" name="reinstatement-perm-company-name" required>
-          <option value="">Select one</option>
-          <option value="Boretech Contracting">Boretech Contracting</option>
-          <option value="Connectit Communications">Connectit Communications</option>
-          <option value="Dawn Techcomms">Dawn Techcomms</option>
-          <option value="DDS Underground">DDS Underground</option>
-          <option value="Dizza Communications">Dizza Communications</option>
-          <option value="Engytech Engineering Services">Engytech Engineering Services</option>
-          <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
-          <option value="Genus Services">Genus Services</option>
-          <option value="JNJTech Services">JNJTech Services</option>
-          <option value="Lightsource">Lightsource</option>
-          <option value="MNC Drilling">MNC Drilling</option>
-          <option value="Netline Services">Netline Services</option>
-          <option value="Versatile Services">Versatile Services</option>
-        </select>
 
 	<label>
 	<input type="checkbox" id="reinstatement-Non-Standard" name="reinstatement-Non-Standard" />
@@ -3601,6 +3610,127 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('bog-date')?.addEventListener('change', updateBogTimestamps);
   document.getElementById('bog-form')?.addEventListener('submit', updateBogTimestamps);
 });
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const crewNumberInput = document.getElementById("bog-Number-of-People-at-Location");
+  const crewNamesTextarea = document.getElementById("bog-crews-names");
+  
+  // Check if elements exist
+  if (!crewNumberInput || !crewNamesTextarea) {
+    return;
+  }
+  
+  // Create validation message element
+  const validationMessage = document.createElement("div");
+  validationMessage.id = "bog-crews-names-validation";
+  validationMessage.style.color = "red";
+  validationMessage.style.fontSize = "14px";
+  validationMessage.style.marginTop = "5px";
+  validationMessage.style.display = "none";
+  
+  // Insert message element after the textarea
+  if (crewNamesTextarea.nextSibling) {
+    crewNamesTextarea.parentNode.insertBefore(validationMessage, crewNamesTextarea.nextSibling);
+  } else {
+    crewNamesTextarea.parentNode.appendChild(validationMessage);
+  }
+  
+  // Function to capitalize names properly
+  function capitalizeName(name) {
+    return name
+      .toLowerCase()
+      .split(' ')
+      .map(word => {
+        // Handle common prefixes and special cases
+        if (word.includes('-')) {
+          // Handle hyphenated names like "Mary-Jane"
+          return word.split('-').map(part => 
+            part.charAt(0).toUpperCase() + part.slice(1)
+          ).join('-');
+        } else if (word.includes("'")) {
+          // Handle names with apostrophes like "O'Connor"
+          return word.split("'").map((part, index) => {
+            if (index === 0) {
+              return part.charAt(0).toUpperCase() + part.slice(1);
+            } else {
+              // For parts after apostrophe, capitalize first letter
+              return part.charAt(0).toUpperCase() + part.slice(1);
+            }
+          }).join("'");
+        } else {
+          // Regular capitalization
+          return word.charAt(0).toUpperCase() + word.slice(1);
+        }
+      })
+      .join(' ');
+  }
+  
+  function normalizeAndValidateCrewNames(event = null) {
+    const expectedCount = parseInt(crewNumberInput.value, 10);
+    let namesRaw = crewNamesTextarea.value;
+    
+    // Clear previous validation
+    crewNamesTextarea.setCustomValidity("");
+    crewNamesTextarea.classList.remove("field-error-names");
+    validationMessage.style.display = "none";
+    validationMessage.textContent = "";
+    
+    // Only process if there's actual content
+    if (!namesRaw.trim()) {
+      return;
+    }
+    
+    // Split by comma, process each name
+    let nameEntries = namesRaw
+      .split(",")
+      .map(name => name.trim().replace(/\s+/g, " ")) // collapse internal spaces
+      .filter(name => name.length > 0); // remove empty entries
+    
+    // Only auto-capitalize and reformat on blur
+    if (event && event.type === 'blur') {
+      // Apply capitalization
+      nameEntries = nameEntries.map(name => capitalizeName(name));
+      // Update textarea with cleaned, normalized, and capitalized names
+      crewNamesTextarea.value = nameEntries.join(", ");
+    }
+    
+    const actualCount = nameEntries.length;
+    let validationErrors = [];
+    
+    // Check count mismatch
+    if (!isNaN(expectedCount) && expectedCount > 0 && expectedCount !== actualCount) {
+      validationErrors.push(`You entered ${actualCount} names but expected ${expectedCount}.`);
+    }
+    
+    // Check name format (First Last required)
+    const invalidNames = nameEntries.filter(name => {
+      const nameParts = name.trim().split(' ');
+      // Must have at least 2 parts (First Last)
+      return nameParts.length < 2 || nameParts.some(part => part.length === 0);
+    });
+    
+    if (invalidNames.length > 0) {
+      validationErrors.push(`Names must include both first and last name. Name format should be such as: John Smith, Jane Doe, Sam Lee. Check: ${invalidNames.join(', ')}`);
+    }
+    
+    // Apply validation if there are errors
+    if (validationErrors.length > 0) {
+      const fullMessage = validationErrors.join(' ');
+      crewNamesTextarea.setCustomValidity(fullMessage);
+      crewNamesTextarea.classList.add("field-error-names");
+      validationMessage.textContent = fullMessage;
+      validationMessage.style.display = "block";
+    }
+  }
+  
+  // Add event listeners
+  crewNumberInput.addEventListener("input", normalizeAndValidateCrewNames);
+  crewNamesTextarea.addEventListener("input", normalizeAndValidateCrewNames);
+  crewNamesTextarea.addEventListener("blur", normalizeAndValidateCrewNames);
+});
 </script>
 
 <script>
@@ -3699,6 +3829,7 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   const crewNumberLabel = document.querySelector('label[for="bog-Number-of-People-at-Location"]');
+  const crewNamesLabel = document.querySelector('label[for="bog-crews-names"]');
   const carsFieldId = "bog-cars";
   const carsLabelId = "label-bog-cars";
 
@@ -3712,11 +3843,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (hide) {
         el.removeAttribute("required");
       } else if (
-  ["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName) &&
-  id !== "bog-comments"
-) {
-  el.setAttribute("required", "required");
-}
+        ["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName) &&
+        id !== "bog-comments"
+      ) {
+        el.setAttribute("required", "required");
+      }
     }
     if (label) label.style.display = hide ? "none" : "";
   }
@@ -3736,16 +3867,19 @@ document.addEventListener("DOMContentLoaded", function () {
     conditionalIds.forEach(id => hideById(id, isMob));
     additionalMobOnlyBlocks.forEach(id => hideById(id, isMob));
 
-    // Hide the full JHA + SWMS section
+    // Hide the SWMS + JHA sections when Mobilisation is selected
     const swmsSection = document.getElementById("bog-swms-section");
     if (swmsSection) swmsSection.style.display = isMob ? "none" : "";
+
+    const swmsFieldset = document.getElementById("bog-swms-fieldset");
+    if (swmsFieldset) swmsFieldset.style.display = isMob ? "none" : "";
 
     // HSE reminder fallback (if not wrapped)
     const hseReminder = Array.from(document.querySelectorAll("p"))
       .find(p => p.textContent.includes("Construction JHA and Excavation permit process"));
     if (hseReminder) hseReminder.style.display = isMob ? "none" : "";
 
-    // Update crew label text
+    // Update crew number label text
     if (crewNumberLabel) {
       if (isMob) {
         crewNumberLabel.textContent = "Number of people mobilising today for this discipline in this SAM";
@@ -3753,6 +3887,17 @@ document.addEventListener("DOMContentLoaded", function () {
         crewNumberLabel.textContent = "Number of people de-mobilising today for this discipline in this SAM";
       } else {
         crewNumberLabel.textContent = "Number of People in Crew at Location";
+      }
+    }
+
+    // Update crew names label text
+    if (crewNamesLabel) {
+      if (isMob) {
+        crewNamesLabel.textContent = "List Names of Workers Mobilising";
+      } else if (isDemob) {
+        crewNamesLabel.textContent = "List Names of Workers Demobilising";
+      } else {
+        crewNamesLabel.textContent = "List Names of Workers in Crew";
       }
     }
 
