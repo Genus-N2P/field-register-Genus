@@ -2441,7 +2441,9 @@ document.getElementById('forecast-form').addEventListener('submit', async functi
                 'Ensure Telstra guards are fully locked around all open manholes.  Calibrated gas detector required for spot sampling manhole access and ongoing monitoring.': document.getElementById('bog-guards').checked,
                 'Excavation work- have you follow the 5Ps  with a competent locator onsite?': document.getElementById('bog-excavation').checked,
                 'Additional Comments': document.getElementById('bog-comments').value,
-                'Number of Crew Cars': document.getElementById('bog-cars')?.value || '',
+                'Number of Crew vehicles': document.getElementById('bog-crew-vehicles')?.value || '',
+                'Number of heavy vehicles': document.getElementById('bog-heavy-vehicles')?.value || '',
+
             };
             
             try {
@@ -3801,7 +3803,6 @@ function resetAllDisciplineFields() {
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const mobCheckbox = document.getElementById("bog-mob");
-  console.log("mobCheckbox:", mobCheckbox);
   const demobCheckbox = document.getElementById("bog-demob");
   const bogForm = document.getElementById("bog-form");
 
@@ -3813,7 +3814,6 @@ document.addEventListener("DOMContentLoaded", function () {
     "bog-onsite-crew-lead-mobile",
     "bog-onsite-crew-lead-email",
     "bog-onsite-crew-lead-EnableID",
-    "bog-ADA",
     "bog-Genus-FCM",
     "bog-ACM",
     "bog-acm-yes",
@@ -3830,16 +3830,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const crewNumberLabel = document.querySelector('label[for="bog-Number-of-People-at-Location"]');
   const crewNamesLabel = document.querySelector('label[for="bog-crews-names"]');
-  const carsFieldId = "bog-cars";
-  const carsLabelId = "label-bog-cars";
+  const enableIDField = document.getElementById("bog-onsite-crew-lead-EnableID");
+
+  const crewVehiclesFieldId = "bog-crew-vehicles";
+  const crewVehiclesLabelId = "label-bog-crew-vehicles";
+  const heavyVehiclesFieldId = "bog-heavy-vehicles";
+  const heavyVehiclesLabelId = "label-bog-heavy-vehicles";
+
+  function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+  }
 
   function hideById(id, hide) {
     const el = document.getElementById(id);
     const label = document.querySelector(`label[for="${id}"]`);
     if (el) {
       el.style.display = hide ? "none" : "";
-
-      // Fix: remove required from hidden fields to avoid submit errors
       if (hide) {
         el.removeAttribute("required");
       } else if (
@@ -3863,81 +3869,86 @@ document.addEventListener("DOMContentLoaded", function () {
       return updateMobDemobState();
     }
 
-    // Hide/show fields by ID
+    // Hide/show conditionals
     conditionalIds.forEach(id => hideById(id, isMob));
     additionalMobOnlyBlocks.forEach(id => hideById(id, isMob));
 
-    // Hide the SWMS + JHA sections when Mobilisation is selected
     const swmsSection = document.getElementById("bog-swms-section");
     if (swmsSection) swmsSection.style.display = isMob ? "none" : "";
 
     const swmsFieldset = document.getElementById("bog-swms-fieldset");
     if (swmsFieldset) swmsFieldset.style.display = isMob ? "none" : "";
 
-    // HSE reminder fallback (if not wrapped)
-    const hseReminder = Array.from(document.querySelectorAll("p"))
-      .find(p => p.textContent.includes("Construction JHA and Excavation permit process"));
+    const hseReminder = Array.from(document.querySelectorAll("p")).find(p =>
+      p.textContent.includes("Construction JHA and Excavation permit process")
+    );
     if (hseReminder) hseReminder.style.display = isMob ? "none" : "";
 
-    // Update crew number label text
     if (crewNumberLabel) {
-      if (isMob) {
-        crewNumberLabel.textContent = "Number of people mobilising today for this discipline in this SAM";
-      } else if (isDemob) {
-        crewNumberLabel.textContent = "Number of people de-mobilising today for this discipline in this SAM";
-      } else {
-        crewNumberLabel.textContent = "Number of People in Crew at Location";
-      }
+      crewNumberLabel.textContent = isMob
+        ? "Number of people mobilising today for this discipline in this SAM"
+        : isDemob
+        ? "Number of people de-mobilising today for this discipline in this SAM"
+        : "Number of People in Crew at Location";
     }
 
-    // Update crew names label text
     if (crewNamesLabel) {
-      if (isMob) {
-        crewNamesLabel.textContent = "List Names of Workers Mobilising";
-      } else if (isDemob) {
-        crewNamesLabel.textContent = "List Names of Workers Demobilising";
-      } else {
-        crewNamesLabel.textContent = "List Names of Workers in Crew";
-      }
+      crewNamesLabel.textContent = isMob
+        ? "List Names of Workers Mobilising"
+        : isDemob
+        ? "List Names of Workers Demobilising"
+        : "List Names of Workers in Crew";
     }
 
-    // Crew cars field handling
-    let carsField = document.getElementById(carsFieldId);
-    let carsLabel = document.getElementById(carsLabelId);
+    const vehicleLabelText = isMob
+      ? "Number of crew vehicles being mobilised"
+      : "Number of crew vehicles being de-mobilised";
+
+    const heavyVehicleLabelText = isMob
+      ? "Number of heavy vehicles being mobilised (please note, this is claimable once per SAM)"
+      : "Number of heavy vehicles being de-mobilised (please note, this is claimable once per SAM)";
+
+    // Remove old if exists
+    [crewVehiclesLabelId, crewVehiclesFieldId, heavyVehiclesLabelId, heavyVehiclesFieldId].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
 
     if (isMob || isDemob) {
-      const labelText = isMob
-        ? "Number of crew cars being mobilised"
-        : "Number of crew cars being de-mobilised";
+      // --- Heavy Vehicles ---
+      const heavyLabel = document.createElement("label");
+      heavyLabel.id = heavyVehiclesLabelId;
+      heavyLabel.htmlFor = heavyVehiclesFieldId;
+      heavyLabel.textContent = heavyVehicleLabelText;
 
-      if (!carsField) {
-        carsLabel = document.createElement("label");
-        carsLabel.id = carsLabelId;
-        carsLabel.htmlFor = carsFieldId;
-        carsLabel.textContent = labelText;
+      const heavyInput = document.createElement("input");
+      heavyInput.type = "number";
+      heavyInput.id = heavyVehiclesFieldId;
+      heavyInput.name = "Number of heavy vehicles";
+      heavyInput.step = "1";
+      heavyInput.required = true;
 
-        carsField = document.createElement("input");
-        carsField.type = "number";
-        carsField.id = carsFieldId;
-        carsField.name = carsFieldId;
-        carsField.step = "1";
-        carsField.required = true;
+      insertAfter(heavyLabel, enableIDField);
+      insertAfter(heavyInput, heavyLabel);
 
-        bogForm.insertBefore(carsLabel, crewNumberLabel);
-        bogForm.insertBefore(carsField, crewNumberLabel);
-      } else {
-        carsLabel.textContent = labelText;
-        carsField.style.display = "";
-        carsLabel.style.display = "";
-        carsField.required = true;
-      }
-    } else {
-      if (carsField) carsField.remove();
-      if (carsLabel) carsLabel.remove();
+      // --- Crew Vehicles ---
+      const crewLabel = document.createElement("label");
+      crewLabel.id = crewVehiclesLabelId;
+      crewLabel.htmlFor = crewVehiclesFieldId;
+      crewLabel.textContent = vehicleLabelText;
+
+      const crewInput = document.createElement("input");
+      crewInput.type = "number";
+      crewInput.id = crewVehiclesFieldId;
+      crewInput.name = "Number of Crew vehicles";
+      crewInput.step = "1";
+      crewInput.required = true;
+
+      insertAfter(crewLabel, heavyInput);
+      insertAfter(crewInput, crewLabel);
     }
   }
 
-  // Event listeners
   if (mobCheckbox && demobCheckbox) {
     mobCheckbox.addEventListener("change", () => {
       if (mobCheckbox.checked) demobCheckbox.checked = false;
@@ -3949,7 +3960,7 @@ document.addEventListener("DOMContentLoaded", function () {
       updateMobDemobState();
     });
 
-    updateMobDemobState(); // Initial call
+    updateMobDemobState(); // Initial
   } else {
     console.warn("Mob/Demob checkboxes not found in the DOM.");
   }
