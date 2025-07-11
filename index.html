@@ -3849,11 +3849,12 @@ document.addEventListener("DOMContentLoaded", function () {
       if (hide) {
         el.removeAttribute("required");
       } else if (
-        ["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName) &&
-        id !== "bog-comments"
-      ) {
-        el.setAttribute("required", "required");
-      }
+  ["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName) &&
+  id !== "bog-comments" &&
+  id !== "bog-onsite-crew-lead-EnableID"
+) {
+  el.setAttribute("required", "required");
+}
     }
     if (label) label.style.display = hide ? "none" : "";
   }
