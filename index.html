@@ -4010,5 +4010,30 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Select all forms
+  const forms = document.querySelectorAll("form");
+
+  forms.forEach((form) => {
+    form.addEventListener("submit", function (event) {
+      const submitButton = form.querySelector('button[type="submit"]');
+
+      if (submitButton) {
+        // Disable the button immediately
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+
+        // Re-enable after 7 seconds
+        setTimeout(() => {
+          submitButton.disabled = false;
+          submitButton.textContent = "Submit"; // change to original label if different
+        }, 7000);
+      }
+    });
+  });
+});
+</script>
+
 </body>
 </html>
