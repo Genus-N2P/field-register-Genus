@@ -2407,6 +2407,15 @@ document.getElementById('forecast-form').addEventListener('submit', async functi
        // Add event listeners for each form
         document.getElementById('bog-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+const submitButton = this.querySelector('button[type="submit"]');
+if (submitButton) {
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
+  setTimeout(() => {
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit BOG";
+  }, 7000);
+}
 
   // Initial check in case checkbox is pre-checked
   // toggleBogSiteLocation();
@@ -2555,6 +2564,15 @@ showSuccessMessage();
 
         document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+const submitButton = this.querySelector('button[type="submit"]');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+    setTimeout(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit Pit Link-in";
+    }, 7000);
+  }
 
     // --- New 5-7-digit ID Validation (Updated) ---
     let isValid = true;
@@ -2637,6 +2655,15 @@ showSuccessMessage();
 
         document.getElementById('vactruck-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+const submitButton = this.querySelector('button[type="submit"]');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+    setTimeout(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit Vac Truck";
+    }, 7000);
+  }
 
     // --- New 5-7-digit ID Validation (Updated) ---
     let isValid = true;
@@ -2929,6 +2956,15 @@ function populateAndLockForm(fields) {
 
   document.getElementById('pitlinkin-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+const submitButton = this.querySelector('button[type="submit"]');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+    setTimeout(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit Pit Link-in";
+    }, 7000);
+  }
 
     const noteIdEntered = document.getElementById('pitlinkin-note-id-search').value.trim();
     const completedCheckbox = document.getElementById('pitlinkin-completed');
@@ -3470,6 +3506,15 @@ function populateAndLockForm(fields) {
 
   document.getElementById('reinstatement-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+const submitButton = document.getElementById('reinstatement-submit-btn');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+    setTimeout(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit Reinstatement";
+    }, 7000);
+  }
 
     const noteIdEntered = document.getElementById('reinstatement-note-id-search').value.trim();
     const completedCheckbox = document.getElementById('reinstatement-completed');
@@ -4012,25 +4057,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // Select all forms
-  const forms = document.querySelectorAll("form");
+  const targetForms = ['forecast-form', 'bog-form', 'reinstatement-form', 'pitlinkin-form', 'vactruck-form'];
 
-  forms.forEach((form) => {
-    form.addEventListener("submit", function (event) {
-      const submitButton = form.querySelector('button[type="submit"]');
-
-      if (submitButton) {
-        // Disable the button immediately
-        submitButton.disabled = true;
-        submitButton.textContent = "Submitting...";
-
-        // Re-enable after 7 seconds
-        setTimeout(() => {
-          submitButton.disabled = false;
-          submitButton.textContent = "Submit"; // change to original label if different
-        }, 7000);
-      }
-    });
+  targetForms.forEach(formId => {
+    const form = document.getElementById(formId);
+    if (form) {
+      form.addEventListener("submit", function (event) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.textContent = "Submitting...";
+          setTimeout(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit";
+          }, 7000);
+        }
+      });
+    }
   });
 });
 </script>
