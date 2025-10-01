@@ -1119,7 +1119,7 @@ textarea {
   <option value="31" data-sams="L-6ALN-20">31</option>
         </select>
 
-        <label for="bog-site-location">First Site Location</label>
+        <label for="bog-site-location">First Site Address</label>
         <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
 
 	<label for="bog-site-contact">Onsite Crew Lead Name</label>
@@ -3864,7 +3864,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const bogForm = document.getElementById("bog-form");
 
   const conditionalIds = [
-    "bog-site-location",
     "bog-estimated-start-time",
     "bog-estimated-finish-time",
     "bog-site-contact",
@@ -3888,6 +3887,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const crewNumberLabel = document.querySelector('label[for="bog-Number-of-People-at-Location"]');
   const crewNamesLabel = document.querySelector('label[for="bog-crews-names"]');
   const enableIDField = document.getElementById("bog-onsite-crew-lead-EnableID");
+  const siteLocationLabel = document.querySelector('label[for="bog-site-location"]');
 
   const crewVehiclesFieldId = "bog-crew-vehicles";
   const crewVehiclesLabelId = "label-bog-crew-vehicles";
@@ -3927,9 +3927,25 @@ document.addEventListener("DOMContentLoaded", function () {
       return updateMobDemobState();
     }
 
-    // Hide/show conditionals
+    // Hide/show conditionals (excluding bog-site-location now)
     conditionalIds.forEach(id => hideById(id, isMob));
     additionalMobOnlyBlocks.forEach(id => hideById(id, isMob));
+
+    // Handle bog-site-location separately - always show it
+    const siteLocationField = document.getElementById("bog-site-location");
+    if (siteLocationField) {
+      siteLocationField.style.display = "";
+      siteLocationField.setAttribute("required", "required");
+    }
+
+    // Update the label for bog-site-location
+    if (siteLocationLabel) {
+      if (isMob) {
+        siteLocationLabel.textContent = "Departure Address";
+      } else {
+        siteLocationLabel.textContent = "First Site Address";
+      }
+    }
 
     const swmsSection = document.getElementById("bog-swms-section");
     if (swmsSection) swmsSection.style.display = isMob ? "none" : "";
