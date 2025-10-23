@@ -1018,7 +1018,7 @@ textarea {
           <option value="Fibre Splicing">Fibre Splicing</option>
           <option value="Fibre Testing">Fibre Testing</option>
           <option value="PON Patching">PON Patching</option>
-          <option value="Traffice Management">Traffic Management</option>
+          <option value="Traffic Management">Traffic Management</option>
           <option value="Supervision">Supervision</option>
      </optgroup>
         </select>
@@ -1247,9 +1247,6 @@ textarea {
 	<!-- Hidden input hardcoded to 'Reinstatement' -->
 	<input type="hidden" id="reinstatement-type" name="reinstatement-type" value="Reinstatement">
 
-        <label for="reinstatement-site-contact">Your Name</label>
-        <input type="text" id="reinstatement-site-contact" name="reinstatement-site-contact" required />
-
         <label for="reinstatement-company-name">Temp Contractor Company Name</label>
         <select id="reinstatement-company-name" name="reinstatement-company-name" required>
           <option value="Boretech Contracting">Boretech Contracting</option>
@@ -1268,6 +1265,9 @@ textarea {
           <option value="TAT Communications">TAT Communications</option>
           <option value="Versatile Services">Versatile Services</option>
         </select>
+
+        <label for="reinstatement-site-contact">Your Name</label>
+        <input type="text" id="reinstatement-site-contact" name="reinstatement-site-contact" required />
 
         <label for="reinstatement-date">Temp Reinstatement Date</label>
         <input type="date" id="reinstatement-date" name="reinstatement-date" required />
@@ -4103,6 +4103,151 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const webAppUrl =
+    "https://script.google.com/macros/s/AKfycbyvuqOaLGTX27mWvzzDEhYLR1yXHpfP9Md3sT-aRnv_-_2pGpkZtANHjF67V-j5x8vf/exec";
+
+  // --- Field mappings ---
+  const config = [
+    {
+      company: "bog-company-name",
+      crew: "bog-crews-names",
+      site: "bog-site-contact",
+      numPeople: "bog-number-of-people-at-location",
+      multiCrew: true,
+    },
+    {
+      company: "forecast-company-name",
+      site: "forecast-site-contact",
+    },
+    {
+      company: "reinstatement-company-name",
+      site: "reinstatement-site-contact",
+    },
+    {
+      company: null, // Hard-coded company
+      site: "pitlinkin-site-contact",
+      fixedCompany: "Genus Services",
+    },
+  ];
+
+  // --- Fetch crew names from Apps Script ---
+  async function fetchCrewNames(company) {
+    if (!company) return [];
+    try {
+      const url = `${webAppUrl}?company=${encodeURIComponent(company)}`;
+      const res = await fetch(url);
+      return await res.json();
+    } catch (err) {
+      console.error("Failed to fetch crew names:", err);
+      return [];
+    }
+  }
+
+  // --- Create autocomplete dropdown ---
+  function createAutocomplete(inputElement, crewList, multi = false, addComma = false, numPeopleInput = null) {
+    let suggestionsBox;
+
+    inputElement.addEventListener("input", function () {
+      const currentValue = inputElement.value;
+      const parts = multi ? currentValue.split(",") : [currentValue];
+      const lastPart = parts[parts.length - 1].trim().toLowerCase();
+
+      const matches = crewList.filter(
+        (name) => name.toLowerCase().includes(lastPart) && lastPart.length > 0
+      );
+      if (suggestionsBox) suggestionsBox.remove();
+      if (matches.length === 0) return;
+
+      suggestionsBox = document.createElement("div");
+      suggestionsBox.style.position = "absolute";
+      suggestionsBox.style.backgroundColor = "white";
+      suggestionsBox.style.border = "1px solid #ccc";
+      suggestionsBox.style.maxHeight = "150px";
+      suggestionsBox.style.overflowY = "auto";
+      suggestionsBox.style.zIndex = "1000";
+
+      matches.forEach((name) => {
+        const item = document.createElement("div");
+        item.textContent = name;
+        item.style.padding = "4px 8px";
+        item.style.cursor = "pointer";
+        item.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+
+          if (multi) {
+            const enteredNames = parts.map((p) => p.trim()).filter((p) => p.length > 0);
+            const numPeople = parseInt(numPeopleInput?.value || "0", 10);
+
+            parts[parts.length - 1] = name;
+            inputElement.value = parts.map((p) => p.trim()).join(", ");
+
+            if (enteredNames.length < numPeople - 1 && addComma) {
+              inputElement.value += ", ";
+            }
+          } else {
+            inputElement.value = name; // no comma for single fields
+          }
+
+          // ✅ Trigger existing validation
+          const event = new Event("input", { bubbles: true });
+          inputElement.dispatchEvent(event);
+
+          suggestionsBox.remove();
+          inputElement.focus();
+        });
+        suggestionsBox.appendChild(item);
+      });
+
+      const rect = inputElement.getBoundingClientRect();
+      suggestionsBox.style.top = rect.bottom + window.scrollY + "px";
+      suggestionsBox.style.left = rect.left + window.scrollX + "px";
+      suggestionsBox.style.width = rect.width + "px";
+
+      document.body.appendChild(suggestionsBox);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (suggestionsBox && !suggestionsBox.contains(e.target) && e.target !== inputElement) {
+        suggestionsBox.remove();
+      }
+    });
+  }
+
+  // --- Initialize all autocomplete configurations ---
+  async function initAutocompletes() {
+    for (const cfg of config) {
+      const companyEl = cfg.company ? document.getElementById(cfg.company) : null;
+      const siteEl = cfg.site ? document.getElementById(cfg.site) : null;
+      const crewEl = cfg.crew ? document.getElementById(cfg.crew) : null;
+      const numPeopleEl = cfg.numPeople ? document.getElementById(cfg.numPeople) : null;
+
+      if (!siteEl && !crewEl) continue;
+
+      // Function to update autocomplete when company changes
+      async function updateAutocomplete(companyName) {
+        const crewList = await fetchCrewNames(companyName);
+        if (crewEl) createAutocomplete(crewEl, crewList, true, true, numPeopleEl);
+        if (siteEl) createAutocomplete(siteEl, crewList, false, false);
+      }
+
+      // Handle dynamic or fixed company setups
+      if (cfg.fixedCompany) {
+        await updateAutocomplete(cfg.fixedCompany);
+      } else if (companyEl) {
+        await updateAutocomplete(companyEl.value);
+        companyEl.addEventListener("change", async () => {
+          await updateAutocomplete(companyEl.value);
+        });
+      }
+    }
+  }
+
+  initAutocompletes();
 });
 </script>
 
