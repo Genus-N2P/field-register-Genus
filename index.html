@@ -427,6 +427,32 @@ textarea {
   border: 2px solid red;
 }
 
+.crew-checkbox {
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      background-color: #fff;
+      padding: 1rem;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'Exo', sans-serif;
+    }
+    .crew-checkbox label {
+      display: block;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+      color: var(--primary-dark);
+    }
+    .crew-checkbox input[type="checkbox"] {
+      accent-color: var(--primary-accent);
+      margin-right: 0.5rem;
+      transform: scale(1.1);
+    }
+    .crew-checkbox p {
+      color: var(--primary-mid);
+      font-style: italic;
+      margin: 0 0 0.5rem 0;
+    }
+
   </style>
 
 </head>
@@ -481,8 +507,9 @@ textarea {
           <option value="Versatile Services">Versatile Services</option>
         </select>
 
-	<label for="forecast-site-contact">Crew Lead Contact Name</label>
-        <input type="text" id="forecast-site-contact" name="forecast-site-contact" required />
+    <label for="forecast-site-contact">Crew Lead Contact Name</label>
+    <div id="forecast-site-contact" class="crew-checkbox"></div>
+    <input type="hidden" id="forecast-site-contact-hidden" name="forecast-site-contact" required />
 
 	<label for="forecast-onsite-crew-lead-mobile">Crew Lead Contact Mobile</label>
         <input type="tel" id="forecast-onsite-crew-lead-mobile" name="forecast-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit mobile number (04xxxxxxxx)" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
@@ -1122,8 +1149,9 @@ textarea {
         <label for="bog-site-location">First Site Address</label>
         <input type="text" id="bog-site-location" name="bog-site-location" class="address-autocomplete" required />
 
-	<label for="bog-site-contact">Onsite Crew Lead Name</label>
-        <input type="text" id="bog-site-contact" name="bog-site-contact" required />
+    <label for="bog-site-contact">Onsite Crew Lead Name</label>
+    <div id="bog-site-contact" class="crew-checkbox"></div>
+    <input type="hidden" id="bog-site-contact-hidden" name="bog-site-contact" required />
 
         <label for="bog-onsite-crew-lead-mobile">Onsite Crew Lead Mobile</label>
         <input type="tel" id="bog-onsite-crew-lead-mobile" name="bog-onsite-crew-lead-mobile" pattern="04\d{8}" maxlength="10" placeholder="Enter 10-digit number" oninvalid="this.setCustomValidity('Enter number as 04xxxxxxxx')" oninput="this.setCustomValidity('')" required />
@@ -1137,13 +1165,11 @@ textarea {
         <label for="bog-Number-of-People-at-Location">Number of People in Crew at Location</label>
         <input type="number" id="bog-Number-of-People-at-Location" name="bog-Number-of-People-at-Location" min="1" step="1" required>
         
-<label for="bog-crews-names">List Names of Workers in Crew</label>
-<textarea
-  id="bog-crews-names"
-  name="bog-crews-names"
-  placeholder="Enter names like: John Smith, Jane Doe, Sam Lee"
-  required
-  title="Enter names like: John Smith, Jane Doe, Sam Lee"></textarea>
+    <label for="bog-crews-names">Select Crew Members</label>
+    <div id="bog-crews-names" class="crew-checkbox">
+      <p>Select crew members for this location...</p>
+    </div>
+    <input type="hidden" id="bog-crews-names-hidden" name="bog-crews-names" required />
        
         <label for="bog-Genus-FCM">Your Genus FCM</label>
         <select id="bog-Genus-FCM" name="bog-Genus-FCM" required>
@@ -1266,8 +1292,9 @@ textarea {
           <option value="Versatile Services">Versatile Services</option>
         </select>
 
-        <label for="reinstatement-site-contact">Your Name</label>
-        <input type="text" id="reinstatement-site-contact" name="reinstatement-site-contact" required />
+    <label for="reinstatement-site-contact">Crew Lead Contact Name</label>
+    <div id="reinstatement-site-contact" class="crew-checkbox"></div>
+    <input type="hidden" id="reinstatement-site-contact-hidden" name="reinstatement-site-contact" required />
 
         <label for="reinstatement-date">Temp Reinstatement Date</label>
         <input type="date" id="reinstatement-date" name="reinstatement-date" required />
@@ -1534,8 +1561,9 @@ textarea {
 	<!-- Hidden input hardcoded to 'Pit Link-in' -->
 	<input type="hidden" id="pitlinkin-type" name="pitlinkin-type" value="Pit Link-in">
 
-        <label for="pitlinkin-site-contact">Your Name</label>
-        <input type="text" id="pitlinkin-site-contact" name="pitlinkin-site-contact" required />
+    <label for="pitlinkin-site-contact">Crew Lead Contact Name</label>
+    <div id="pitlinkin-site-contact" class="crew-checkbox"></div>
+    <input type="hidden" id="pitlinkin-site-contact-hidden" name="pitlinkin-site-contact" required />
 
         <label for="pitlinkin-date">Date Reported</label>
         <input type="date" id="pitlinkin-date" name="pitlinkin-date" required />
@@ -2370,7 +2398,7 @@ document.getElementById('forecast-form').addEventListener('submit', async functi
         'Construction Partner Company Name': document.getElementById('forecast-company-name').value,
         'SAM': document.getElementById('forecast-sam-id').value,
         'DP Field Supervisor': document.getElementById('forecast-Genus-FCM').value,
-        'Construction Partner Technician Name': document.getElementById('forecast-site-contact').value,
+        'Construction Partner Technician Name': document.getElementById('forecast-site-contact-hidden').value,
         'Construction Partner Technician Number missing 0': document.getElementById('forecast-onsite-crew-lead-mobile').value,
         'Construction Partner Technician Email': document.getElementById('forecast-onsite-crew-lead-email').value,
         'Enable ID (if applicable)': document.getElementById('forecast-onsite-crew-lead-EnableID').value,
@@ -2444,14 +2472,14 @@ if (submitButton) {
                 'First Site Location2': document.getElementById('bog-site-location').value,
                 'Estimated Start Time2': document.getElementById('bog-estimated-start-timestamp').value,
                 'Estimated Finish Time2': document.getElementById('bog-estimated-finish-timestamp').value,
-                'Onsite Crew Lead': document.getElementById('bog-site-contact').value,
+                'Onsite Crew Lead': document.getElementById('bog-site-contact-hidden').value,
                 'Onsite Crew Lead Mobile_original': document.getElementById('bog-onsite-crew-lead-mobile').value,
                 'Construction Partner Technician Email': document.getElementById('bog-onsite-crew-lead-email').value,
                 'Enable ID (if applicable)': document.getElementById('bog-onsite-crew-lead-EnableID').value,
                 'Your Company Name': document.getElementById('bog-company-name').value,
                 'Discipline': document.getElementById('bog-discipline').value,
                 'Number of People at Location?': document.getElementById('bog-Number-of-People-at-Location').value,
-                'List Names of Workers in field.': document.getElementById('bog-crews-names').value,
+                'List Names of Workers in field.': document.getElementById('bog-crews-names-hidden').value,
                 'SAM ID (WA)': document.getElementById('bog-SAM').value,
                 'ADA ID': document.getElementById('bog-ADA').value,
                 'Your Genus FCM': document.getElementById('bog-Genus-FCM').value,
@@ -2529,7 +2557,7 @@ showSuccessMessage();
             
             // Collect form data - modify this based on your actual form fields
             const formData = {
-                'Your Name': document.getElementById('reinstatement-site-contact').value,
+                'Your Name': document.getElementById('reinstatement-site-contact-hidden').value,
                 'Temp Reinstatement Date': document.getElementById('reinstatement-date').value,
                 'Address': document.getElementById('reinstatement-address').value,
                 'SAM': document.getElementById('reinstatement-SAM').value,
@@ -3622,6 +3650,7 @@ const submitButton = document.getElementById('reinstatement-submit-btn');
   });
 });
 </script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   function generateTimeOptions(selectId) {
@@ -3630,14 +3659,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     for (let hour = 0; hour < 24; hour++) {
       for (let min = 0; min < 60; min += 30) {
-        const timeStr = hour.toString().padStart(2, '0') + ':' + min.toString().padStart(2, '0');
-        const displayStr = new Date('1970-01-01T' + timeStr + ':00').toLocaleTimeString([], {
-          hour: '2-digit', minute: '2-digit', hour12: false
-        });
+        const hourStr = hour.toString().padStart(2, '0');
+        const minStr = min.toString().padStart(2, '0');
+        const time24 = `${hourStr}:${minStr}`; // 24-hour format for value
+
+        // Convert to 12-hour format for display
+        let displayHour = hour % 12;
+        displayHour = displayHour === 0 ? 12 : displayHour;
+        const ampm = hour < 12 ? 'AM' : 'PM';
+        const displayStr = `${displayHour}:${minStr} ${ampm}`;
 
         const option = document.createElement('option');
-        option.value = timeStr;
-        option.textContent = displayStr;
+        option.value = time24;       // 24-hour format value
+        option.textContent = displayStr; // 12-hour format display
         select.appendChild(option);
       }
     }
@@ -3668,127 +3702,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('bog-estimated-finish-time')?.addEventListener('change', updateBogTimestamps);
   document.getElementById('bog-date')?.addEventListener('change', updateBogTimestamps);
   document.getElementById('bog-form')?.addEventListener('submit', updateBogTimestamps);
-});
-
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const crewNumberInput = document.getElementById("bog-Number-of-People-at-Location");
-  const crewNamesTextarea = document.getElementById("bog-crews-names");
-  
-  // Check if elements exist
-  if (!crewNumberInput || !crewNamesTextarea) {
-    return;
-  }
-  
-  // Create validation message element
-  const validationMessage = document.createElement("div");
-  validationMessage.id = "bog-crews-names-validation";
-  validationMessage.style.color = "red";
-  validationMessage.style.fontSize = "14px";
-  validationMessage.style.marginTop = "5px";
-  validationMessage.style.display = "none";
-  
-  // Insert message element after the textarea
-  if (crewNamesTextarea.nextSibling) {
-    crewNamesTextarea.parentNode.insertBefore(validationMessage, crewNamesTextarea.nextSibling);
-  } else {
-    crewNamesTextarea.parentNode.appendChild(validationMessage);
-  }
-  
-  // Function to capitalize names properly
-  function capitalizeName(name) {
-    return name
-      .toLowerCase()
-      .split(' ')
-      .map(word => {
-        // Handle common prefixes and special cases
-        if (word.includes('-')) {
-          // Handle hyphenated names like "Mary-Jane"
-          return word.split('-').map(part => 
-            part.charAt(0).toUpperCase() + part.slice(1)
-          ).join('-');
-        } else if (word.includes("'")) {
-          // Handle names with apostrophes like "O'Connor"
-          return word.split("'").map((part, index) => {
-            if (index === 0) {
-              return part.charAt(0).toUpperCase() + part.slice(1);
-            } else {
-              // For parts after apostrophe, capitalize first letter
-              return part.charAt(0).toUpperCase() + part.slice(1);
-            }
-          }).join("'");
-        } else {
-          // Regular capitalization
-          return word.charAt(0).toUpperCase() + word.slice(1);
-        }
-      })
-      .join(' ');
-  }
-  
-  function normalizeAndValidateCrewNames(event = null) {
-    const expectedCount = parseInt(crewNumberInput.value, 10);
-    let namesRaw = crewNamesTextarea.value;
-    
-    // Clear previous validation
-    crewNamesTextarea.setCustomValidity("");
-    crewNamesTextarea.classList.remove("field-error-names");
-    validationMessage.style.display = "none";
-    validationMessage.textContent = "";
-    
-    // Only process if there's actual content
-    if (!namesRaw.trim()) {
-      return;
-    }
-    
-    // Split by comma, process each name
-    let nameEntries = namesRaw
-      .split(",")
-      .map(name => name.trim().replace(/\s+/g, " ")) // collapse internal spaces
-      .filter(name => name.length > 0); // remove empty entries
-    
-    // Only auto-capitalize and reformat on blur
-    if (event && event.type === 'blur') {
-      // Apply capitalization
-      nameEntries = nameEntries.map(name => capitalizeName(name));
-      // Update textarea with cleaned, normalized, and capitalized names
-      crewNamesTextarea.value = nameEntries.join(", ");
-    }
-    
-    const actualCount = nameEntries.length;
-    let validationErrors = [];
-    
-    // Check count mismatch
-    if (!isNaN(expectedCount) && expectedCount > 0 && expectedCount !== actualCount) {
-      validationErrors.push(`You entered ${actualCount} names but expected ${expectedCount}.`);
-    }
-    
-    // Check name format (First Last required)
-    const invalidNames = nameEntries.filter(name => {
-      const nameParts = name.trim().split(' ');
-      // Must have at least 2 parts (First Last)
-      return nameParts.length < 2 || nameParts.some(part => part.length === 0);
-    });
-    
-    if (invalidNames.length > 0) {
-      validationErrors.push(`Names must include both first and last name. Name format should be such as: John Smith, Jane Doe, Sam Lee. Check: ${invalidNames.join(', ')}`);
-    }
-    
-    // Apply validation if there are errors
-    if (validationErrors.length > 0) {
-      const fullMessage = validationErrors.join(' ');
-      crewNamesTextarea.setCustomValidity(fullMessage);
-      crewNamesTextarea.classList.add("field-error-names");
-      validationMessage.textContent = fullMessage;
-      validationMessage.style.display = "block";
-    }
-  }
-  
-  // Add event listeners
-  crewNumberInput.addEventListener("input", normalizeAndValidateCrewNames);
-  crewNamesTextarea.addEventListener("input", normalizeAndValidateCrewNames);
-  crewNamesTextarea.addEventListener("blur", normalizeAndValidateCrewNames);
 });
 </script>
 
@@ -4111,31 +4024,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const webAppUrl =
     "https://script.google.com/macros/s/AKfycbyvuqOaLGTX27mWvzzDEhYLR1yXHpfP9Md3sT-aRnv_-_2pGpkZtANHjF67V-j5x8vf/exec";
 
-  // --- Field mappings ---
-  const config = [
-    {
-      company: "bog-company-name",
-      crew: "bog-crews-names",
-      site: "bog-site-contact",
-      numPeople: "bog-number-of-people-at-location",
-      multiCrew: true,
-    },
-    {
-      company: "forecast-company-name",
-      site: "forecast-site-contact",
-    },
-    {
-      company: "reinstatement-company-name",
-      site: "reinstatement-site-contact",
-    },
-    {
-      company: null, // Hard-coded company
-      site: "pitlinkin-site-contact",
-      fixedCompany: "Genus Services",
-    },
+  // Sections configuration
+  const sections = [
+    { crew: "bog-crews-names", lead: "bog-site-contact", multiCrew: true, companyField: "bog-company-name" },
+    { lead: "forecast-site-contact", companyField: "forecast-company-name" },
+    { lead: "reinstatement-site-contact", companyField: "reinstatement-company-name" },
+    { lead: "vactruck-site-contact", companyField: null },
+    { lead: "pitlinkin-site-contact", companyField: null },
   ];
 
-  // --- Fetch crew names from Apps Script ---
   async function fetchCrewNames(company) {
     if (!company) return [];
     try {
@@ -4148,106 +4045,76 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // --- Create autocomplete dropdown ---
-  function createAutocomplete(inputElement, crewList, multi = false, addComma = false, numPeopleInput = null) {
-    let suggestionsBox;
-
-    inputElement.addEventListener("input", function () {
-      const currentValue = inputElement.value;
-      const parts = multi ? currentValue.split(",") : [currentValue];
-      const lastPart = parts[parts.length - 1].trim().toLowerCase();
-
-      const matches = crewList.filter(
-        (name) => name.toLowerCase().includes(lastPart) && lastPart.length > 0
-      );
-      if (suggestionsBox) suggestionsBox.remove();
-      if (matches.length === 0) return;
-
-      suggestionsBox = document.createElement("div");
-      suggestionsBox.style.position = "absolute";
-      suggestionsBox.style.backgroundColor = "white";
-      suggestionsBox.style.border = "1px solid #ccc";
-      suggestionsBox.style.maxHeight = "150px";
-      suggestionsBox.style.overflowY = "auto";
-      suggestionsBox.style.zIndex = "1000";
-
-      matches.forEach((name) => {
-        const item = document.createElement("div");
-        item.textContent = name;
-        item.style.padding = "4px 8px";
-        item.style.cursor = "pointer";
-        item.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-
-          if (multi) {
-            const enteredNames = parts.map((p) => p.trim()).filter((p) => p.length > 0);
-            const numPeople = parseInt(numPeopleInput?.value || "0", 10);
-
-            parts[parts.length - 1] = name;
-            inputElement.value = parts.map((p) => p.trim()).join(", ");
-
-            if (enteredNames.length < numPeople - 1 && addComma) {
-              inputElement.value += ", ";
-            }
-          } else {
-            inputElement.value = name; // no comma for single fields
-          }
-
-          // ✅ Trigger existing validation
-          const event = new Event("input", { bubbles: true });
-          inputElement.dispatchEvent(event);
-
-          suggestionsBox.remove();
-          inputElement.focus();
-        });
-        suggestionsBox.appendChild(item);
-      });
-
-      const rect = inputElement.getBoundingClientRect();
-      suggestionsBox.style.top = rect.bottom + window.scrollY + "px";
-      suggestionsBox.style.left = rect.left + window.scrollX + "px";
-      suggestionsBox.style.width = rect.width + "px";
-
-      document.body.appendChild(suggestionsBox);
-    });
-
-    document.addEventListener("click", (e) => {
-      if (suggestionsBox && !suggestionsBox.contains(e.target) && e.target !== inputElement) {
-        suggestionsBox.remove();
-      }
+  function createRadioList(containerEl, hiddenInput, crewList) {
+    containerEl.innerHTML = "";
+    crewList.forEach(name => {
+      const label = document.createElement("label");
+      label.style.display = "block";
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = containerEl.id + "-radio";
+      radio.value = name;
+      radio.addEventListener("change", () => hiddenInput.value = name);
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(name));
+      containerEl.appendChild(label);
     });
   }
 
-  // --- Initialize all autocomplete configurations ---
-  async function initAutocompletes() {
-    for (const cfg of config) {
-      const companyEl = cfg.company ? document.getElementById(cfg.company) : null;
-      const siteEl = cfg.site ? document.getElementById(cfg.site) : null;
-      const crewEl = cfg.crew ? document.getElementById(cfg.crew) : null;
-      const numPeopleEl = cfg.numPeople ? document.getElementById(cfg.numPeople) : null;
+  function createCheckboxList(containerEl, hiddenInput, crewList) {
+    containerEl.innerHTML = "";
+    crewList.forEach(name => {
+      const label = document.createElement("label");
+      label.style.display = "block";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = name;
+      checkbox.addEventListener("change", () => {
+        const selected = Array.from(containerEl.querySelectorAll("input[type=checkbox]:checked")).map(cb => cb.value);
+        hiddenInput.value = selected.join(", ");
+      });
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(name));
+      containerEl.appendChild(label);
+    });
+  }
 
-      if (!siteEl && !crewEl) continue;
+  async function initSections() {
+    for (const section of sections) {
+      const hiddenLead = section.lead ? document.getElementById(section.lead + "-hidden") : null;
+      const leadEl = section.lead ? document.getElementById(section.lead) : null;
+      const hiddenCrew = section.crew ? document.getElementById(section.crew + "-hidden") : null;
+      const crewEl = section.crew ? document.getElementById(section.crew) : null;
 
-      // Function to update autocomplete when company changes
-      async function updateAutocomplete(companyName) {
-        const crewList = await fetchCrewNames(companyName);
-        if (crewEl) createAutocomplete(crewEl, crewList, true, true, numPeopleEl);
-        if (siteEl) createAutocomplete(siteEl, crewList, false, false);
+      let companyName = section.companyField ? document.getElementById(section.companyField)?.value : "Genus Services";
+
+      const crewList = await fetchCrewNames(companyName);
+
+      // Only BOG has crew names
+      if (crewEl && hiddenCrew && section.multiCrew) {
+        createCheckboxList(crewEl, hiddenCrew, crewList);
       }
 
-      // Handle dynamic or fixed company setups
-      if (cfg.fixedCompany) {
-        await updateAutocomplete(cfg.fixedCompany);
-      } else if (companyEl) {
-        await updateAutocomplete(companyEl.value);
-        companyEl.addEventListener("change", async () => {
-          await updateAutocomplete(companyEl.value);
-        });
+      // Site contact for all sections
+      if (leadEl && hiddenLead) {
+        createRadioList(leadEl, hiddenLead, crewList);
+      }
+
+      // Update lists if company field changes dynamically
+      if (section.companyField) {
+        const companyEl = document.getElementById(section.companyField);
+        if (companyEl) {
+          companyEl.addEventListener("change", async () => {
+            const updatedList = await fetchCrewNames(companyEl.value);
+            if (crewEl && hiddenCrew && section.multiCrew) createCheckboxList(crewEl, hiddenCrew, updatedList);
+            if (leadEl && hiddenLead) createRadioList(leadEl, hiddenLead, updatedList);
+          });
+        }
       }
     }
   }
 
-  initAutocompletes();
+  initSections();
 });
 </script>
 
