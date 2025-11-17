@@ -4416,7 +4416,7 @@ function updateFleetDropdown() {
   }
 
   // CALL WITH ?fleet= to get FleetMapping data
-  const url = `${FLEET_API_URL}?fleet=${encodeURIComponent(type)}&t=${Date.now()}`;
+  const url = `${FLEET_API_URL}?fleet=${encodeURIComponent(type)}`;
   console.log('Fetching FleetMapping →', url);
 
   fetch(url, { cache: 'no-store' })
