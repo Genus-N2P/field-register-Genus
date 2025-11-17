@@ -479,7 +479,7 @@ textarea {
       <button id="btn-reinstatement" onclick="showForm('reinstatement')">Reinstatement Register</button>
       <button id="btn-pitlinkin" onclick="showForm('pitlinkin')">Pit Link-in Register</button>
       <button id="btn-vactruck" onclick="showForm('vactruck')">Vac Truck Register</button>
-
+      <button id="btn-gearbox" onclick="showForm('gearbox')">Fleet Maintenance Register</button>
     </section>
 
     <div id="form-forecast" class="form-section hidden">
@@ -757,11 +757,11 @@ textarea {
                     <!-- Pit Installation/Remediation -->
                     <div>
                         <input type="checkbox" id="discipline-pit-installation-remediation" name="discipline[]" value="Pit Installation-Remediation" onchange="toggleDisciplineFields(this)" />
-<label for="discipline-pit-installation-remediation">Pit Installation/Remediation</label>
+                        <label for="discipline-pit-installation-remediation">Pit Installation/Remediation</label>
                     </div>
                     <div id="discipline-pit-installation-remediation-fields" class="discipline-conditional-fields" style="display: none;">
-    <label for="pit-installation-remediation-crews">Number of Pit Installation/Remediation crews forecast for next week (exclude Mob & Demob days):</label>
-    <input type="number" id="pit-installation-remediation-crews" name="pit-installation-remediation-crews" min="0" step="1" />
+                        <label for="pit-installation-remediation-crews">Number of Pit Installation/Remediation crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="pit-installation-remediation-crews" name="pit-installation-remediation-crews" min="0" step="1" />
                         <fieldset>
                             <legend>Select the day(s) that your Trenching crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
                             <div class="days-checkbox-group">
@@ -1886,6 +1886,112 @@ textarea {
         </div>
       </form>
     </div>
+
+    <div id="form-gearbox" class="form-section hidden">
+      <h3>Fleet Maintenance Register</h3>
+      <p>Please complete for Genus Services fleet maintenance activities.</p>
+      <form id="gearbox-form" onsubmit="return validateGenericForm('gearbox-form')">
+
+        <!-- Hardcoded company -->
+        <input type="hidden" name="company-name" value="Genus Services">
+
+        <label for="gearbox-entry-person">Entry Person Name</label>
+        <div id="gearbox-entry-person" class="crew-checkbox"></div>
+        <input type="hidden" id="gearbox-entry-person-hidden" name="entry-person" required />
+
+        <label for="gearbox-entry-date">Entry Date</label>
+        <input type="date" id="gearbox-entry-date" name="entry-date" required />
+
+        <label for="gearbox-vehicle-type">Vehicle type</label>
+        <select id="gearbox-vehicle-type" name="vehicle-type" required>
+          <option value="">Select one</option>
+          <option value="Directional Drill">Directional Drill</option>
+          <option value="Excavator">Excavator</option>
+          <option value="Flatbed Truck">Flatbed Truck</option>
+          <option value="Light Vehicle">Light Vehicle</option>
+          <option value="Mud Mixing Tanks">Mud Mixing Tank</option>
+          <option value="Rockbreaker">Rockbreaker</option>
+          <option value="Trailer">Trailer</option>
+          <option value="Vacuum Excavator">Vacuum Excavator</option>
+          <option value="Vacuum Truck">Vacuum Truck</option>
+        </select>
+
+        <label for="gearbox-fleet-number">Fleet number</label>
+        <select id="gearbox-fleet-number" required>
+          <option value="">-- Select vehicle type first --</option>
+        </select>
+
+        <!-- Loading indicator -->
+        <p id="fleet-loading" style="color:#666;font-size:0.8em;margin:4px 0 0;">
+          Loading fleet numbers...
+        </p>
+
+        <label for="gearbox-gearbox-f-number">Gear box F-number (include all associated pre-start F numbers) - <em>Enter "N/A" if not relevant</em></label>
+        <input type="text" id="gearbox-gearbox-f-number" placeholder="e.g. F-123456, F-789012" autocomplete="off" required/>
+        <p id="validation-message" style="color: #d32f2f; font-size: 0.9em; min-height: 1.2em; margin-top: 4px;"></p>
+        <p>
+          Enter one or more F-numbers in format <strong>F-######</strong> or <strong>F-#######</strong>.<br>
+          Separate multiple values with <strong>, </strong> (comma + space).
+        </p>
+
+        <label for="gearbox-Maintenance-Required">Maintenance Required</label>
+        <textarea id="gearbox-Maintenance-Required" name="gearbox-Maintenance-Required" placeholder="Enter as per pre-start / Gearbox Fault description(s)"></textarea>
+
+        <label for="gearbox-maintenance-completed-by">Maintenance Completed By</label>
+        <select id="gearbox-maintenance-completed-by" name="maintenance-completed-by" required onchange="toggleOther(this, 'gearbox-maintenance-other')">
+          <option value="">Select one</option>
+          <option value="Onsite / N2P Work Location">Onsite / N2P Work Location</option>
+          <option value="Genus Workshop">Genus Workshop</option>
+          <option value="Third Party Supplier Workshop">Third Party Supplier Workshop</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <div id="gearbox-maintenance-other" class="discipline-conditional-fields" style="display: none;">
+          <label for="gearbox-maintenance-other-text">If Other, please specify</label>
+          <input type="text" id="gearbox-maintenance-other-text" name="maintenance-completed-by-other" />
+        </div>
+
+        <label for="gearbox-repair-location">Repair Location</label>
+        <select id="gearbox-repair-location" name="repair-location" required onchange="toggleOther(this, 'gearbox-repair-other')">
+          <option value="">Select one</option>
+          <option value="Genus Fleet / Workshop">Genus Fleet / Workshop</option>
+          <option value="Genus Fleet / Outsourced">Genus Fleet / Outsourced</option>
+          <option value="N2P Engaged Repairer">N2P Engaged Repairer</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <div id="gearbox-repair-other" class="discipline-conditional-fields" style="display: none;">
+          <label for="gearbox-repair-other-text">If Other, please specify</label>
+          <input type="text" id="gearbox-repair-other-text" name="repair-location-other" />
+        </div>
+
+        <label for="gearbox-estimated-cost">Estimated Repairs Cost</label>
+        <select id="gearbox-estimated-cost" name="estimated-cost" required>
+          <option value="">Select one</option>
+          <option value="$0-1000">$0-1000</option>
+          <option value="$1000-$2000">$1000-$2000</option>
+          <option value="$2000-$5000">$2000-$5000</option>
+          <option value="$5000 +">$5000 +</option>
+          <option value="Unknown">Unknown</option>
+        </select>
+
+        <label for="gearbox-estimated-duration">Est. Repair Duration</label>
+        <select id="gearbox-estimated-duration" name="estimated-duration" required>
+          <option value="">Select one</option>
+          <option value="1-3 days">1-3 days</option>
+          <option value="7 days">7 days</option>
+          <option value="7 days (swing break)">7 days (swing break)</option>
+          <option value="Between 1 & 2 weeks">Between 1 & 2 weeks</option>
+          <option value="2 weeks plus">2 weeks plus</option>
+        </select>
+
+        <div class="form-footer">
+          <button type="button" class="btn-back" onclick="confirmReset('gearbox')">Back</button>
+          <button type="submit">Submit Fleet Maintenance</button>
+        </div>
+      </form>
+    </div>
+  </div>
   </main>
 
   <script>
@@ -2016,6 +2122,21 @@ function toggleDisciplineFields(checkbox) {
       }
     }
 
+    function toggleOther(select, divId) {
+      const div = document.getElementById(divId);
+      const textInput = div.querySelector('input[type="text"]');
+      if (select.value === 'Other') {
+        div.style.display = 'block';
+        if (textInput) textInput.required = true;
+      } else {
+        div.style.display = 'none';
+        if (textInput) {
+          textInput.required = false;
+          textInput.value = '';
+        }
+      }
+    }
+
 // Airtable configuration - Replace with your actual values
         const AIRTABLE_CONFIG = {
             forecast: {
@@ -2042,6 +2163,11 @@ function toggleDisciplineFields(checkbox) {
                 baseId: 'appegmSLEvbJSkRvd',
                 tableId: 'Vac Truck',
                 apiKey: 'patHwUeS1KtSAEshe.fbfaf206fded22941c87960a4a9b5c2992b69a3a86c8e23592d550905a42d936'
+            },
+            gearbox: {
+                baseId: 'appegmSLEvbJSkRvd',
+                tableId: 'Gearbox',
+                apiKey: 'patHwUeS1KtSAEshe.fbfaf206fded22941c87960a4a9b5c2992b69a3a86c8e23592d550905a42d936'
             }
         };
 
@@ -2059,8 +2185,8 @@ function toggleDisciplineFields(checkbox) {
                 body: JSON.stringify({
                     records: [{
                         fields: formData
-  		}],
- 		typecast: true
+ 			}],
+ 			typecast: true
 	       })
             });
         }
@@ -2080,11 +2206,13 @@ function toggleDisciplineFields(checkbox) {
       const pitlinkinDateField = document.getElementById('pitlinkin-date');
       const reinstatementDateField = document.getElementById('reinstatement-date');
       const vactruckDateField = document.getElementById('vactruck-date');
+      const gearboxDateField = document.getElementById('gearbox-entry-date');
 
       if (bogDateField) bogDateField.value = todayString;
       if (pitlinkinDateField) pitlinkinDateField.value = todayString;
       if (reinstatementDateField) reinstatementDateField.value = todayString;
       if (vactruckDateField) vactruckDateField.value = todayString;
+      if (gearboxDateField) gearboxDateField.value = todayString;
     }
 
 
@@ -2231,7 +2359,7 @@ function showForm(formType) {
     document.getElementById('thank-you-message').style.display = 'none';
         
     // Hide all forms using both methods
-    const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin', 'form-vactruck'];
+    const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin', 'form-vactruck', 'form-gearbox'];
     forms.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -2254,7 +2382,7 @@ function showForm(formType) {
       setDefaultDate();
 
        // Hide all buttons except the selected one
-            const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin', 'btn-vactruck'];
+            const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin', 'btn-vactruck', 'btn-gearbox'];
             buttons.forEach(btnId => {
                 const btn = document.getElementById(btnId);
                 if (btn) {
@@ -2772,9 +2900,50 @@ showSuccessMessage();
                 alert('Error submitting form. Please try again.');
             }
         });
+
+        document.getElementById('gearbox-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Validate the form
+            if (!validateGenericForm('gearbox-form')) {
+                return;
+            }
+
+            // Collect form data
+            const formData = {
+                'Contractor': 'Genus Services',
+                'Entry Person Name': document.getElementById('gearbox-entry-person-hidden').value,
+                'Entry Date': document.getElementById('gearbox-entry-date').value,
+                'Fleet Number': document.getElementById('gearbox-fleet-number').value,
+                'Vehicle Type': document.getElementById('gearbox-vehicle-type').value,
+                'Gear Box F- Number': document.getElementById('gearbox-gearbox-f-number').value || 'N/A',
+                'Maintenance Completed By': document.getElementById('gearbox-maintenance-completed-by').value,
+                'Maintenance Completed By Other': document.getElementById('gearbox-maintenance-completed-by').value === 'Other' ? document.getElementById('gearbox-maintenance-other-text').value : '',
+                'Repair Location': document.getElementById('gearbox-repair-location').value,
+                'Repair Location Other': document.getElementById('gearbox-repair-location').value === 'Other' ? document.getElementById('gearbox-repair-other-text').value : '',
+                'Estimated Repairs Cost': document.getElementById('gearbox-estimated-cost').value,
+                'Est. Repair Duration': document.getElementById('gearbox-estimated-duration').value
+            };
+
+            try {
+                const response = await submitToAirtable('gearbox', formData);
+                const result = await response.json();
+
+                if (!response.ok) {
+                    console.error('Airtable error:', result);
+                    alert(`Submission failed: ${result.error?.message || 'Unknown error'}`);
+                    return;
+                }
+
+                showSuccessMessage();
+            } catch (error) {
+                console.error('Error submitting Fleet Maintenance form:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
     
     // Hide all forms using both methods
-const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin', 'form-vactruck'];
+const forms = ['form-forecast', 'form-bog', 'form-reinstatement', 'form-pitlinkin', 'form-vactruck', 'form-gearbox'];
 forms.forEach(id => {
     const element = document.getElementById(id);
     if (element) {
@@ -2792,7 +2961,7 @@ forms.forEach(id => {
 });
 
     // Show all buttons and remove active state
-    const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin', 'btn-vactruck'];
+    const buttons = ['btn-forecast', 'btn-bog', 'btn-reinstatement', 'btn-pitlinkin', 'btn-vactruck', 'btn-gearbox'];
     buttons.forEach(btnId => {
         const btn = document.getElementById(btnId);
         if (btn) {
@@ -3998,7 +4167,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const targetForms = ['forecast-form', 'bog-form', 'reinstatement-form', 'pitlinkin-form', 'vactruck-form'];
+  const targetForms = ['forecast-form', 'bog-form', 'reinstatement-form', 'pitlinkin-form', 'vactruck-form', 'gearbox-form'];
 
   targetForms.forEach(formId => {
     const form = document.getElementById(formId);
@@ -4031,6 +4200,7 @@ document.addEventListener("DOMContentLoaded", function () {
     { lead: "reinstatement-site-contact", companyField: "reinstatement-company-name" },
     { lead: "vactruck-site-contact", companyField: null },
     { lead: "pitlinkin-site-contact", companyField: null },
+    { lead: "gearbox-entry-person", companyField: null }
   ];
 
   async function fetchCrewNames(company) {
@@ -4116,6 +4286,174 @@ document.addEventListener("DOMContentLoaded", function () {
 
   initSections();
 });
+</script>
+
+<script>
+  const input = document.getElementById('gearbox-gearbox-f-number');
+  const msg = document.getElementById('validation-message');
+
+  // === ONLY FORMAT + VALIDATE ON BLUR ===
+  input.addEventListener('focusout', function () {
+    let value = input.value.trim();
+
+    // === 1. Handle N/A ===
+    if (/^\s*n\s*\/\s*a\s*$/i.test(value)) {
+      input.value = 'N/A';
+      setValid('Valid');
+      return;
+    }
+
+    if (value === '') {
+      setError('This field is required.');
+      return;
+    }
+
+    // === 2. Split by comma (allow any spacing) ===
+    let parts = value.split(/\s*,\s*/).filter(Boolean);
+
+    // === 3. Clean each part ===
+    parts = parts.map(part => {
+      let cleaned = part;
+
+      // Fix case: f- → F-
+      if (/^f-/i.test(cleaned)) {
+        cleaned = 'F-' + cleaned.slice(2);
+      }
+
+      // Remove any character that's not digit, F, or -
+      cleaned = cleaned.replace(/[^0-9F\-]/gi, '');
+
+      return cleaned;
+    });
+
+    // === 4. Re-join with ", " ===
+    let formatted = parts.filter(Boolean).join(', ');
+    input.value = formatted;
+
+    // === 5. Validate final value ===
+    validateAndShow(formatted);
+  });
+
+  // === VALIDATION FUNCTION ===
+  function validateAndShow(value) {
+    const trimmed = value.trim();
+    const upper = trimmed.toUpperCase();
+
+    if (upper === 'N/A' || trimmed === '') {
+      setValid('Valid');
+      return;
+    }
+
+    const pattern = /^(F-\d{6,8})(,\s*F-\d{6,8})*$/;
+    const isValid = pattern.test(trimmed);
+
+    if (isValid) {
+      setValid('Valid');
+    } else {
+      setError('Invalid: Use F-123456 or F-123456, F-7890123 (N/A allowed)');
+    }
+  }
+
+  function setValid(text) {
+    msg.style.color = '#2e7d32';
+    msg.textContent = text;
+    input.setCustomValidity('');
+  }
+
+  function setError(text) {
+    msg.style.color = '#d32f2f';
+    msg.textContent = text;
+    input.setCustomValidity(text);
+  }
+
+  // Optional: Clear message on focus
+  input.addEventListener('focus', () => {
+    msg.textContent = '';
+  });
+
+  // Prevent form submit if invalid
+  input.closest('form')?.addEventListener('submit', e => {
+    input.dispatchEvent(new Event('focusout')); // trigger validation
+    if (input.validationMessage) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+</script>
+
+<script>
+/* ==============================================================
+   FLEET API URL – REPLACE WITH YOUR ACTUAL WEB APP URL
+   ============================================================== */
+const FLEET_API_URL = 'https://script.google.com/macros/s/AKfycbwUm0o93y-Z-NVfBNgkyS7quHVWKVBGdQULVeAaF9Y/exec';
+
+const vehicleSel   = document.getElementById('gearbox-vehicle-type');
+const fleetSel     = document.getElementById('gearbox-fleet-number');
+const loadingMsg   = document.getElementById('fleet-loading');
+
+let fleetCache = {};
+
+/* --------------------------------------------------------------
+   When vehicle changes → fetch fleet numbers
+   -------------------------------------------------------------- */
+vehicleSel.addEventListener('change', updateFleetDropdown);
+
+function updateFleetDropdown() {
+  const type = vehicleSel.value;
+  fleetSel.innerHTML = '<option value="">-- Loading... --</option>';
+  loadingMsg.textContent = 'Loading...';
+  loadingMsg.style.color = '#666';
+
+  if (!type) {
+    fleetSel.innerHTML = '<option value="">-- Select vehicle type first --</option>';
+    loadingMsg.textContent = '';
+    return;
+  }
+
+  if (fleetCache[type]) {
+    populateFleetDropdown(fleetCache[type]);
+    return;
+  }
+
+  const encodedType = encodeURIComponent(type);
+  const url = `${FLEET_API_URL}?fleet=${encodedType}&t=${Date.now()}`;
+
+  console.log('Fetching fleet for:', type, '→', url);  // DEBUG
+
+  fetch(url, { cache: 'no-store' })
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
+    .then(data => {
+      console.log('Fleet data:', data);
+      fleetCache[type] = data;
+      populateFleetDropdown(data);
+      loadingMsg.textContent = 'Loaded.';
+      setTimeout(() => loadingMsg.textContent = '', 1500);
+    })
+    .catch(err => {
+      console.error('Error:', err);
+      fleetSel.innerHTML = '<option value="">Failed to load</option>';
+      loadingMsg.style.color = '#d32f2f';
+      loadingMsg.textContent = 'Error – check console (F12)';
+    });
+}
+
+function populateFleetDropdown(numbers) {
+  fleetSel.innerHTML = '<option value="">-- Select fleet number --</option>';
+  if (!numbers || numbers.length === 0) {
+    fleetSel.innerHTML = '<option value="">No fleet numbers</option>';
+    return;
+  }
+  numbers.sort().forEach(num => {
+    const opt = document.createElement('option');
+    opt.value = num;
+    opt.textContent = num;
+    fleetSel.appendChild(opt);
+  });
+  if (numbers.length === 1) fleetSel.value = numbers[0];
+}
 </script>
 
 </body>
