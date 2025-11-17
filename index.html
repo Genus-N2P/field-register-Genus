@@ -1968,7 +1968,7 @@ textarea {
         <label for="gearbox-estimated-cost">Estimated Repairs Cost</label>
         <select id="gearbox-estimated-cost" name="estimated-cost" required>
           <option value="">Select one</option>
-          <option value="$0-1000">$0-1000</option>
+          <option value="$0-$1000">$0-$1000</option>
           <option value="$1000-$2000">$1000-$2000</option>
           <option value="$2000-$5000">$2000-$5000</option>
           <option value="$5000 +">$5000 +</option>
@@ -2917,6 +2917,7 @@ showSuccessMessage();
                 'Fleet Number': document.getElementById('gearbox-fleet-number').value,
                 'Vehicle Type': document.getElementById('gearbox-vehicle-type').value,
                 'Gear Box F- Number': document.getElementById('gearbox-gearbox-f-number').value || 'N/A',
+                'Maintenance Required': document.getElementById('gearbox-Maintenance-Required').value,
                 'Maintenance Completed By': document.getElementById('gearbox-maintenance-completed-by').value,
                 'Maintenance Completed By Other': document.getElementById('gearbox-maintenance-completed-by').value === 'Other' ? document.getElementById('gearbox-maintenance-other-text').value : '',
                 'Repair Location': document.getElementById('gearbox-repair-location').value,
