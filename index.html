@@ -4383,7 +4383,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 /* ==============================================================
-   FLEET API URL – REPLACE WITH YOUR ACTUAL WEB APP URL
+   YOUR LIVE API URL – NO CHANGES NEEDED
    ============================================================== */
 const FLEET_API_URL = 'https://script.google.com/macros/s/AKfycbyvuqOaLGTX27mWvzzDEhYLR1yXHpfP9Md3sT-aRnv_-_2pGpkZtANHjF67V-j5x8vf/exec';
 
@@ -4394,12 +4394,12 @@ const loadingMsg   = document.getElementById('fleet-loading');
 let fleetCache = {};
 
 /* --------------------------------------------------------------
-   When vehicle changes → fetch fleet numbers
+   When vehicle changes → fetch from FleetMapping
    -------------------------------------------------------------- */
 vehicleSel.addEventListener('change', updateFleetDropdown);
 
 function updateFleetDropdown() {
-  const type = vehicleSel.value;
+  const type = vehicleSel.value.trim();
   fleetSel.innerHTML = '<option value="">-- Loading... --</option>';
   loadingMsg.textContent = 'Loading...';
   loadingMsg.style.color = '#666';
@@ -4415,10 +4415,9 @@ function updateFleetDropdown() {
     return;
   }
 
-  const encodedType = encodeURIComponent(type);
-  const url = `${FLEET_API_URL}?fleet=${encodedType}&t=${Date.now()}`;
-
-  console.log('Fetching fleet for:', type, '→', url);  // DEBUG
+  // CALL WITH ?fleet= to get FleetMapping data
+  const url = `${FLEET_API_URL}?fleet=${encodeURIComponent(type)}&t=${Date.now()}`;
+  console.log('Fetching FleetMapping →', url);
 
   fetch(url, { cache: 'no-store' })
     .then(r => {
@@ -4426,23 +4425,23 @@ function updateFleetDropdown() {
       return r.json();
     })
     .then(data => {
-      console.log('Fleet data:', data);
+      console.log('FleetMapping response:', data);
       fleetCache[type] = data;
       populateFleetDropdown(data);
       loadingMsg.textContent = 'Loaded.';
       setTimeout(() => loadingMsg.textContent = '', 1500);
     })
     .catch(err => {
-      console.error('Error:', err);
+      console.error('Fetch failed:', err);
       fleetSel.innerHTML = '<option value="">Failed to load</option>';
       loadingMsg.style.color = '#d32f2f';
-      loadingMsg.textContent = 'Error – check console (F12)';
+      loadingMsg.textContent = 'Error – check console';
     });
 }
 
 function populateFleetDropdown(numbers) {
   fleetSel.innerHTML = '<option value="">-- Select fleet number --</option>';
-  if (!numbers || numbers.length === 0) {
+  if (!Array.isArray(numbers) || numbers.length === 0) {
     fleetSel.innerHTML = '<option value="">No fleet numbers</option>';
     return;
   }
