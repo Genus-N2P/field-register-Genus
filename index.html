@@ -4383,21 +4383,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 /* ==============================================================
-   YOUR LIVE API URL – NO CHANGES NEEDED
+   FLEET API – FINAL WORKING VERSION
    ============================================================== */
 const FLEET_API_URL = 'https://script.google.com/macros/s/AKfycbyvuqOaLGTX27mWvzzDEhYLR1yXHpfP9Md3sT-aRnv_-_2pGpkZtANHjF67V-j5x8vf/exec';
 
-const vehicleSel   = document.getElementById('gearbox-vehicle-type');
-const fleetSel     = document.getElementById('gearbox-fleet-number');
-const loadingMsg   = document.getElementById('fleet-loading');
-
-let fleetCache = {};
+let vehicleSel, fleetSel, loadingMsg, fleetCache = {};
 
 /* --------------------------------------------------------------
-   When vehicle changes → fetch from FleetMapping
+   Wait for DOM to load → then attach everything
    -------------------------------------------------------------- */
-vehicleSel.addEventListener('change', updateFleetDropdown);
+document.addEventListener('DOMContentLoaded', function () {
+  vehicleSel = document.getElementById('gearbox-vehicle-type');
+  fleetSel = document.getElementById(' gearboxes-fleet-number');
+  loadingMsg = document.getElementById('fleet-loading') || { textContent: '', style: {} };
 
+  if (!vehicleSel || !fleetSel) {
+    console.error('ERROR: Missing gearbox-vehicle-type or gearbox-fleet-number element');
+    return;
+  }
+
+  vehicleSel.addEventListener('change', updateFleetDropdown);
+  console.log('Fleet dropdown ready. Pick a vehicle type.');
+});
+
+/* --------------------------------------------------------------
+   Fetch fleet numbers from FleetMapping
+   -------------------------------------------------------------- */
 function updateFleetDropdown() {
   const type = vehicleSel.value.trim();
   fleetSel.innerHTML = '<option value="">-- Loading... --</option>';
@@ -4415,34 +4426,36 @@ function updateFleetDropdown() {
     return;
   }
 
-  // CALL WITH ?fleet= to get FleetMapping data
-  const url = `${FLEET_API_URL}?fleet=${encodeURIComponent(type)}`;
-  console.log('Fetching FleetMapping →', url);
+  const url = `${FLEET_API_URL}?fleet=${encodeURIComponent(type)}&t=${Date.now()}`;
+  console.log('CALLING FLEETMAPPING →', url);
 
   fetch(url, { cache: 'no-store' })
     .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      if (!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`);
       return r.json();
     })
     .then(data => {
-      console.log('FleetMapping response:', data);
+      console.log('FLEETMAPPING RESPONSE:', data);
+      if (!Array.isArray(data)) {
+        throw new Error('Expected array, got: ' + typeof data);
+      }
       fleetCache[type] = data;
       populateFleetDropdown(data);
       loadingMsg.textContent = 'Loaded.';
       setTimeout(() => loadingMsg.textContent = '', 1500);
     })
     .catch(err => {
-      console.error('Fetch failed:', err);
+      console.error('FETCH FAILED:', err);
       fleetSel.innerHTML = '<option value="">Failed to load</option>';
       loadingMsg.style.color = '#d32f2f';
-      loadingMsg.textContent = 'Error – check console';
+      loadingMsg.textContent = 'Error – check console (F12)';
     });
 }
 
 function populateFleetDropdown(numbers) {
   fleetSel.innerHTML = '<option value="">-- Select fleet number --</option>';
   if (!Array.isArray(numbers) || numbers.length === 0) {
-    fleetSel.innerHTML = '<option value="">No fleet numbers</option>';
+    fleetSel.innerHTML = '<option value="">No fleet numbers found</option>';
     return;
   }
   numbers.sort().forEach(num => {
