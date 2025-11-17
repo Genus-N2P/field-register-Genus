@@ -4385,7 +4385,7 @@ document.addEventListener("DOMContentLoaded", function () {
 /* ==============================================================
    FLEET API – FINAL WORKING VERSION
    ============================================================== */
-const FLEET_API_URL = 'https://script.google.com/macros/s/AKfycbyvuqOaLGTX27mWvzzDEhYLR1yXHpfP9Md3sT-aRnv_-_2pGpkZtANHjF67V-j5x8vf/exec';
+const FLEET_API_URL = 'https://script.google.com/macros/s/AKfycbxl2p6cubjeeKQqL1L889Kr8s1vl2-rQhsdOqXA8hMtAzM-uMlB7tSnQnNNp66zc1FP/exec';
 
 let vehicleSel, fleetSel, loadingMsg, fleetCache = {};
 
@@ -4394,7 +4394,7 @@ let vehicleSel, fleetSel, loadingMsg, fleetCache = {};
    -------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
   vehicleSel = document.getElementById('gearbox-vehicle-type');
-  fleetSel = document.getElementById(' gearboxes-fleet-number');
+  fleetSel = document.getElementById('gearbox-fleet-number');
   loadingMsg = document.getElementById('fleet-loading') || { textContent: '', style: {} };
 
   if (!vehicleSel || !fleetSel) {
