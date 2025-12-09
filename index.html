@@ -1876,7 +1876,7 @@ textarea {
         <input type="text" id="gearbox-gearbox-f-number" placeholder="e.g. F-123456, F-789012" autocomplete="off" required/>
         <p id="validation-message" style="color: #d32f2f; font-size: 0.9em; min-height: 1.2em; margin-top: 4px;"></p>
         <p>
-          Enter one or more F-numbers in format <strong>F-######</strong> or <strong>F-#######</strong>.<br>
+          Enter one or more F-numbers in format <strong>F-######</strong> or <strong>F-#######, F-#####</strong>.<br>
           Separate multiple values with <strong>, </strong> (comma + space).
         </p>
 
@@ -1912,14 +1912,21 @@ textarea {
         </div>
 
         <label for="gearbox-estimated-cost">Estimated Repairs Cost</label>
-        <select id="gearbox-estimated-cost" name="estimated-cost" required>
+        <select id="gearbox-estimated-cost" name="estimated-cost" required onchange="toggleOther(this, 'gearbox-estimated-cost-other')">
           <option value="">Select one</option>
           <option value="$0-$1000">$0-$1000</option>
           <option value="$1000-$2000">$1000-$2000</option>
           <option value="$2000-$5000">$2000-$5000</option>
           <option value="$5000 +">$5000 +</option>
           <option value="Unknown">Unknown</option>
+          <option value="Quoted Cost">Quoted Cost</option>
         </select>
+
+        <!-- This div will now show/hide correctly -->
+        <div id="gearbox-estimated-cost-other" class="discipline-conditional-fields" style="display: none;">
+          <label for="gearbox-estimated-cost-other-text">If you have an actual quote cost, please specify ($)</label>
+          <input type="text" id="gearbox-estimated-cost-other-text" name="estimated-cost-other" placeholder="e.g. 2850" />
+        </div>
 
         <label for="gearbox-estimated-duration">Est. Repair Duration</label>
         <select id="gearbox-estimated-duration" name="estimated-duration" required>
@@ -2071,14 +2078,16 @@ function toggleDisciplineFields(checkbox) {
     function toggleOther(select, divId) {
       const div = document.getElementById(divId);
       const textInput = div.querySelector('input[type="text"]');
-      if (select.value === 'Other') {
+  
+      // Show the field if value is "Other" OR "Quoted Cost"
+      if (select.value === 'Other' || select.value === 'Quoted Cost') {
         div.style.display = 'block';
         if (textInput) textInput.required = true;
       } else {
         div.style.display = 'none';
         if (textInput) {
           textInput.required = false;
-          textInput.value = '';
+          textInput.value = '';  // clears the field when hidden
         }
       }
     }
@@ -2869,6 +2878,7 @@ showSuccessMessage();
                 'Repair Location': document.getElementById('gearbox-repair-location').value,
                 'Repair Location Other': document.getElementById('gearbox-repair-location').value === 'Other' ? document.getElementById('gearbox-repair-other-text').value : '',
                 'Estimated Repairs Cost': document.getElementById('gearbox-estimated-cost').value,
+                'Estimated Repairs Cost - Quoted Cost': document.getElementById('gearbox-estimated-cost').value === 'Quoted Cost' ? document.getElementById('gearbox-estimated-cost-other-text').value : '',
                 'Est. Repair Duration': document.getElementById('gearbox-estimated-duration').value
             };
 
@@ -4291,7 +4301,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    const pattern = /^(F-\d{6,8})(,\s*F-\d{6,8})*$/;
+    const pattern = /^(F-\d{5,8})(,\s*F-\d{6,8})*$/;
     const isValid = pattern.test(trimmed);
 
     if (isValid) {
