@@ -2171,59 +2171,64 @@ function toggleDisciplineFields(checkbox) {
     }
 
 
+// Function to calculate and update week commencing/ending dates
+function updateForecastWeekDates() {
+  // === TEMPORARY HARD-CODED DATES (for testing or special override) ===
+  // Week Commencing: Monday 5 January 2026
+  // Week Ending:      Sunday 11 January 2026
+  let weekCommencing = new Date('2026-01-05T00:00:00'); // ISO format ensures correct parsing
+  let weekEnding = new Date('2026-01-11T23:59:59');     // End of day on Sunday
 
-    // Function to calculate and update week commencing/ending dates
-  function updateForecastWeekDates() {
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // Sunday - 0, Monday - 1, ..., Saturday - 6
-    const currentHour = today.getHours(); // 0-23
-
-    let daysToAddForCommencing = 0;
-
-    switch (dayOfWeek) {
-      case 1: // Monday
-        daysToAddForCommencing = 7;
-        break;
-      case 2: // Tuesday
-        daysToAddForCommencing = 6;
-        break;
-      case 3: // Wednesday
-        daysToAddForCommencing = 5;
-        break;
-      case 4: // Thursday
-        if (currentHour < 17) { // Prior to 5 PM
-          daysToAddForCommencing = 4;
-        } else { // After 5 PM
-          daysToAddForCommencing = 11;
-        }
-        break;
-      case 5: // Friday
-        daysToAddForCommencing = 10;
-        break;
-      case 6: // Saturday
-        daysToAddForCommencing = 9;
-        break;
-      case 0: // Sunday
-        daysToAddForCommencing = 8;
-        break;
-    }
-
-    let weekCommencing = new Date(today);
-    weekCommencing.setDate(today.getDate() + daysToAddForCommencing);
-    weekCommencing.setHours(0, 0, 0, 0); // Reset time to start of the day
-
-    let weekEnding = new Date(weekCommencing);
-    weekEnding.setDate(weekCommencing.getDate() + 6); // Set to 6 days after weekCommencing
-
-    const formatter = new Intl.DateTimeFormat('en-AU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-
-    document.getElementById('weekCommencingDate').innerText = formatter.format(weekCommencing);
-    document.getElementById('weekEndingDate').innerText = formatter.format(weekEnding);
+  // === ORIGINAL DYNAMIC CALCULATION (commented out for now) ===
+  /*
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // Sunday - 0, Monday - 1, ..., Saturday - 6
+  const currentHour = today.getHours(); // 0-23
+  let daysToAddForCommencing = 0;
+  switch (dayOfWeek) {
+    case 1: // Monday
+      daysToAddForCommencing = 7;
+      break;
+    case 2: // Tuesday
+      daysToAddForCommencing = 6;
+      break;
+    case 3: // Wednesday
+      daysToAddForCommencing = 5;
+      break;
+    case 4: // Thursday
+      if (currentHour < 17) { // Prior to 5 PM
+        daysToAddForCommencing = 4;
+      } else { // After 5 PM
+        daysToAddForCommencing = 11;
+      }
+      break;
+    case 5: // Friday
+      daysToAddForCommencing = 10;
+      break;
+    case 6: // Saturday
+      daysToAddForCommencing = 9;
+      break;
+    case 0: // Sunday
+      daysToAddForCommencing = 8;
+      break;
   }
+  let weekCommencing = new Date(today);
+  weekCommencing.setDate(today.getDate() + daysToAddForCommencing);
+  weekCommencing.setHours(0, 0, 0, 0); // Reset time to start of the day
+  let weekEnding = new Date(weekCommencing);
+  weekEnding.setDate(weekCommencing.getDate() + 6); // Set to 6 days after weekCommencing
+  */
+
+  // Format and display the dates in Australian format: DD/MM/YYYY
+  const formatter = new Intl.DateTimeFormat('en-AU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+
+  document.getElementById('weekCommencingDate').innerText = formatter.format(weekCommencing);
+  document.getElementById('weekEndingDate').innerText = formatter.format(weekEnding);
+}
 </script>
 <script>
   // Call updateForecastWeekDates on page load
