@@ -453,7 +453,20 @@ textarea {
       margin: 0 0 0.5rem 0;
     }
 
+fieldset.time-group {
+  border: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+fieldset.time-group legend {
+  font-weight: bold;
+  padding: 0;
+  font-size: 1rem;
+}
+
   </style>
+
 
 </head>
 <body>
@@ -1007,13 +1020,64 @@ textarea {
           <option value="Versatile Services">Versatile Services</option>
         </select>
 
-<label for="bog-estimated-start-time">Estimated Start Time</label>
-<select id="bog-estimated-start-time" name="bog-estimated-start-time" required></select>
+<!-- NEW: Estimated Start Time (Hour / Minutes / AM-PM) -->
+<fieldset class="form-group time-group">
+  <legend>Estimated Start Time</legend>
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <!-- Hour -->
+    <div style="flex: 1; min-width: 100px;">
+      <label for="bog-start-hour">Hour</label>
+      <select id="bog-start-hour" name="bog-start-hour" required>
+        <option value="">Hour</option>
+        <option value="1">01</option>
+        <option value="2">02</option>
+        <option value="3">03</option>
+        <option value="4">04</option>
+        <option value="5">05</option>
+        <option value="6">06</option>
+        <option value="7">07</option>
+        <option value="8">08</option>
+        <option value="9">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
+    <!-- Minutes -->
+    <div style="flex: 1; min-width: 100px;">
+      <label for="bog-start-minutes">Minutes</label>
+      <select id="bog-start-minutes" name="bog-start-minutes" required>
+        <option value="">Minutes</option>
+        <option value="00">00</option>
+        <option value="30">30</option>
+      </select>
+    </div>
+    <!-- AM/PM -->
+    <div style="flex: 1; min-width: 100px;">
+      <label for="bog-start-ampm">AM/PM</label>
+      <select id="bog-start-ampm" name="bog-start-ampm" required>
+        <option value="">AM/PM</option>
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </div>
+  </div>
+</fieldset>
 
-<label for="bog-estimated-finish-time">Estimated Finish Time</label>
-<select id="bog-estimated-finish-time" name="bog-estimated-finish-time" required></select>
+<!-- NEW: Estimated Hours to be Worked Today -->
+<div class="form-group">
+  <label for="bog-estimated-hours">Estimated hours to be worked today</label>
+  <select id="bog-estimated-hours" name="bog-estimated-hours" required>
+    <option value="">Select hours</option>
+    <option value="4">4</option>
+    <option value="6">6</option>
+    <option value="8">8</option>
+    <option value="10">10</option>
+    <option value="12">12</option>
+  </select>
+</div>
 
-<!-- Hidden fields to store timestamps in ISO format -->
+<!-- Keep these hidden fields if you still need ISO timestamps (optional; remove if not) -->
 <input type="hidden" id="bog-estimated-start-timestamp" name="bog-estimated-start-timestamp" />
 <input type="hidden" id="bog-estimated-finish-timestamp" name="bog-estimated-finish-timestamp" />
         
@@ -2552,6 +2616,67 @@ if (submitButton) {
   }, 7000);
 }
 
+// 1. Crew count validation (always required)
+  const peopleAtLocation = Number(document.getElementById('bog-Number-of-People-at-Location')?.value) || 0;
+  const selectedCrewHidden = document.getElementById('bog-crews-names-hidden')?.value || '';
+  const selectedCrewCount = selectedCrewHidden
+    .split(',')
+    .map(name => name.trim())
+    .filter(name => name.length > 0)
+    .length;
+
+  if (peopleAtLocation !== selectedCrewCount) {
+    alert(`Number of People at Location (${peopleAtLocation}) must match the number of selected crew members (${selectedCrewCount}).`);
+    return;
+  }
+
+ // 2. Address validation – now ALWAYS required (mob or not)
+  const locationField = document.getElementById('bog-site-location');
+  if (locationField) {
+    console.log('=== BOG Location Validation ===');
+    console.log('Field value:', locationField.value);
+    console.log('dataset.valid:', locationField.dataset.valid);
+    console.log('bogLocationSelectedPlace:', bogLocationSelectedPlace);
+    
+    const hasValue = locationField.value && locationField.value.trim().length > 0;
+    const isValid = locationField.dataset.valid === "true";
+    
+    if (!hasValue) {
+      console.log('❌ No value entered');
+      alert('Please enter an address for the site location.');
+      locationField.focus();
+      return;
+    }
+    
+    if (!isValid) {
+      console.log('❌ Not selected from dropdown (dataset.valid=' + locationField.dataset.valid + ')');
+      alert('Please select a full address from the dropdown for the site location.');
+      locationField.focus();
+      return;
+    }
+    
+    console.log('✓ Validation passed');
+  }
+
+  // 3. Assemble formatted start time (from new inputs)
+  const startHour   = document.getElementById('bog-start-hour')?.value;
+  const startMinutes = document.getElementById('bog-start-minutes')?.value;
+  const startAmPm   = document.getElementById('bog-start-ampm')?.value;
+
+  let formattedStartTime = "";
+  if (startHour && startMinutes && startAmPm) {
+    formattedStartTime = `${startHour.padStart(2, '0')}:${startMinutes} ${startAmPm}`;
+  } else {
+    alert("Please complete the Estimated Start Time (Hour, Minutes, AM/PM).");
+    return;
+  }
+
+  // Optional: store in hidden field if you still want to send it
+  const startTimestampHidden = document.getElementById('bog-estimated-start-timestamp');
+  if (startTimestampHidden) {
+    startTimestampHidden.value = formattedStartTime;
+  }
+
   // Initial check in case checkbox is pre-checked
   // toggleBogSiteLocation();
 
@@ -2562,18 +2687,18 @@ if (submitButton) {
             // Collect form data - modify this based on your actual form fields
             const formData = {
                 'Date On-Site': document.getElementById('bog-date').value,
-		'Mobilisation': document.getElementById('bog-mob').checked,
-		'De-Mobilisation': document.getElementById('bog-demob').checked,
+		            'Mobilisation': document.getElementById('bog-mob').checked,
+		            'De-Mobilisation': document.getElementById('bog-demob').checked,
                 'First Site Location2': document.getElementById('bog-site-location').value,
-                'Estimated Start Time2': document.getElementById('bog-estimated-start-timestamp').value,
-                'Estimated Finish Time2': document.getElementById('bog-estimated-finish-timestamp').value,
+                'Estimated Start Time': formattedStartTime,
+                'Hours in Field': document.getElementById('bog-estimated-hours')?.value || "",
                 'Onsite Crew Lead': document.getElementById('bog-site-contact-hidden').value,
                 'Onsite Crew Lead Mobile_original': document.getElementById('bog-onsite-crew-lead-mobile').value,
                 'Construction Partner Technician Email': document.getElementById('bog-onsite-crew-lead-email').value,
                 'Enable ID (if applicable)': document.getElementById('bog-onsite-crew-lead-EnableID').value,
                 'Your Company Name': document.getElementById('bog-company-name').value,
                 'Discipline': document.getElementById('bog-discipline').value,
-                'Number of People at Location?': document.getElementById('bog-Number-of-People-at-Location').value,
+                'Number of People at Location?': peopleAtLocation,
                 'List Names of Workers in field.': document.getElementById('bog-crews-names-hidden').value,
                 'SAM ID (WA)': document.getElementById('bog-SAM').value,
                 'ADA ID': document.getElementById('bog-ADA').value,
@@ -2948,13 +3073,41 @@ forms.forEach(id => {
 </script>
 
   <script>
+    // Global variable for bog-site-location validation
+    let bogLocationSelectedPlace = null;
+    
     function initAutocomplete() {
       const inputs = document.querySelectorAll(".address-autocomplete");
       inputs.forEach(input => {
-        new google.maps.places.Autocomplete(input, {
+        const autocomplete = new google.maps.places.Autocomplete(input, {
           types: ['geocode'],
           componentRestrictions: { country: 'au' }
         });
+        
+        // Special handling for bog-site-location
+        if (input.id === 'bog-site-location') {
+          autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            console.log('BOG place_changed fired:', place);
+            if (place && place.formatted_address) {
+              bogLocationSelectedPlace = place;
+              input.dataset.valid = "true";
+              input.setCustomValidity("");
+              console.log('✓ BOG location valid:', place.formatted_address);
+            }
+          });
+          
+          input.addEventListener('input', function() {
+            if (bogLocationSelectedPlace && input.value !== bogLocationSelectedPlace.formatted_address) {
+              console.log('User typing - clearing BOG location');
+              bogLocationSelectedPlace = null;
+              input.dataset.valid = "false";
+            }
+            input.setCustomValidity("");
+          });
+          
+          console.log('BOG autocomplete initialized');
+        }
       });
     }
   </script>
@@ -3945,9 +4098,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const heavyVehiclesFieldId = "bog-heavy-vehicles";
   const heavyVehiclesLabelId = "label-bog-heavy-vehicles";
 
-  function insertAfter(newNode, referenceNode) {
+  let autocomplete; // Global variable for Google Maps Places Autocomplete
+function insertAfter(newNode, referenceNode) {
+  if (referenceNode && referenceNode.parentNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
   }
+}
 
   function hideById(id, hide) {
     const el = document.getElementById(id);
@@ -3997,6 +4153,8 @@ document.addEventListener("DOMContentLoaded", function () {
         siteLocationLabel.textContent = "First Site Address";
       }
     }
+
+    // Autocomplete for bog-site-location is now handled in initAutocomplete()
 
     const swmsSection = document.getElementById("bog-swms-section");
     if (swmsSection) swmsSection.style.display = isMob ? "none" : "";
@@ -4072,7 +4230,7 @@ document.addEventListener("DOMContentLoaded", function () {
       insertAfter(crewLabel, heavyInput);
       insertAfter(crewInput, crewLabel);
     }
-  }
+  }  
 
   if (mobCheckbox && demobCheckbox) {
     mobCheckbox.addEventListener("change", () => {
@@ -4090,6 +4248,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.warn("Mob/Demob checkboxes not found in the DOM.");
   }
 });
+
 </script>
 
 <script>
