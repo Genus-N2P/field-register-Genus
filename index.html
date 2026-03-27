@@ -955,6 +955,71 @@ fieldset.time-group legend {
 	<input type="checkbox" id="bog-demob" name="bog-demob" />
 	De-mobilisation Day
 	</label>
+  
+  <!-- Fuel Supply Issue Section -->
+<div class="form-group">
+  <label for="bog-fuel-supply-issue">
+    <input type="checkbox" id="bog-fuel-supply-issue" name="bog-fuel-supply-issue">
+    Are you facing a fuel supply issue today?
+  </label>
+</div>
+
+<!-- Fuel Supply Conditional Fields (initially hidden) -->
+<div id="bog-fuel-section" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9;">
+
+  <div class="form-group">
+    <label for="bog-fuel-station-name">Fuel Station Name</label>
+    <input type="text" id="bog-fuel-station-name" name="Fuel Station Name" required>
+  </div>
+
+  <div class="form-group">
+    <label for="bog-fuel-station-suburb">Fuel Station Suburb</label>
+    <input type="text" id="bog-fuel-station-suburb" name="Fuel Station Suburb" required>
+  </div>
+
+  <!-- NEW: Fuel Type Dropdown -->
+  <div class="form-group">
+    <label for="bog-fuel-type">Fuel Type</label>
+    <select id="bog-fuel-type" name="Fuel Type" required>
+      <option value="">Select one</option>
+      <option value="Diesel">Diesel</option>
+      <option value="Regular Unleaded 91">Regular Unleaded 91</option>
+      <option value="Premium Unleaded 95">Premium Unleaded 95</option>
+      <option value="Premium Unleaded 98">Premium Unleaded 98</option>
+      <option value="LPG">LPG</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="bog-fuel-price">Fuel Price $/L</label>
+    <input type="text" id="bog-fuel-price" name="Fuel Price c/L" placeholder="e.g. 316.9" required>
+  </div>
+
+  <div class="form-group">
+    <label for="bog-fuel-issue-type">What issue are you facing?</label>
+    <select id="bog-fuel-issue-type" name="Fuel Issue Type" required>
+      <option value="">Select one</option>
+      <option value="No fuel available">No fuel available</option>
+      <option value="Fuel limit capped">Fuel limit capped</option>
+      <option value="Letter requested">Letter requested</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="bog-fuel-affect-delivery">Will this affect delivery of program today?</label>
+    <select id="bog-fuel-affect-delivery" name="Affect Delivery Today" required>
+      <option value="">Select one</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="bog-fuel-action-plan">Please include your fuel related action plan / comments if any</label>
+    <textarea id="bog-fuel-action-plan" name="Fuel Action Plan / Comments" rows="4"></textarea>
+  </div>
+
+</div>
 
         <label for="bog-company-name">Your Company Name</label>
         <select id="bog-company-name" name="bog-company-name" required>
@@ -2467,6 +2532,45 @@ fieldset.time-group legend {
       });
     }
 
+// BOG: Toggle fuel supply conditional section based on checkbox
+function toggleFuelSupplySection() {
+  const checkbox = document.getElementById('bog-fuel-supply-issue');
+  const fuelSection = document.getElementById('bog-fuel-section');
+  
+  if (!checkbox || !fuelSection) return;
+
+  const isChecked = checkbox.checked;
+  
+  fuelSection.style.display = isChecked ? 'block' : 'none';
+
+  // Manage required attributes for conditional fields
+  const requiredFields = [
+    'bog-fuel-station-name',
+    'bog-fuel-station-suburb',
+    'bog-fuel-type',
+    'bog-fuel-price',
+    'bog-fuel-issue-type',
+    'bog-fuel-affect-delivery'
+  ];
+
+  requiredFields.forEach(id => {
+    const field = document.getElementById(id);
+    if (field) {
+      if (isChecked) {
+        field.setAttribute('required', 'required');
+      } else {
+        field.removeAttribute('required');
+        // Clear values when hidden
+        if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
+          field.value = '';
+        } else if (field.tagName === 'SELECT') {
+          field.selectedIndex = 0;
+        }
+      }
+    }
+  });
+}
+
     // BOG: show/hide the ACM notification field based on the ACM select value
     function toggleACMField() {
       const select   = document.getElementById("bog-ACM");
@@ -3056,6 +3160,14 @@ fieldset.time-group legend {
         console.error('ERROR: Missing gearbox-vehicle-type or gearbox-fleet-number element');
       }
 
+      // === FUEL SUPPLY CONDITIONAL TOGGLE ===
+      const fuelCheckbox = document.getElementById('bog-fuel-supply-issue');
+      if (fuelCheckbox) {
+        fuelCheckbox.addEventListener('change', toggleFuelSupplySection);
+      }
+      // Initial run
+      toggleFuelSupplySection();
+
       // --- Crew names initialisation ---
       const crewSections = [
         { crew: "bog-crews-names", lead: "bog-site-contact", multiCrew: true, companyField: "bog-company-name" },
@@ -3222,6 +3334,16 @@ fieldset.time-group legend {
           'Date On-Site':              document.getElementById('bog-date').value,
           'Mobilisation':              document.getElementById('bog-mob').checked,
           'De-Mobilisation':           document.getElementById('bog-demob').checked,
+          // Fuel supply fields
+          'Facing Fuel Supply Issue Today': document.getElementById('bog-fuel-supply-issue').checked,
+          'Fuel Station Name': document.getElementById('bog-fuel-station-name').value || '',
+          'Fuel Station Suburb': document.getElementById('bog-fuel-station-suburb').value || '',
+          'Fuel Type': document.getElementById('bog-fuel-type').value || '',           // ← NEW
+          'Fuel Price c/L': document.getElementById('bog-fuel-price').value || '',
+          'Fuel Issue Type': document.getElementById('bog-fuel-issue-type').value || '',
+          'Will Fuel Issue Affect Delivery Today': document.getElementById('bog-fuel-affect-delivery').value || '',
+          'Fuel Action Plan / Comments': document.getElementById('bog-fuel-action-plan').value || '',
+          // normal BOG fields continued
           'First Site Location2':      document.getElementById('bog-site-location').value,
           'Estimated Start Time':      formattedStartTime,
           'Hours in Field':            document.getElementById('bog-estimated-hours')?.value || "",
