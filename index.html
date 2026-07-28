@@ -457,6 +457,8 @@ fieldset.time-group legend {
 
             <label for="forecast-company-name">Your Company Name</label>
             <select id="forecast-company-name" name="forecast-company-name" required>
+          <option value="">Select one</option>
+          <option value="Across Aus Boring">Across Aus Boring</option>
           <option value="Boretech Contracting">Boretech Contracting</option>
           <option value="Connectit Communications">Connectit Communications</option>
           <option value="Dawn Techcomms">Dawn Techcomms</option>
@@ -465,10 +467,12 @@ fieldset.time-group legend {
           <option value="Djara Network Service">Djara Network Service</option>
           <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
           <option value="Genus Services" selected>Genus Services</option>
+          <option value="JK Civils & Drilling">JK Civils & Drilling</option>
           <option value="JNJTech Services">JNJTech Services</option>
           <option value="Lightsource">Lightsource</option>
           <option value="MNC Drilling">MNC Drilling</option>
           <option value="Netline Services">Netline Services</option>
+          <option value="Pristine Tech">Pristine Tech</option>
           <option value="Syndicate Communications">Syndicate Communications</option>
           <option value="TAT Communications">TAT Communications</option>
           <option value="Versatile Services">Versatile Services</option>
@@ -499,51 +503,12 @@ fieldset.time-group legend {
             <label for="forecast-sam-id">SAM ID - Please submit 1 form per SAM.</label>
             <select id="forecast-sam-id" name="forecast-sam-id" required>
           <option value="">Select one</option>
-     <optgroup label="Gascoyne">
-          <option value="K-6CVN-20">K-6CVN-20</option>
-          <option value="K-6DNH-20">K-6DNH-20</option>
-          <option value="K-6EXM-01">K-6EXM-01</option>
-     </optgroup>
      <optgroup label="Goldfields-Esperance">
-          <option value="K-6CGD-20">K-6CGD-20</option>
           <option value="K-6ESP-20">K-6ESP-20</option>
           <option value="K-6ESP-21">K-6ESP-21</option>
-          <option value="K-6ESP-40">K-6ESP-40</option>
-          <option value="K-6HOP-01">K-6HOP-01</option>
-          <option value="K-6KAM-20">K-6KAM-20</option>
      </optgroup>
      <optgroup label="Great Southern">
-          <option value="K-6ALN-22">K-6ALN-22</option>
-          <option value="L-6ALN-05">L-6ALN-05</option>
-          <option value="L-6ALN-20">L-6ALN-20</option>
-          <option value="L-6ALN-21">L-6ALN-21</option>
-          <option value="L-6ALN-23">L-6ALN-23</option>
-          <option value="X-6ALN-05">X-6ALN-05</option>
           <option value="K-6DNK-20">K-6DNK-20</option>
-          <option value="K-6KAT-20">K-6KAT-20</option>
-     </optgroup>
-     <optgroup label="Mid West">
-          <option value="K-6KLB-01">K-6KLB-01</option>
-          <option value="K-6LEA-20">K-6LEA-20</option>
-     </optgroup>
-     <optgroup label="Pilbara">
-          <option value="K-6NWM-01">K-6NWM-01</option>
-          <option value="K-6NWM-20">K-6NWM-20</option>
-          <option value="K-6PDO-20">K-6PDO-20</option>
-          <option value="K-6TPC-20">K-6TPC-20</option>
-          <option value="X-6TPC-20">K-6TPC-20</option>
-     </optgroup>
-     <optgroup label="South West">
-          <option value="K-6AUU-20">K-6AUU-20</option>
-          <option value="K-6BGT-20">K-6BGT-20</option>
-          <option value="X-6BGT-20">X-6BGT-20</option>
-          <option value="X-6COI-01">X-6COI-01</option>
-          <option value="K-6MJM-01">K-6MJM-01</option>
-     </optgroup>
-     <optgroup label="Wheatbelt">
-          <option value="K-6CND-20">K-6CND-20</option>
-          <option value="K-6NRG-20">K-6NRG-20</option>
-          <option value="K-6SCR-20">K-6SCR-20</option>
      </optgroup>
         </select>
 
@@ -925,6 +890,30 @@ fieldset.time-group legend {
                         </fieldset>
                         <p id="service-locating-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
                     </div>
+
+                    <!-- HMDU -->
+                    <div>
+                        <input type="checkbox" id="discipline-hmdu" name="discipline[]" value="HMDU" onchange="toggleDisciplineFields(this)" />
+                        <label for="discipline-hmdu">HMDU</label>
+                    </div>
+                    <div id="discipline-hmdu-fields" class="discipline-conditional-fields" style="display: none;">
+                        <label for="hmdu-crews">Number of HMDU crews forecast for next week (exclude Mob & Demob days):</label>
+                        <input type="number" id="hmdu-crews" name="hmdu-crews" min="0" step="1" />
+
+                        <fieldset>
+                            <legend>Select the day(s) that your HMDU crews are forecast to be in the field next week (exclude Mob & Demob days):</legend>
+                            <div class="days-checkbox-group">
+                                <div><input type="checkbox" id="hmdu-monday" name="hmdu-days[]" value="Monday" /><label for="hmdu-monday">Monday</label></div>
+                                <div><input type="checkbox" id="hmdu-tuesday" name="hmdu-days[]" value="Tuesday" /><label for="hmdu-tuesday">Tuesday</label></div>
+                                <div><input type="checkbox" id="hmdu-wednesday" name="hmdu-days[]" value="Wednesday" /><label for="hmdu-wednesday">Wednesday</label></div>
+                                <div><input type="checkbox" id="hmdu-thursday" name="hmdu-days[]" value="Thursday" /><label for="hmdu-thursday">Thursday</label></div>
+                                <div><input type="checkbox" id="hmdu-friday" name="hmdu-days[]" value="Friday" /><label for="hmdu-friday">Friday</label></div>
+                                <div><input type="checkbox" id="hmdu-saturday" name="hmdu-days[]" value="Saturday" /><label for="hmdu-saturday">Saturday</label></div>
+                                <div><input type="checkbox" id="hmdu-sunday" name="hmdu-days[]" value="Sunday" /><label for="hmdu-sunday">Sunday</label></div>
+                            </div>
+                        </fieldset>
+                        <p id="hmdu-days-error" class="discipline-days-error" style="color: red; display: none;">Please select at least one day.</p>
+                    </div>
                 </div>
             </fieldset>
 <p id="discipline-error" style="color: red; display: none;">Please select at least one activity type.</p>
@@ -940,6 +929,11 @@ fieldset.time-group legend {
 
     <div id="form-bog" class="form-section hidden">
       <h3>Daily Pre-Start: Boots on Ground: Genus N2P project</h3>
+      <!-- NEW IMPORTANT NOTICE BOX -->
+      <div style="background-color: #f8f9fa; border: 3px solid var(--primary-accent); border-radius: 0.75rem; padding: 1.25rem; margin: 1.25rem 0; font-weight: 600; color: var(--primary-dark);">
+        <strong>IMPORTANT:</strong> BOG entries need to be accurate. The information entered here calculates Mobilisation and LAFHA claims. 
+        When Mobilising to and De-mobilising from site, ensure "Mobilisation Day" or "De-mobilisation Day" is checked below.
+      </div>
       <p>Please complete prior to starting work. <strong><u>Submission must be no later than 8am.</u></strong><br>This does not replace the JHA (JHA to be uploaded to IBISS - one required per site).</p>
       <form id="bog-form" onsubmit="validateBogForm()">
 
@@ -1023,6 +1017,8 @@ fieldset.time-group legend {
 
         <label for="bog-company-name">Your Company Name</label>
         <select id="bog-company-name" name="bog-company-name" required>
+          <option value="">Select one</option>
+          <option value="Across Aus Boring">Across Aus Boring</option>
           <option value="Boretech Contracting">Boretech Contracting</option>
           <option value="Connectit Communications">Connectit Communications</option>
           <option value="Dawn Techcomms">Dawn Techcomms</option>
@@ -1031,10 +1027,12 @@ fieldset.time-group legend {
           <option value="Djara Network Service">Djara Network Service</option>
           <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
           <option value="Genus Services" selected>Genus Services</option>
+          <option value="JK Civils & Drilling">JK Civils & Drilling</option>
           <option value="JNJTech Services">JNJTech Services</option>
           <option value="Lightsource">Lightsource</option>
           <option value="MNC Drilling">MNC Drilling</option>
           <option value="Netline Services">Netline Services</option>
+          <option value="Pristine Tech">Pristine Tech</option>
           <option value="Syndicate Communications">Syndicate Communications</option>
           <option value="TAT Communications">TAT Communications</option>
           <option value="Versatile Services">Versatile Services</option>
@@ -1122,57 +1120,19 @@ fieldset.time-group legend {
           <option value="PON Patching">PON Patching</option>
           <option value="Traffic Management">Traffic Management</option>
           <option value="Supervision">Supervision</option>
+          <option value="HMDU">HMDU</option>
      </optgroup>
         </select>
 
         <label for="bog-SAM">SAM ID</label>
         <select id="bog-SAM" name="bog-SAM" required>
           <option value="">Select one</option>
-     <optgroup label="Gascoyne">
-          <option value="K-6CVN-20">K-6CVN-20</option>
-          <option value="K-6DNH-20">K-6DNH-20</option>
-          <option value="K-6EXM-01">K-6EXM-01</option>
-     </optgroup>
      <optgroup label="Goldfields-Esperance">
-          <option value="K-6CGD-20">K-6CGD-20</option>
           <option value="K-6ESP-20">K-6ESP-20</option>
           <option value="K-6ESP-21">K-6ESP-21</option>
-          <option value="K-6ESP-40">K-6ESP-40</option>
-          <option value="K-6HOP-01">K-6HOP-01</option>
-          <option value="K-6KAM-20">K-6KAM-20</option>
      </optgroup>
      <optgroup label="Great Southern">
-          <option value="K-6ALN-22">K-6ALN-22</option>
-          <option value="L-6ALN-05">L-6ALN-05</option>
-          <option value="L-6ALN-20">L-6ALN-20</option>
-          <option value="L-6ALN-21">L-6ALN-21</option>
-          <option value="L-6ALN-23">L-6ALN-23</option>
-          <option value="X-6ALN-05">X-6ALN-05</option>
           <option value="K-6DNK-20">K-6DNK-20</option>
-          <option value="K-6KAT-20">K-6KAT-20</option>
-     </optgroup>
-     <optgroup label="Mid West">
-          <option value="K-6KLB-01">K-6KLB-01</option>
-          <option value="K-6LEA-20">K-6LEA-20</option>
-     </optgroup>
-     <optgroup label="Pilbara">
-          <option value="K-6NWM-01">K-6NWM-01</option>
-          <option value="K-6NWM-20">K-6NWM-20</option>
-          <option value="K-6PDO-20">K-6PDO-20</option>
-          <option value="K-6TPC-20">K-6TPC-20</option>
-          <option value="X-6TPC-20">K-6TPC-20</option>
-     </optgroup>
-     <optgroup label="South West">
-          <option value="K-6AUU-20">K-6AUU-20</option>
-          <option value="K-6BGT-20">K-6BGT-20</option>
-          <option value="X-6BGT-20">X-6BGT-20</option>
-          <option value="X-6COI-01">X-6COI-01</option>
-          <option value="K-6MJM-01">K-6MJM-01</option>
-     </optgroup>
-     <optgroup label="Wheatbelt">
-          <option value="K-6CND-20">K-6CND-20</option>
-          <option value="K-6NRG-20">K-6NRG-20</option>
-          <option value="K-6SCR-20">K-6SCR-20</option>
      </optgroup>
         </select>
 
@@ -1184,7 +1144,7 @@ fieldset.time-group legend {
   <option value="03" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6ESP-40,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6NWM-01,K-6NWM-20,K-6PDO-20,K-6SCR-20,K-6TPC-20,L-6ALN-21">03</option>
   <option value="04" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CND-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-20,K-6PDO-20,K-6TPC-20,L-6ALN-21">04</option>
   <option value="05" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-01,K-6TPC-20">05</option>
-  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,X-6COI-01">06</option>
+  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,C-6COI-01">06</option>
   <option value="07" data-sams="K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6TPC-20">07</option>
   <option value="08" data-sams="K-6BGT-20,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6NRG-20,L-6ALN-05,X-6TPC-20">08</option>
   <option value="09" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6KAT-20,K-6KLB-01,L-6ALN-20,X-6TPC-20">09</option>
@@ -1194,14 +1154,14 @@ fieldset.time-group legend {
   <option value="13" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NRG-20,K-6NWM-01,L-6ALN-05">13</option>
   <option value="14" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NWM-01,L-6ALN-20,L-6ALN-21,X-6ALN-05">14</option>
   <option value="15" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,L-6ALN-23">15</option>
-  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,X-6COI-01">16</option>
-  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,X-6COI-01">17</option>
+  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,C-6COI-01">16</option>
+  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,C-6COI-01">17</option>
   <option value="18" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01">18</option>
-  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,X-6COI-01">19</option>
+  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,C-6COI-01">19</option>
   <option value="20" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6NWM-01">20</option>
   <option value="21" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-21,K-6NWM-01">21</option>
   <option value="22" data-sams="K-6CVN-20,K-6DNK-20,K-6MJM-01,K-6NWM-01">22</option>
-  <option value="23" data-sams="K-6DNK-20,X-6COI-01">23</option>
+  <option value="23" data-sams="K-6DNK-20,C-6COI-01">23</option>
   <option value="24" data-sams="K-6CVN-20,K-6DNK-20">24</option>
   <option value="25" data-sams="L-6ALN-20,L-6ALN-23">25</option>
   <option value="27" data-sams="L-6ALN-20">27</option>
@@ -1340,6 +1300,8 @@ fieldset.time-group legend {
 
         <label for="reinstatement-company-name">Temp Contractor Company Name</label>
         <select id="reinstatement-company-name" name="reinstatement-company-name" required>
+          <option value="">Select one</option>
+          <option value="Across Aus Boring">Across Aus Boring</option>
           <option value="Boretech Contracting">Boretech Contracting</option>
           <option value="Connectit Communications">Connectit Communications</option>
           <option value="Dawn Techcomms">Dawn Techcomms</option>
@@ -1348,10 +1310,12 @@ fieldset.time-group legend {
           <option value="Djara Network Service">Djara Network Service</option>
           <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
           <option value="Genus Services" selected>Genus Services</option>
+          <option value="JK Civils & Drilling">JK Civils & Drilling</option>
           <option value="JNJTech Services">JNJTech Services</option>
           <option value="Lightsource">Lightsource</option>
           <option value="MNC Drilling">MNC Drilling</option>
           <option value="Netline Services">Netline Services</option>
+          <option value="Pristine Tech">Pristine Tech</option>
           <option value="Syndicate Communications">Syndicate Communications</option>
           <option value="TAT Communications">TAT Communications</option>
           <option value="Versatile Services">Versatile Services</option>
@@ -1367,51 +1331,12 @@ fieldset.time-group legend {
         <label for="reinstatement-SAM">SAM ID</label>
         <select id="reinstatement-SAM" name="reinstatement-SAM" required>
           <option value="">Select one</option>
-     <optgroup label="Gascoyne">
-          <option value="K-6CVN-20">K-6CVN-20</option>
-          <option value="K-6DNH-20">K-6DNH-20</option>
-          <option value="K-6EXM-01">K-6EXM-01</option>
-     </optgroup>
      <optgroup label="Goldfields-Esperance">
-          <option value="K-6CGD-20">K-6CGD-20</option>
           <option value="K-6ESP-20">K-6ESP-20</option>
           <option value="K-6ESP-21">K-6ESP-21</option>
-          <option value="K-6ESP-40">K-6ESP-40</option>
-          <option value="K-6HOP-01">K-6HOP-01</option>
-          <option value="K-6KAM-20">K-6KAM-20</option>
      </optgroup>
      <optgroup label="Great Southern">
-          <option value="K-6ALN-22">K-6ALN-22</option>
-          <option value="L-6ALN-05">L-6ALN-05</option>
-          <option value="L-6ALN-20">L-6ALN-20</option>
-          <option value="L-6ALN-21">L-6ALN-21</option>
-          <option value="L-6ALN-23">L-6ALN-23</option>
-          <option value="X-6ALN-05">X-6ALN-05</option>
           <option value="K-6DNK-20">K-6DNK-20</option>
-          <option value="K-6KAT-20">K-6KAT-20</option>
-     </optgroup>
-     <optgroup label="Mid West">
-          <option value="K-6KLB-01">K-6KLB-01</option>
-          <option value="K-6LEA-20">K-6LEA-20</option>
-     </optgroup>
-     <optgroup label="Pilbara">
-          <option value="K-6NWM-01">K-6NWM-01</option>
-          <option value="K-6NWM-20">K-6NWM-20</option>
-          <option value="K-6PDO-20">K-6PDO-20</option>
-          <option value="K-6TPC-20">K-6TPC-20</option>
-          <option value="X-6TPC-20">K-6TPC-20</option>
-     </optgroup>
-     <optgroup label="South West">
-          <option value="K-6AUU-20">K-6AUU-20</option>
-          <option value="K-6BGT-20">K-6BGT-20</option>
-          <option value="X-6BGT-20">X-6BGT-20</option>
-          <option value="X-6COI-01">X-6COI-01</option>
-          <option value="K-6MJM-01">K-6MJM-01</option>
-     </optgroup>
-     <optgroup label="Wheatbelt">
-          <option value="K-6CND-20">K-6CND-20</option>
-          <option value="K-6NRG-20">K-6NRG-20</option>
-          <option value="K-6SCR-20">K-6SCR-20</option>
      </optgroup>
         </select>
 
@@ -1423,7 +1348,7 @@ fieldset.time-group legend {
   <option value="03" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6ESP-40,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6NWM-01,K-6NWM-20,K-6PDO-20,K-6SCR-20,K-6TPC-20,L-6ALN-21">03</option>
   <option value="04" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CND-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-20,K-6PDO-20,K-6TPC-20,L-6ALN-21">04</option>
   <option value="05" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-01,K-6TPC-20">05</option>
-  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,X-6COI-01">06</option>
+  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,C-6COI-01">06</option>
   <option value="07" data-sams="K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6TPC-20">07</option>
   <option value="08" data-sams="K-6BGT-20,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6NRG-20,L-6ALN-05,X-6TPC-20">08</option>
   <option value="09" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6KAT-20,K-6KLB-01,L-6ALN-20,X-6TPC-20">09</option>
@@ -1433,14 +1358,14 @@ fieldset.time-group legend {
   <option value="13" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NRG-20,K-6NWM-01,L-6ALN-05">13</option>
   <option value="14" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NWM-01,L-6ALN-20,L-6ALN-21,X-6ALN-05">14</option>
   <option value="15" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,L-6ALN-23">15</option>
-  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,X-6COI-01">16</option>
-  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,X-6COI-01">17</option>
+  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,C-6COI-01">16</option>
+  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,C-6COI-01">17</option>
   <option value="18" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01">18</option>
-  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,X-6COI-01">19</option>
+  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,C-6COI-01">19</option>
   <option value="20" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6NWM-01">20</option>
   <option value="21" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-21,K-6NWM-01">21</option>
   <option value="22" data-sams="K-6CVN-20,K-6DNK-20,K-6MJM-01,K-6NWM-01">22</option>
-  <option value="23" data-sams="K-6DNK-20,X-6COI-01">23</option>
+  <option value="23" data-sams="K-6DNK-20,C-6COI-01">23</option>
   <option value="24" data-sams="K-6CVN-20,K-6DNK-20">24</option>
   <option value="25" data-sams="L-6ALN-20,L-6ALN-23">25</option>
   <option value="27" data-sams="L-6ALN-20">27</option>
@@ -1534,6 +1459,7 @@ fieldset.time-group legend {
         <label for="reinstatement-perm-company-name">Permanent Reinstatement Contractor Company Name</label>
         <select id="reinstatement-perm-company-name" name="reinstatement-perm-company-name" required>
           <option value="">Select one</option>
+          <option value="Across Aus Boring">Across Aus Boring</option>
           <option value="Boretech Contracting">Boretech Contracting</option>
           <option value="Connectit Communications">Connectit Communications</option>
           <option value="Dawn Techcomms">Dawn Techcomms</option>
@@ -1541,11 +1467,13 @@ fieldset.time-group legend {
           <option value="Dizza Communications">Dizza Communications</option>
           <option value="Djara Network Service">Djara Network Service</option>
           <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
-          <option value="Genus Services">Genus Services</option>
+          <option value="Genus Services" selected>Genus Services</option>
+          <option value="JK Civils & Drilling">JK Civils & Drilling</option>
           <option value="JNJTech Services">JNJTech Services</option>
           <option value="Lightsource">Lightsource</option>
           <option value="MNC Drilling">MNC Drilling</option>
           <option value="Netline Services">Netline Services</option>
+          <option value="Pristine Tech">Pristine Tech</option>
           <option value="Syndicate Communications">Syndicate Communications</option>
           <option value="TAT Communications">TAT Communications</option>
           <option value="Versatile Services">Versatile Services</option>
@@ -1625,51 +1553,12 @@ fieldset.time-group legend {
         <label for="pitlinkin-SAM">SAM ID</label>
         <select id="pitlinkin-SAM" name="pitlinkin-SAM" required>
           <option value="">Select one</option>
-     <optgroup label="Gascoyne">
-          <option value="K-6CVN-20">K-6CVN-20</option>
-          <option value="K-6DNH-20">K-6DNH-20</option>
-          <option value="K-6EXM-01">K-6EXM-01</option>
-     </optgroup>
      <optgroup label="Goldfields-Esperance">
-          <option value="K-6CGD-20">K-6CGD-20</option>
           <option value="K-6ESP-20">K-6ESP-20</option>
           <option value="K-6ESP-21">K-6ESP-21</option>
-          <option value="K-6ESP-40">K-6ESP-40</option>
-          <option value="K-6HOP-01">K-6HOP-01</option>
-          <option value="K-6KAM-20">K-6KAM-20</option>
      </optgroup>
      <optgroup label="Great Southern">
-          <option value="K-6ALN-22">K-6ALN-22</option>
-          <option value="L-6ALN-05">L-6ALN-05</option>
-          <option value="L-6ALN-20">L-6ALN-20</option>
-          <option value="L-6ALN-21">L-6ALN-21</option>
-          <option value="L-6ALN-23">L-6ALN-23</option>
-          <option value="X-6ALN-05">X-6ALN-05</option>
           <option value="K-6DNK-20">K-6DNK-20</option>
-          <option value="K-6KAT-20">K-6KAT-20</option>
-     </optgroup>
-     <optgroup label="Mid West">
-          <option value="K-6KLB-01">K-6KLB-01</option>
-          <option value="K-6LEA-20">K-6LEA-20</option>
-     </optgroup>
-     <optgroup label="Pilbara">
-          <option value="K-6NWM-01">K-6NWM-01</option>
-          <option value="K-6NWM-20">K-6NWM-20</option>
-          <option value="K-6PDO-20">K-6PDO-20</option>
-          <option value="K-6TPC-20">K-6TPC-20</option>
-          <option value="X-6TPC-20">K-6TPC-20</option>
-     </optgroup>
-     <optgroup label="South West">
-          <option value="K-6AUU-20">K-6AUU-20</option>
-          <option value="K-6BGT-20">K-6BGT-20</option>
-          <option value="X-6BGT-20">X-6BGT-20</option>
-          <option value="X-6COI-01">X-6COI-01</option>
-          <option value="K-6MJM-01">K-6MJM-01</option>
-     </optgroup>
-     <optgroup label="Wheatbelt">
-          <option value="K-6CND-20">K-6CND-20</option>
-          <option value="K-6NRG-20">K-6NRG-20</option>
-          <option value="K-6SCR-20">K-6SCR-20</option>
      </optgroup>
         </select>
 
@@ -1681,7 +1570,7 @@ fieldset.time-group legend {
   <option value="03" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6ESP-40,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6NWM-01,K-6NWM-20,K-6PDO-20,K-6SCR-20,K-6TPC-20,L-6ALN-21">03</option>
   <option value="04" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CND-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-20,K-6PDO-20,K-6TPC-20,L-6ALN-21">04</option>
   <option value="05" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-01,K-6TPC-20">05</option>
-  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,X-6COI-01">06</option>
+  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,C-6COI-01">06</option>
   <option value="07" data-sams="K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6TPC-20">07</option>
   <option value="08" data-sams="K-6BGT-20,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6NRG-20,L-6ALN-05,X-6TPC-20">08</option>
   <option value="09" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6KAT-20,K-6KLB-01,L-6ALN-20,X-6TPC-20">09</option>
@@ -1691,14 +1580,14 @@ fieldset.time-group legend {
   <option value="13" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NRG-20,K-6NWM-01,L-6ALN-05">13</option>
   <option value="14" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NWM-01,L-6ALN-20,L-6ALN-21,X-6ALN-05">14</option>
   <option value="15" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,L-6ALN-23">15</option>
-  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,X-6COI-01">16</option>
-  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,X-6COI-01">17</option>
+  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,C-6COI-01">16</option>
+  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,C-6COI-01">17</option>
   <option value="18" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01">18</option>
-  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,X-6COI-01">19</option>
+  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,C-6COI-01">19</option>
   <option value="20" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6NWM-01">20</option>
   <option value="21" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-21,K-6NWM-01">21</option>
   <option value="22" data-sams="K-6CVN-20,K-6DNK-20,K-6MJM-01,K-6NWM-01">22</option>
-  <option value="23" data-sams="K-6DNK-20,X-6COI-01">23</option>
+  <option value="23" data-sams="K-6DNK-20,C-6COI-01">23</option>
   <option value="24" data-sams="K-6CVN-20,K-6DNK-20">24</option>
   <option value="25" data-sams="L-6ALN-20,L-6ALN-23">25</option>
   <option value="27" data-sams="L-6ALN-20">27</option>
@@ -1795,6 +1684,8 @@ fieldset.time-group legend {
 
         <label for="vactruck-company-name">Your Company Name</label>
           <select id="vactruck-company-name" name="vactruck-company-name" required>
+          <option value="">Select one</option>
+          <option value="Across Aus Boring">Across Aus Boring</option>
           <option value="Boretech Contracting">Boretech Contracting</option>
           <option value="Connectit Communications">Connectit Communications</option>
           <option value="Dawn Techcomms">Dawn Techcomms</option>
@@ -1803,10 +1694,12 @@ fieldset.time-group legend {
           <option value="Djara Network Service">Djara Network Service</option>
           <option value="Feverpitch Enterprises">Feverpitch Enterprises</option>
           <option value="Genus Services" selected>Genus Services</option>
+          <option value="JK Civils & Drilling">JK Civils & Drilling</option>
           <option value="JNJTech Services">JNJTech Services</option>
           <option value="Lightsource">Lightsource</option>
           <option value="MNC Drilling">MNC Drilling</option>
           <option value="Netline Services">Netline Services</option>
+          <option value="Pristine Tech">Pristine Tech</option>
           <option value="Syndicate Communications">Syndicate Communications</option>
           <option value="TAT Communications">TAT Communications</option>
           <option value="Versatile Services">Versatile Services</option>
@@ -1819,51 +1712,12 @@ fieldset.time-group legend {
         <label for="vactruck-SAM">SAM ID</label>
         <select id="vactruck-SAM" name="vactruck-SAM" required>
           <option value="">Select one</option>
-     <optgroup label="Gascoyne">
-          <option value="K-6CVN-20">K-6CVN-20</option>
-          <option value="K-6DNH-20">K-6DNH-20</option>
-          <option value="K-6EXM-01">K-6EXM-01</option>
-     </optgroup>
      <optgroup label="Goldfields-Esperance">
-          <option value="K-6CGD-20">K-6CGD-20</option>
           <option value="K-6ESP-20">K-6ESP-20</option>
           <option value="K-6ESP-21">K-6ESP-21</option>
-          <option value="K-6ESP-40">K-6ESP-40</option>
-          <option value="K-6HOP-01">K-6HOP-01</option>
-          <option value="K-6KAM-20">K-6KAM-20</option>
      </optgroup>
      <optgroup label="Great Southern">
-          <option value="K-6ALN-22">K-6ALN-22</option>
-          <option value="L-6ALN-05">L-6ALN-05</option>
-          <option value="L-6ALN-20">L-6ALN-20</option>
-          <option value="L-6ALN-21">L-6ALN-21</option>
-          <option value="L-6ALN-23">L-6ALN-23</option>
-          <option value="X-6ALN-05">X-6ALN-05</option>
           <option value="K-6DNK-20">K-6DNK-20</option>
-          <option value="K-6KAT-20">K-6KAT-20</option>
-     </optgroup>
-     <optgroup label="Mid West">
-          <option value="K-6KLB-01">K-6KLB-01</option>
-          <option value="K-6LEA-20">K-6LEA-20</option>
-     </optgroup>
-     <optgroup label="Pilbara">
-          <option value="K-6NWM-01">K-6NWM-01</option>
-          <option value="K-6NWM-20">K-6NWM-20</option>
-          <option value="K-6PDO-20">K-6PDO-20</option>
-          <option value="K-6TPC-20">K-6TPC-20</option>
-          <option value="X-6TPC-20">K-6TPC-20</option>
-     </optgroup>
-     <optgroup label="South West">
-          <option value="K-6AUU-20">K-6AUU-20</option>
-          <option value="K-6BGT-20">K-6BGT-20</option>
-          <option value="X-6BGT-20">X-6BGT-20</option>
-          <option value="X-6COI-01">X-6COI-01</option>
-          <option value="K-6MJM-01">K-6MJM-01</option>
-     </optgroup>
-     <optgroup label="Wheatbelt">
-          <option value="K-6CND-20">K-6CND-20</option>
-          <option value="K-6NRG-20">K-6NRG-20</option>
-          <option value="K-6SCR-20">K-6SCR-20</option>
      </optgroup>
         </select>
 
@@ -1875,7 +1729,7 @@ fieldset.time-group legend {
   <option value="03" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6ESP-40,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6NWM-01,K-6NWM-20,K-6PDO-20,K-6SCR-20,K-6TPC-20,L-6ALN-21">03</option>
   <option value="04" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CND-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-20,K-6PDO-20,K-6TPC-20,L-6ALN-21">04</option>
   <option value="05" data-sams="K-6AUU-20,K-6BGT-20,K-6CND-20,K-6CVN-20,K-6DNH-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NWM-01,K-6TPC-20">05</option>
-  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,X-6COI-01">06</option>
+  <option value="06" data-sams="K-6ALN-22,K-6AUU-20,K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAT-20,K-6KLB-01,K-6LEA-20,K-6MJM-01,K-6TPC-20,L-6ALN-21,C-6COI-01">06</option>
   <option value="07" data-sams="K-6BGT-20,K-6CVN-20,K-6DNH-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KLB-01,K-6LEA-20,K-6NRG-20,K-6TPC-20">07</option>
   <option value="08" data-sams="K-6BGT-20,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6KAM-20,K-6KAT-20,K-6KLB-01,K-6NRG-20,L-6ALN-05,X-6TPC-20">08</option>
   <option value="09" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6KAT-20,K-6KLB-01,L-6ALN-20,X-6TPC-20">09</option>
@@ -1885,14 +1739,14 @@ fieldset.time-group legend {
   <option value="13" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NRG-20,K-6NWM-01,L-6ALN-05">13</option>
   <option value="14" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6EXM-01,K-6NWM-01,L-6ALN-20,L-6ALN-21,X-6ALN-05">14</option>
   <option value="15" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,L-6ALN-23">15</option>
-  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,X-6COI-01">16</option>
-  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,X-6COI-01">17</option>
+  <option value="16" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-21,C-6COI-01">16</option>
+  <option value="17" data-sams="K-6ALN-22,K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01,L-6ALN-23,C-6COI-01">17</option>
   <option value="18" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6HOP-01,K-6MJM-01,K-6NWM-01">18</option>
-  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,X-6COI-01">19</option>
+  <option value="19" data-sams="K-6CVN-20,K-6ESP-20,K-6ESP-21,K-6NWM-01,C-6COI-01">19</option>
   <option value="20" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-20,K-6ESP-21,K-6NWM-01">20</option>
   <option value="21" data-sams="K-6CVN-20,K-6DNK-20,K-6ESP-21,K-6NWM-01">21</option>
   <option value="22" data-sams="K-6CVN-20,K-6DNK-20,K-6MJM-01,K-6NWM-01">22</option>
-  <option value="23" data-sams="K-6DNK-20,X-6COI-01">23</option>
+  <option value="23" data-sams="K-6DNK-20,C-6COI-01">23</option>
   <option value="24" data-sams="K-6CVN-20,K-6DNK-20">24</option>
   <option value="25" data-sams="L-6ALN-20,L-6ALN-23">25</option>
   <option value="27" data-sams="L-6ALN-20">27</option>
